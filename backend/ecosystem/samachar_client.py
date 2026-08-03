@@ -52,15 +52,21 @@ def handle_refresh_event(event_payload: Dict[str, Any]) -> Dict[str, Any]:
     if not is_samachar_enabled():
         return {"status": "DISABLED", "detail": "SAMACHAR_ENABLED=false"}
         
-    event_type = event_payload.get("event_type") or "legal_refresh"
-    domain = event_payload.get("domain") or "maritime"
-    event_id = event_payload.get("event_id") or "unknown"
-    
-    # 1. Trigger CLO re-sync for the specified domain
-    sync_result = sync_domain_into_pipeline(domain, actor=f"samachar_event_{event_id}")
-    
-    return {
-        "status": "SUCCESS",
-        "detail": f"Processed Samachar event {event_id} ({event_type}) for domain {domain}",
-        "clo_sync": sync_result
-    }
+    try:
+        event_type = event_payload.get("event_type") or "legal_refresh"
+        domain = event_payload.get("domain") or "maritime"
+        event_id = event_payload.get("event_id") or "unknown"
+        
+        # 1. Trigger CLO re-sync for the specified domain
+        sync_result = sync_domain_into_pipeline(domain, actor=f"samachar_event_{event_id}")
+        
+        return {
+            "status": "SUCCESS",
+            "detail": f"Processed Samachar event {event_id} ({event_type}) for domain {domain}",
+            "clo_sync": sync_result
+        }
+    except Exception as exc:
+        return {
+            "status": "DEGRADED",
+            "detail": f"Failed to process Samachar event: {str(exc)}"
+        }
