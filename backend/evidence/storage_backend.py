@@ -56,6 +56,31 @@ class RedisBackend:
         raise NotImplementedError("RedisBackend is a Phase V stub")
 
 
+class BucketProducerBackend:
+    """
+    Evidence reads from local OutputBucket (write-ahead outbox).
+    Bucket remote is write-side only via tantra.output_bucket.store() forwarding.
+    """
+
+    def __init__(self, bucket=None):
+        if bucket is None:
+            from tantra.output_bucket import output_bucket
+            bucket = output_bucket
+        self._bucket = bucket
+
+    def retrieve(self, trace_id: str) -> Optional[Dict[str, Any]]:
+        return self._bucket.retrieve(trace_id)
+
+    def list_all(self, limit: Optional[int] = None, offset: int = 0) -> List[Dict[str, Any]]:
+        return self._bucket.list_all(limit=limit, offset=offset)
+
+    def count(self) -> int:
+        return len(self._bucket.list_all())
+
+    def retrieve_as_evidence(self, trace_id: str):
+        return self._bucket.retrieve_as_evidence(trace_id)
+
+
 class ObjectStorageBackend:
     """
     Future: S3/GCS date-sharded JSONL objects with cross-region replication.

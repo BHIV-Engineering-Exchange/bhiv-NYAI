@@ -1,0 +1,32 @@
+{
+  "note": "Approved NYAI entry for BHIV-Core-TANTRA-Sutradhar/TANTRA_INTEGRATION_REGISTRY.json — Raj to merge. Registry-only participation (no /execute_task).",
+  "entry": {
+    "nyai": {
+      "name": "NYAI",
+      "owner": "Shashank",
+      "layer": "execution",
+      "purpose": "Multi-jurisdiction legal query advisory runtime — advisory only, no enforcement authority",
+      "url": "https://nyai-backend-n9h8.onrender.com",
+      "endpoint": "/nyaya/query",
+      "method": "POST",
+      "deployment": "render",
+      "status": "operational",
+      "lifecycle_state": "ready",
+      "canonical_version": "2.0.0",
+      "min_compatible_version": "2.0.0",
+      "failure_mode": "fail-closed",
+      "capabilities": {
+        "protocols": ["http/1.1"],
+        "features": ["sync_http", "legal_query_advisory", "trace_replay", "evidence_generation"],
+        "auth_methods": ["api_key"],
+        "data_formats": ["application/json"]
+      },
+      "trace_requirements": {
+        "receives": ["X-Trace-Id"],
+        "propagates": ["X-Trace-Id"],
+        "generates": ["trace_id (fallback only)"]
+      },
+      "health_endpoint": "/health"
+    }
+  }
+}

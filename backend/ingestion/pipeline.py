@@ -246,3 +246,34 @@ def _diff_content(old: Dict[str, Any], new: Dict[str, Any]) -> Dict[str, Any]:
 
 
 ingestion_pipeline = KnowledgeIngestionPipeline()
+
+
+def ingest_clo_document(document: Dict[str, Any], actor: str = "clo_consumer") -> IngestionResult:
+    """
+    Ingest governed CLO knowledge using existing ingestion structures.
+    """
+    clo_document = dict(document or {})
+    metadata = clo_document.get("metadata")
+    if not isinstance(metadata, dict):
+        metadata = {}
+    metadata["source_system"] = "CLO"
+    clo_document["metadata"] = metadata
+
+    jurisdiction = str(
+        clo_document.get("jurisdiction")
+        or metadata.get("jurisdiction")
+        or "Global"
+    )
+    domain = str(
+        clo_document.get("domain")
+        or metadata.get("domain")
+        or "legal"
+    )
+
+    return ingestion_pipeline.ingest(
+        document=clo_document,
+        actor=actor,
+        jurisdiction=jurisdiction,
+        domain=domain,
+        source_attribution="CLO",
+    )

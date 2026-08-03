@@ -98,6 +98,47 @@ async def health_live() -> Dict[str, Any]:
     return _basic_health_payload()
 
 
+def _check_ecosystem_integrations() -> dict:
+    checks = {}
+    try:
+        from ecosystem.bucket_producer import is_bucket_producer_enabled
+
+        if is_bucket_producer_enabled():
+            from ecosystem.bucket_producer import get_bucket_producer_client
+            get_bucket_producer_client().health()
+            checks["bucket_producer"] = {"status": "PASS", "detail": "Bucket reachable"}
+        else:
+            checks["bucket_producer"] = {"status": "DISABLED", "detail": "BUCKET_PRODUCER_ENABLED=false"}
+    except Exception as e:
+        checks["bucket_producer"] = {"status": "DEGRADED", "detail": str(e)[:200]}
+
+    try:
+        from ecosystem.bhiv_core_client import connectivity_check
+        checks["bhiv_core"] = connectivity_check()
+    except Exception as e:
+        checks["bhiv_core"] = {"status": "DEGRADED", "detail": str(e)[:200]}
+
+    try:
+        from ecosystem.insightflow_publisher import health_check
+        checks["insightflow"] = health_check()
+    except Exception as e:
+        checks["insightflow"] = {"status": "DEGRADED", "detail": str(e)[:200]}
+
+    try:
+        from ecosystem.clo_consumer import connectivity_check
+        checks["clo"] = connectivity_check()
+    except Exception as e:
+        checks["clo"] = {"status": "DEGRADED", "detail": str(e)[:200]}
+
+    try:
+        from ecosystem.samachar_client import connectivity_check as samachar_conn
+        checks["samachar"] = samachar_conn()
+    except Exception as e:
+        checks["samachar"] = {"status": "DEGRADED", "detail": str(e)[:200]}
+
+    return checks
+
+
 @health_router.get("/health/ready")
 async def health_ready() -> JSONResponse:
     dependencies = {
@@ -108,9 +149,10 @@ async def health_ready() -> JSONResponse:
         "evidence_repository": _check_evidence_repository(),
         "knowledge_repository": _check_knowledge_repository(),
     }
+    dependencies.update(_check_ecosystem_integrations())
 
     statuses = [dep["status"] for dep in dependencies.values()]
-    checks_passed = sum(1 for s in statuses if s == "PASS")
+    checks_passed = sum(1 for s in statuses if s in ("PASS", "DISABLED"))
     checks_total = len(statuses)
 
     if any(s == "FAIL" for s in statuses):

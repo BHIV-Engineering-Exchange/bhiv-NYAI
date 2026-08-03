@@ -38,6 +38,22 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
+
+@app.on_event("startup")
+async def startup_event():
+    import threading
+    try:
+        from ecosystem.bucket_producer import recover_bucket_outbox
+        threading.Thread(target=recover_bucket_outbox, daemon=True).start()
+    except Exception:
+        pass
+
+    try:
+        from ecosystem.insightflow_publisher import recover_insightflow_outbox
+        threading.Thread(target=recover_insightflow_outbox, daemon=True).start()
+    except Exception:
+        pass
+
 allowed_origins = [
     "http://localhost:3000",
     "http://localhost:5173",
@@ -77,6 +93,11 @@ app.add_middleware(
 # Routers — health and metrics before nyaya (no auth required)
 app.include_router(health_router)
 app.include_router(metrics_router)
+try:
+    from api.ecosystem_router import ecosystem_router
+    app.include_router(ecosystem_router)
+except ImportError:
+    pass
 from api.evidence_router import evidence_router
 app.include_router(evidence_router)
 app.include_router(router)

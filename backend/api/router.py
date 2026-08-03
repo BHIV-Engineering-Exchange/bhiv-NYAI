@@ -635,6 +635,16 @@ async def query_legal(request: QueryRequest, http_request: Request):
         except Exception as bucket_err:
             logger.warning("Output bucket storage failed: %s", bucket_err)
 
+        # ─── Phase VI: InsightFlow telemetry (fail-open, gated) ───
+        try:
+            from ecosystem.insightflow_publisher import publish_query_telemetry
+
+            publish_query_telemetry(enriched)
+        except ImportError:
+            pass
+        except Exception as telemetry_err:
+            logger.warning("InsightFlow telemetry publish failed: %s", telemetry_err)
+
         # ─── TANTRA: Hash Chain Ledger — append provenance entry ───
         try:
             proof_dict = enriched.get("determinism_proof") or {}

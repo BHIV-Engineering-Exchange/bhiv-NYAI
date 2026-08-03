@@ -17,10 +17,24 @@ from api.error_codes import ErrorCode
 logger = logging.getLogger(__name__)
 
 _PROTECTED_PREFIXES = ("/nyaya/", "/evidence/", "/knowledge/", "/workspace/", "/graph/")
+_ECOSYSTEM_READ_PREFIXES = ("/knowledge/", "/graph/")
 
 
 def _is_protected_path(path: str) -> bool:
     return any(path.startswith(prefix) for prefix in _PROTECTED_PREFIXES)
+
+
+def _is_ecosystem_read_path(method: str, path: str) -> bool:
+    return method.upper() == "GET" and any(
+        path.startswith(prefix) for prefix in _ECOSYSTEM_READ_PREFIXES
+    )
+
+
+def _ecosystem_read_key_valid(provided_key: str) -> bool:
+    configured = os.environ.get("ECOSYSTEM_READ_API_KEY", "").strip()
+    if not configured:
+        return False
+    return hmac.compare_digest(provided_key, configured)
 
 
 def _trace_id(request: Request) -> str:
@@ -111,6 +125,10 @@ class APIKeyAuthMiddleware(BaseHTTPMiddleware):
                 error_code=ErrorCode.UNAUTHORIZED,
                 message="Missing or empty X-API-Key header",
             )
+
+        if _is_ecosystem_read_path(request.method, request.url.path):
+            if _ecosystem_read_key_valid(provided_key):
+                return await call_next(request)
 
         if not hmac.compare_digest(provided_key, configured_key):
             return _auth_error_response(

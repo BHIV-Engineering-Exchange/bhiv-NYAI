@@ -12,6 +12,10 @@ class OntologyFilter:
     
     def get_allowed_act_ids(self, domain: str) -> Set[str]:
         """Get allowed act_ids for a domain"""
+        # Map 'commercial' domain to 'civil' for ontology filtering as commercial acts
+        # (like CGST, Income Tax) are defined under the 'civil' domain rule.
+        if domain == 'commercial':
+            domain = 'civil'
         if domain not in self.domain_rules:
             return set()
         

@@ -1,0 +1,547 @@
+{
+  "schema_version": "tantra_v3",
+  "answer_disclaimer": "NYAI output is advisory only and does not constitute legal advice, a binding determination, or enforcement authority. Consult a qualified legal professional before acting on this information.",
+  "trace_id": "bc8a84f6-d2e8-45b1-a0a9-10c610bc8269",
+  "request_id": "req_85b795c1366d",
+  "input_hash": "85b795c1366d44cc3ea159f5db0af59fcdc062995ea79442986c5cc022f24914",
+  "timestamp": "2026-07-08T12:15:12.025391Z",
+  "legal_context": {
+    "jurisdiction": "IN",
+    "domain": "criminal",
+    "applicable_laws": [
+      "Bharatiya Nyaya Sanhita",
+      "Indian Penal Code"
+    ]
+  },
+  "domain": "criminal",
+  "domains": [
+    "criminal"
+  ],
+  "jurisdiction": "IN",
+  "jurisdiction_detected": "IN",
+  "jurisdiction_confidence": 0.5,
+  "confidence": {
+    "overall": 0.5833333333333334,
+    "jurisdiction": 0.5,
+    "domain": 0.75,
+    "statute_match": 0.5,
+    "procedural_match": 0.8
+  },
+  "facts": [
+    {
+      "fact_id": "F1",
+      "statement": "User query: what are the legal consequences of murder in the usa",
+      "source": "input"
+    },
+    {
+      "fact_id": "F2",
+      "statement": "Jurisdiction detected: IN (confidence: 0.50)",
+      "source": "JurisdictionDetector"
+    },
+    {
+      "fact_id": "F3",
+      "statement": "Domain classified: criminal",
+      "source": "DomainClassifier"
+    },
+    {
+      "fact_id": "F4",
+      "statement": "Statutes matched: 2",
+      "source": "BM25Search"
+    },
+    {
+      "fact_id": "F5",
+      "statement": "Case laws found: 0",
+      "source": "CaseLawRetriever"
+    }
+  ],
+  "analysis": {
+    "issues_identified": [],
+    "rule_application": [
+      {
+        "law_id": "Bharatiya Nyaya Sanhita:103",
+        "application": "Murder"
+      },
+      {
+        "law_id": "Indian Penal Code:302",
+        "application": "Murder"
+      }
+    ],
+    "conflicts": []
+  },
+  "recommendation": {
+    "type": "REVIEW",
+    "confidence": 0.5833333333333334,
+    "rationale": "Statutes found but jurisdiction confidence low (0.50)"
+  },
+  "explanation_chain": [
+    {
+      "step_number": 1,
+      "description": "Query received and cleaned: 'what are the legal consequences of murder in the usa'",
+      "source": "QueryCleaner"
+    },
+    {
+      "step_number": 2,
+      "description": "Jurisdiction detected: IN (confidence: 0.50)",
+      "source": "JurisdictionDetector"
+    },
+    {
+      "step_number": 3,
+      "description": "Domain classified: criminal",
+      "source": "DomainClassifier"
+    },
+    {
+      "step_number": 4,
+      "description": "BM25 full-text search executed across N/A sections",
+      "source": "BM25Search"
+    },
+    {
+      "step_number": 5,
+      "description": "Statute overrides checked for keyword matches",
+      "source": "ReasoningEngine"
+    },
+    {
+      "step_number": 6,
+      "description": "2 relevant statute(s) identified",
+      "source": "StatuteMerger"
+    },
+    {
+      "step_number": 7,
+      "description": "0 case law(s) retrieved",
+      "source": "CaseLawRetriever"
+    },
+    {
+      "step_number": 8,
+      "description": "Recommendation: REVIEW \u2014 Statutes found but jurisdiction confidence low (0.50)",
+      "source": "RecommendationEngine"
+    }
+  ],
+  "risk_flags": [
+    "SENSITIVE_CONTENT: Query involves serious criminal subject matter"
+  ],
+  "determinism_proof": {
+    "input_hash": "85b795c1366d44cc3ea159f5db0af59fcdc062995ea79442986c5cc022f24914",
+    "output_hash": "682e5faaf33bae046c1ec64e1feca82422bce2efe9164e13e5037cb7ba0b19b9",
+    "version": "3.0.0"
+  },
+  "legal_route": [
+    "query_cleaning",
+    "query_understanding",
+    "query_expansion",
+    "hybrid_retrieval",
+    "cross_encoder_reranking",
+    "legal_reasoning_engine",
+    "clean_legal_advisor",
+    "case_law_retriever"
+  ],
+  "statutes": [
+    {
+      "act": "Bharatiya Nyaya Sanhita",
+      "year": 2023,
+      "section": "103",
+      "title": "Murder"
+    },
+    {
+      "act": "Indian Penal Code",
+      "year": 1860,
+      "section": "302",
+      "title": "Murder"
+    }
+  ],
+  "case_laws": [],
+  "constitutional_articles": [],
+  "provenance_chain": [
+    {
+      "timestamp": "2026-07-08T12:15:12.025391",
+      "event": "query_processed",
+      "agent": "clean_legal_advisor",
+      "sections_found": 2,
+      "case_laws_found": 0,
+      "ontology_filtered": true,
+      "domains": [
+        "criminal"
+      ],
+      "jurisdiction_detected": "IN",
+      "jurisdiction_confidence": 0.5,
+      "observer_steps_count": 7
+    }
+  ],
+  "reasoning_trace": {
+    "legal_analysis": "Legal Analysis for IN Jurisdiction:\n\nApplicable Legal Provisions:\n==================================================\n\n1. Section 103 of Bharatiya Nyaya Sanhita, 2023:\n   Murder\n\n2. Section 302 of Indian Penal Code, 1860:\n   Murder\n\n",
+    "procedural_steps": [
+      "Filing of FIR: Information relating to the commission of a cognizable offence is recorded by the police under Section 154 of the CrPC.",
+      "Investigation: Police conduct investigation including evidence collection, witness examination, and arrests where necessary.",
+      "Bail Hearing: Court considers bail application and determines whether the accused should be released or remanded to custody. | Possible outcomes: Bail granted -> Accused released subject to bail conditions; Bail rejected -> Accused remanded to custody | Typical outcomes: Regular bail granted, Interim bail granted | Key risks: Incomplete investigation",
+      "Filing of Charge Sheet or Closure Report: Police submit a charge sheet under Section 173 CrPC or file a closure report if evidence is insufficient. | Possible outcomes: Charge sheet filed -> Prosecution initiated; Closure report filed -> Proceedings terminated unless contested | Typical outcomes: Charge sheet accepted, Further investigation ordered | Key risks: Insufficient evidence",
+      "Cognizance by Magistrate: Magistrate takes cognizance of the offence and issues process to the accused.",
+      "Framing of Charges: Court frames charges against the accused if sufficient grounds exist to proceed with trial.",
+      "Trial: Evidence is led by prosecution and defence, witnesses are examined, and arguments are heard.",
+      "Judgment: Court delivers judgment acquitting or convicting the accused.",
+      "Appeal: Aggrieved party may appeal the judgment before a higher court as per law.",
+      "Expected Timeline: Best case: 6\u201312 months, Average: 1\u20133 years, Worst case: 5+ years"
+    ],
+    "remedies": [
+      "Criminal prosecution and imprisonment/fine as per law",
+      "Victim compensation under Section 357A CrPC where applicable",
+      "Police investigation, seizure of evidence, and charge sheet/trial process",
+      "Bail objections or protective conditions in appropriate cases",
+      "Legal aid and victim support if eligible"
+    ],
+    "sections_found": 2,
+    "case_laws_found": 0,
+    "statute_source": "advisor_fallback",
+    "query_understanding": {
+      "summary": "Legal consequences of murder in the USA",
+      "intent": "penalty",
+      "keywords": [
+        "murder",
+        "USA",
+        "legal consequences",
+        "penalty"
+      ],
+      "search_queries": [
+        "murder penalty USA",
+        "murder laws USA",
+        "consequences of murder USA"
+      ],
+      "section_hints": [],
+      "act_hints": [
+        "uniform code of military justice",
+        "model penal code"
+      ],
+      "suggested_jurisdiction": null,
+      "suggested_domain": "criminal",
+      "source": "groq",
+      "model": "llama-3.1-8b-instant",
+      "issue_profile": {
+        "legal_issue": "murder",
+        "domains": [
+          "criminal"
+        ],
+        "statutes": [
+          {
+            "act": "Bharatiya Nyaya Sanhita",
+            "section": "103",
+            "title": "Murder"
+          },
+          {
+            "act": "Indian Penal Code",
+            "section": "302",
+            "title": "Murder"
+          }
+        ],
+        "preferred_sections": [
+          "103",
+          "302"
+        ],
+        "preferred_act_names": [
+          "Bharatiya Nyaya Sanhita",
+          "Indian Penal Code"
+        ],
+        "preferred_act_fragments": [
+          "bns_sections",
+          "ipc_sections"
+        ],
+        "preferred_section_acts": {
+          "103": [
+            "bharatiya nyaya sanhita"
+          ],
+          "302": [
+            "indian penal code"
+          ]
+        },
+        "preferred_title_terms": [
+          "killed",
+          "murdered",
+          "murder",
+          "homicide"
+        ],
+        "excluded_title_terms": [
+          "dowry"
+        ]
+      },
+      "legal_issue": "murder",
+      "preferred_sections": [
+        "103",
+        "302"
+      ],
+      "preferred_act_names": [
+        "Bharatiya Nyaya Sanhita",
+        "Indian Penal Code"
+      ],
+      "preferred_act_fragments": [
+        "bns_sections",
+        "ipc_sections"
+      ],
+      "preferred_section_acts": {
+        "103": [
+          "bharatiya nyaya sanhita"
+        ],
+        "302": [
+          "indian penal code"
+        ]
+      },
+      "preferred_title_terms": [
+        "killed",
+        "murdered",
+        "murder",
+        "homicide"
+      ],
+      "excluded_title_terms": [
+        "dowry"
+      ]
+    },
+    "retrieval_metadata": {
+      "search_queries": [
+        "what are the legal consequences of murder in the usa",
+        "murder penalty USA",
+        "murder laws USA",
+        "consequences of murder USA"
+      ],
+      "understanding_source": "groq",
+      "understanding_model": "llama-3.1-8b-instant",
+      "bm25_queries_run": 4,
+      "rerank_source": "groq",
+      "rerank_model": "llama-3.1-8b-instant",
+      "rerank_reason": "exact offence match, exact act match, direct punishment/procedure relevance, and section-number hints",
+      "expanded_queries": [
+        "what are the legal consequences of murder in the usa",
+        "what are the legal consequences of murder in the usa law India",
+        "what are the legal consequences of murder in the usa legal rights",
+        "what are the legal consequences of murder in the usa court procedure"
+      ],
+      "hybrid_sections_found": 0,
+      "reranked_top": 0,
+      "reasoning_added_sections": 0
+    },
+    "query_expansion": {
+      "search_queries": [
+        "what are the legal consequences of murder in the usa",
+        "what are the legal consequences of murder in the usa law India",
+        "what are the legal consequences of murder in the usa legal rights",
+        "what are the legal consequences of murder in the usa court procedure"
+      ],
+      "domain": "criminal"
+    },
+    "hybrid_retrieval": {
+      "candidates": [],
+      "sections_found": 0,
+      "query_logs": []
+    },
+    "top_statutes": [
+      {
+        "act": "Bharatiya Nyaya Sanhita",
+        "year": 2023,
+        "section": "103",
+        "title": "Murder",
+        "source": "advisor_fallback"
+      },
+      {
+        "act": "Indian Penal Code",
+        "year": 1860,
+        "section": "302",
+        "title": "Murder",
+        "source": "advisor_fallback"
+      }
+    ],
+    "reasoning_engine": {
+      "added_sections": 0,
+      "final_statutes": [
+        {
+          "act": "Bharatiya Nyaya Sanhita",
+          "year": 2023,
+          "section": "103",
+          "title": "Murder",
+          "source": "advisor_fallback"
+        },
+        {
+          "act": "Indian Penal Code",
+          "year": 1860,
+          "section": "302",
+          "title": "Murder",
+          "source": "advisor_fallback"
+        }
+      ]
+    },
+    "intent_domain_understanding": {
+      "intent": "information",
+      "domain": "criminal",
+      "keywords": [
+        "murder",
+        "usa",
+        "legal consequences"
+      ],
+      "source": "groq",
+      "model": "llama-3.1-8b-instant"
+    },
+    "query_cleaning": {
+      "original": "What are the legal consequences of murder in the USA?",
+      "cleaned": "what are the legal consequences of murder in the usa"
+    },
+    "jurisdiction_detection": {
+      "detected": "IN",
+      "confidence": 0.5,
+      "user_provided": false
+    },
+    "confidence_factors": {
+      "sections_matched": 2,
+      "jurisdiction_confidence": 0.5,
+      "domain_confidence": 0.75,
+      "statute_match": 0.5
+    },
+    "explanation_generation": {
+      "source": "local_fallback",
+      "model": null,
+      "reason": "no_statutes"
+    }
+  },
+  "timeline": [
+    {
+      "step": "Filing of FIR",
+      "eta": "Varies"
+    },
+    {
+      "step": "Investigation",
+      "eta": "Varies"
+    },
+    {
+      "step": "Bail Hearing",
+      "eta": "Varies"
+    },
+    {
+      "step": "Filing of Charge Sheet or Closure Report",
+      "eta": "Varies"
+    }
+  ],
+  "glossary": [
+    {
+      "term": "Murder",
+      "definition": "Intentional killing with intent to cause death"
+    }
+  ],
+  "evidence_requirements": [
+    "FIR",
+    "Police case diary",
+    "Charge sheet or closure report",
+    "Witness statements",
+    "Forensic reports",
+    "Court orders and judgments"
+  ],
+  "answer": "Relevant statutes were not identified from the available corpus. Please provide more details or consult a legal professional.",
+  "answer_source": "local_fallback",
+  "answer_model": null,
+  "observer_validation": {
+    "validation_status": "PASS",
+    "determinism_verified": true,
+    "trace_continuity_check": true,
+    "schema_valid": true,
+    "violations": [],
+    "validated_at": "2026-07-08T12:15:12.032110"
+  },
+  "observer_steps": [
+    {
+      "stage": "query_received",
+      "timestamp": "2026-07-08T12:15:10.370537",
+      "trace_id": "bc8a84f6-d2e8-45b1-a0a9-10c610bc8269",
+      "observed": {
+        "raw_query": "What are the legal consequences of murder in the USA?"
+      }
+    },
+    {
+      "stage": "query_understanding",
+      "timestamp": "2026-07-08T12:15:10.668189",
+      "trace_id": "bc8a84f6-d2e8-45b1-a0a9-10c610bc8269",
+      "observed": {
+        "domain": "criminal",
+        "source": "groq"
+      }
+    },
+    {
+      "stage": "query_expansion",
+      "timestamp": "2026-07-08T12:15:10.854269",
+      "trace_id": "bc8a84f6-d2e8-45b1-a0a9-10c610bc8269",
+      "observed": {
+        "expanded_count": 4
+      }
+    },
+    {
+      "stage": "hybrid_retrieval",
+      "timestamp": "2026-07-08T12:15:10.862701",
+      "trace_id": "bc8a84f6-d2e8-45b1-a0a9-10c610bc8269",
+      "observed": {
+        "candidates_found": 0
+      }
+    },
+    {
+      "stage": "cross_encoder_reranking",
+      "timestamp": "2026-07-08T12:15:10.862701",
+      "trace_id": "bc8a84f6-d2e8-45b1-a0a9-10c610bc8269",
+      "observed": {
+        "reranked_top": 0
+      }
+    },
+    {
+      "stage": "clean_legal_advisor",
+      "timestamp": "2026-07-08T12:15:12.025391",
+      "trace_id": "bc8a84f6-d2e8-45b1-a0a9-10c610bc8269",
+      "observed": {
+        "sections": 2,
+        "domain": "criminal",
+        "jurisdiction": "IN"
+      }
+    },
+    {
+      "stage": "case_law_retriever",
+      "timestamp": "2026-07-08T12:15:12.025391",
+      "trace_id": "bc8a84f6-d2e8-45b1-a0a9-10c610bc8269",
+      "observed": {
+        "cases_found": 0
+      }
+    },
+    {
+      "stage": "response_enriched",
+      "timestamp": "2026-07-08T12:15:12.032110",
+      "trace_id": "bc8a84f6-d2e8-45b1-a0a9-10c610bc8269",
+      "observed": {
+        "has_answer": true
+      }
+    }
+  ],
+  "confidence_sources": {
+    "sections_found": 2,
+    "base_confidence": 0.7,
+    "jurisdiction_confidence": 0.5,
+    "domain_confidence": 0.75,
+    "statute_match": 0.5,
+    "understanding_source": "groq",
+    "statute_source": "advisor_fallback"
+  },
+  "metadata": {
+    "formatted": true,
+    "formatter_version": "3.0.0",
+    "formatted_at": "2026-07-08T12:15:12.032110",
+    "schema_compliant": true,
+    "canonical_fields_validated": 11,
+    "structural_fields_validated": 4,
+    "schema": "tantra_v3",
+    "validation_mode": "FAIL_CLOSED"
+  },
+  "remedies": [
+    "Criminal prosecution and imprisonment/fine as per law",
+    "Victim compensation under Section 357A CrPC where applicable",
+    "Police investigation, seizure of evidence, and charge sheet/trial process",
+    "Bail objections or protective conditions in appropriate cases",
+    "Legal aid and victim support if eligible"
+  ],
+  "procedural_steps": [
+    "Filing of FIR: Information relating to the commission of a cognizable offence is recorded by the police under Section 154 of the CrPC.",
+    "Investigation: Police conduct investigation including evidence collection, witness examination, and arrests where necessary.",
+    "Bail Hearing: Court considers bail application and determines whether the accused should be released or remanded to custody. | Possible outcomes: Bail granted -> Accused released subject to bail conditions; Bail rejected -> Accused remanded to custody | Typical outcomes: Regular bail granted, Interim bail granted | Key risks: Incomplete investigation",
+    "Filing of Charge Sheet or Closure Report: Police submit a charge sheet under Section 173 CrPC or file a closure report if evidence is insufficient. | Possible outcomes: Charge sheet filed -> Prosecution initiated; Closure report filed -> Proceedings terminated unless contested | Typical outcomes: Charge sheet accepted, Further investigation ordered | Key risks: Insufficient evidence",
+    "Cognizance by Magistrate: Magistrate takes cognizance of the offence and issues process to the accused.",
+    "Framing of Charges: Court frames charges against the accused if sufficient grounds exist to proceed with trial.",
+    "Trial: Evidence is led by prosecution and defence, witnesses are examined, and arguments are heard.",
+    "Judgment: Court delivers judgment acquitting or convicting the accused.",
+    "Appeal: Aggrieved party may appeal the judgment before a higher court as per law.",
+    "Expected Timeline: Best case: 6\u201312 months, Average: 1\u20133 years, Worst case: 5+ years"
+  ]
+}

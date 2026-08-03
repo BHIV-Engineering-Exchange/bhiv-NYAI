@@ -79,12 +79,25 @@ class OutputBucket:
             self._index[trace_id] = new_line_num
             self._line_count += 1
 
-        return {
+        receipt = {
             "stored": "true",
             "trace_id": trace_id,
             "entry_hash": entry_hash,
             "bucket_file": self._log_file,
         }
+
+        # Phase VI: forward to BHIV Bucket when producer flag is enabled (local outbox first).
+        try:
+            from ecosystem.bucket_producer import forward_evidence_to_bucket
+
+            bucket_result = forward_evidence_to_bucket(entry)
+            if bucket_result:
+                receipt["bucket_artifact_id"] = bucket_result.get("artifact_id")
+                receipt["bucket_hash"] = bucket_result.get("hash")
+        except Exception:
+            pass
+
+        return receipt
 
     def retrieve(self, trace_id: str) -> Optional[Dict[str, Any]]:
         """Retrieve stored response by trace_id using line-number index."""

@@ -45,11 +45,11 @@ backend/output_logs/
 storybook-static/
 
 #Task md files
-Constitutional Evidence Infrastructure (NYAI__ Phase IV Production Transition).md
-PHASE4_IMPLEMENTATION.md
 Platform Infrastructure Expansion.md
+Live Tantra Runtime Integration (NYAI__ Phase VI).md
+Platform Infrastructure Expansion_Task Review.md
 Implementation.md
-AGENT_PROMPT.md
+requirements.md
 
 # Phase V runtime data stores (generated at runtime — never commit test/run data)
 backend/knowledge_store/
@@ -57,3 +57,9 @@ backend/ingestion_logs/
 backend/promotion_logs/
 backend/workspace_store/
 backend/output/
+
+BHIV-Core-TANTRA-Sutradhar
+bucket
+Shakti-GC-Infra
+bhiv-registry
+bhiv-SVACS/
