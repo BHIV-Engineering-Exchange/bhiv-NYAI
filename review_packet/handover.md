@@ -43,6 +43,13 @@ ECOSYSTEM_READ_API_KEY=<generate-with-secrets.token_urlsafe(32)>
 
 Share key with Vedant for `GET /knowledge/*` and `GET /graph/*`.
 
+### 5. Samachar / SVACS (vessel detection change signal receiver)
+
+```bash
+SAMACHAR_ENDPOINT=https://bhiv-svacs.onrender.com
+SAMACHAR_ENABLED=true
+```
+
 ---
 
 ## Verification commands
@@ -52,6 +59,7 @@ cd backend
 python -m pytest tests/ --ignore=tests/test_faiss_search.py -q
 curl https://nyai-backend-n9h8.onrender.com/health/ready
 curl https://nyai-backend-n9h8.onrender.com/ecosystem/bucket/health
+curl https://nyai-backend-n9h8.onrender.com/ecosystem/samachar/health
 ```
 
 ---
@@ -65,4 +73,4 @@ curl https://nyai-backend-n9h8.onrender.com/ecosystem/bucket/health
 | InsightFlow | Vijay | ✅ Approved — use rotated key + stable URL |
 | Vedant read access | NYAI + Vedant | ⏳ Generate and share `ECOSYSTEM_READ_API_KEY` |
 | CLO | Ansh | ✅ Scaffolded — read-only client, disabled by default |
-| SAMACHAR | — | ⏭ Deferred — no repo/contract in workspace |
+| SAMACHAR | NYAI | ✅ Fully integrated with SVACS, webhook listener ready |

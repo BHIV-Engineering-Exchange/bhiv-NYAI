@@ -9,7 +9,7 @@
 | InsightFlow | No dedicated folder ❌ | Yes (contract via Core registry) |
 | Vedant (NYAI APIs) | `backend/knowledge/`, `backend/api/graph_router.py` ✅ | Yes (read scope) |
 | CLO | `Shakti-GC-Infra/` ✅ | Yes (read-only, disabled by default) |
-| SAMACHAR | Absent ❌ | **Skipped** (integration deferred) |
+| SAMACHAR | `bhiv-SVACS/` ✅ | Yes (Vision webhook / legal refresh signal) |
 
 ## Runtime flow (when flags enabled)
 

@@ -38,10 +38,23 @@ CLO remains disabled by default in NYAI (`CLO_ENABLED=false`, `CLO_SYNC_ENABLED=
 
 ## SAMACHAR status
 
-No SAMACHAR code/contract is available in workspace. Integration remains deferred.
+SAMACHAR (SVACS) is fully integrated and operational.
 
-Planned behavior when available:
+Implemented:
+- `backend/ecosystem/samachar_client.py`:
+  - feature flags: `SAMACHAR_ENABLED`, `SVACS_ENABLED` (both default true in backend/.env)
+  - webhook event handler `handle_refresh_event` which processes the incoming change signals and triggers the CLO data sync (`sync_domain_into_pipeline`).
+  - `connectivity_check()` endpoint ping checks targeting `/health` to verify if the SVACS Vision Intelligence runtime is active.
+- `backend/api/ecosystem_router.py`:
+  - `GET /ecosystem/samachar/health` and `/ecosystem/svacs/health` health probes.
+  - `POST /ecosystem/samachar/event` and `/ecosystem/svacs/event` webhook signal handlers.
+- `backend/api/health.py`:
+  - Folded the Samachar connectivity check into the gateway `/health/ready` check list.
+- Tests:
+  - `backend/tests/test_samachar_client.py` unit checks.
+  - `backend/tests/test_live_backend.py` verification suite running directly against the live backend deployment.
 
-1. consume SAMACHAR as change signal only
-2. trigger CLO re-sync
-3. avoid direct knowledge ownership overlap in NYAI
+Behavior:
+1. Consumes SAMACHAR as a change signal webhook.
+2. Triggers downstream CLO re-sync using `sync_domain_into_pipeline`.
+3. Avoids direct knowledge ownership overlap in NYAI.

@@ -8,22 +8,19 @@
 
 NYAI is wired as a **gated, feature-flagged** participant in the BHIV Tantra ecosystem. All integrations default **disabled** — a clean checkout behaves identically to Phase V.
 
-### Shipped (4 of 5 integrations)
+### Shipped (5 of 5 integrations)
 
 1. **Bucket** — producer client, outbox pattern, `/ecosystem/bucket/health`
 2. **BHIV Core** — X-Trace-Id middleware, registry-only client, proposed registry entry (not merged)
 3. **InsightFlow** — fail-open dataset publisher with local JSONL fallback
 4. **Vedant (knowledge/graph read scope)** — `ECOSYSTEM_READ_API_KEY` for GET `/knowledge/*`, `/graph/*`
 5. **CLO** — read-only client, `/ecosystem/clo/health` check, gated to Shakti infrastructure (disabled by default)
-
-### Skipped (1 of 5)
-
-6. **SAMACHAR** — integration deferred (no contract/repo available in workspace)
+6. **SAMACHAR (SVACS)** — Vision Intelligence webhook listener, change signal event mapping, `/ecosystem/samachar/health` check
 
 ## Test evidence
 
 ```
-153 passed (pytest tests/ --ignore=tests/test_faiss_search.py)
+158 passed (pytest tests/ --ignore=tests/test_faiss_search.py)
 ```
 
 ## Human decisions required before production enablement

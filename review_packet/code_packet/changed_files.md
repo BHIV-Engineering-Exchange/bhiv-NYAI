@@ -6,6 +6,7 @@
 - `backend/ecosystem/bucket_producer.py`
 - `backend/ecosystem/insightflow_publisher.py`
 - `backend/ecosystem/bhiv_core_client.py`
+- `backend/ecosystem/samachar_client.py`
 - `backend/ecosystem/proposed_nyai_registry_entry.json`
 - `backend/api/ecosystem_router.py`
 - `backend/tests/test_bucket_producer.py`
@@ -14,6 +15,9 @@
 - `backend/tests/test_bhiv_core_client.py`
 - `backend/tests/test_ecosystem_read_auth.py`
 - `backend/tests/test_ecosystem_integration.py`
+- `backend/tests/test_samachar_client.py`
+- `backend/tests/test_live_backend.py`
+
 
 ## Modified
 
