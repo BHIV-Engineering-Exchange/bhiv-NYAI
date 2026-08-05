@@ -1738,9 +1738,12 @@ class EnhancedLegalAdvisor:
                     remedies.append(item)
         
         # Check for specific offense types
-        is_sexual_offence = any('375' in s.section_number or '376' in s.section_number or 
-                               '63' in s.section_number or '64' in s.section_number or
-                               'rape' in s.section_id.lower() for s in sections)
+        is_sexual_offence = any(
+            ('rape' in s.section_id.lower() or 'rape' in s.text.lower()) or 
+            ((s.jurisdiction.value if hasattr(s.jurisdiction, 'value') else str(s.jurisdiction)) == 'IN' and 
+             s.section_number in ['375', '376', '63', '64'])
+            for s in sections
+        )
         
         is_serious_crime = any(word in s.text.lower() for s in sections 
                               for word in ['murder', 'homicide', 'terrorism', 'trafficking'])
@@ -1848,14 +1851,14 @@ class EnhancedLegalAdvisor:
             # Extract remedies from section metadata
             for section in sections:
                 if hasattr(section, 'metadata') and section.metadata:
-                    if 'civil_remedies' in section.metadata:
+                    if 'civil_remedies' in section.metadata and section.metadata['civil_remedies']:
                         section_remedies = section.metadata['civil_remedies']
                         if isinstance(section_remedies, list):
-                            add_remedies(*[f"Legal: {remedy}" for remedy in section_remedies])
-                        else:
+                            add_remedies(*[f"Legal: {remedy}" for remedy in section_remedies if remedy])
+                        elif section_remedies:
                             add_remedies(f"Legal: {section_remedies}")
                     
-                    if 'punishment' in section.metadata:
+                    if 'punishment' in section.metadata and section.metadata['punishment']:
                         add_remedies(f"Criminal: {section.metadata['punishment']}")
             
             # Default remedies by domain if none found
