@@ -54,14 +54,22 @@ async def startup_event():
     except Exception:
         pass
 
-allowed_origins = [
-    "http://localhost:3000",
-    "http://localhost:5173",
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:5173",
-    os.getenv("FRONTEND_URL", ""),
-]
-allowed_origins = [o for o in allowed_origins if o]
+# Support comma-separated origins from environment variables for dynamic setups
+env_origins = os.getenv("ALLOWED_ORIGINS", "")
+if env_origins:
+    allowed_origins = [o.strip() for o in env_origins.split(",") if o.strip()]
+else:
+    allowed_origins = [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5173",
+    ]
+
+# Include FRONTEND_URL if set
+frontend_url = os.getenv("FRONTEND_URL", "")
+if frontend_url and frontend_url not in allowed_origins:
+    allowed_origins.append(frontend_url)
 
 # Global exception handler — FAIL CLOSED
 @app.exception_handler(Exception)
@@ -84,7 +92,8 @@ app.add_middleware(StructuredLoggingMiddleware)
 app.add_middleware(TraceIdMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins or ["*"],
+    allow_origins=allowed_origins,
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
