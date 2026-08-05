@@ -13,11 +13,11 @@ logger = logging.getLogger(__name__)
 
 
 def scan_gaps(output_path: Path | None = None) -> Dict[str, Any]:
-    repo_root = Path(__file__).resolve().parents[2]
-    db_path = repo_root / "Nyaya_AI" / "db"
-    ontology_path = repo_root / "Nyaya_AI" / "core" / "ontology" / "indian_legal_ontology.json"
+    backend_root = Path(__file__).resolve().parents[1]
+    db_path = backend_root / "db"
+    ontology_path = backend_root / "core" / "ontology" / "indian_legal_ontology.json"
 
-    profiles = _load_issue_profiles(repo_root)
+    profiles = _load_issue_profiles(backend_root)
     act_name_to_id = _load_act_name_map(ontology_path)
     sections_by_act = _load_sections_by_act(db_path)
 
@@ -89,12 +89,12 @@ def scan_gaps(output_path: Path | None = None) -> Dict[str, Any]:
     return report
 
 
-def _load_issue_profiles(repo_root: Path) -> List[Dict[str, Any]]:
+def _load_issue_profiles(backend_root: Path) -> List[Dict[str, Any]]:
     profiles: List[Dict[str, Any]] = []
     sources = [
-        repo_root / "Nyaya_AI" / "core" / "ontology" / "offense_subtypes.json",
-        repo_root / "Nyaya_AI" / "core" / "addons" / "offense_subtypes_addon.json",
-        repo_root / "Nyaya_AI" / "core" / "addons" / "offense_subtypes_addon_multi_jurisdiction.json",
+        backend_root / "core" / "ontology" / "offense_subtypes.json",
+        backend_root / "core" / "addons" / "offense_subtypes_addon.json",
+        backend_root / "core" / "addons" / "offense_subtypes_addon_multi_jurisdiction.json",
     ]
     for path in sources:
         if not path.exists():
@@ -150,8 +150,8 @@ def _normalize_act_id(act_id: str) -> str:
 
 
 def main() -> None:
-    repo_root = Path(__file__).resolve().parents[2]
-    output_path = repo_root / "data" / "gap_report.json"
+    backend_root = Path(__file__).resolve().parents[1]
+    output_path = backend_root / "data" / "gap_report.json"
     report = scan_gaps(output_path)
     print(json.dumps(report["summary"], indent=2))
 

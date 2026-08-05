@@ -1,0 +1,783 @@
+{
+  "summary": {
+    "profiles_scanned": 58,
+    "missing_sections": 14,
+    "unmapped_acts": 112,
+    "missing_act_data": 0
+  },
+  "missing_sections": [
+    {
+      "issue_profile": "traffic_violations",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon.json",
+      "act": "Motor Vehicles Act",
+      "act_id": "motor_vehicles_act",
+      "section": "177"
+    },
+    {
+      "issue_profile": "traffic_violations",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon.json",
+      "act": "Motor Vehicles Act",
+      "act_id": "motor_vehicles_act",
+      "section": "183"
+    },
+    {
+      "issue_profile": "traffic_violations",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon.json",
+      "act": "Motor Vehicles Act",
+      "act_id": "motor_vehicles_act",
+      "section": "184"
+    },
+    {
+      "issue_profile": "traffic_violations",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon.json",
+      "act": "Motor Vehicles Act",
+      "act_id": "motor_vehicles_act",
+      "section": "185"
+    },
+    {
+      "issue_profile": "traffic_violations",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon.json",
+      "act": "Motor Vehicles Act",
+      "act_id": "motor_vehicles_act",
+      "section": "181"
+    },
+    {
+      "issue_profile": "traffic_violations_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Motor Vehicles Act",
+      "act_id": "motor_vehicles_act",
+      "section": "177"
+    },
+    {
+      "issue_profile": "traffic_violations_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Motor Vehicles Act",
+      "act_id": "motor_vehicles_act",
+      "section": "183"
+    },
+    {
+      "issue_profile": "traffic_violations_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Motor Vehicles Act",
+      "act_id": "motor_vehicles_act",
+      "section": "184"
+    },
+    {
+      "issue_profile": "traffic_violations_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Motor Vehicles Act",
+      "act_id": "motor_vehicles_act",
+      "section": "185"
+    },
+    {
+      "issue_profile": "traffic_violations_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Motor Vehicles Act",
+      "act_id": "motor_vehicles_act",
+      "section": "181"
+    },
+    {
+      "issue_profile": "banking_fraud_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Consumer Protection Act",
+      "act_id": "consumer_protection_act",
+      "section": "2(11)"
+    },
+    {
+      "issue_profile": "banking_fraud_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Consumer Protection Act",
+      "act_id": "consumer_protection_act",
+      "section": "35"
+    },
+    {
+      "issue_profile": "divorce_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Hindu Marriage Act",
+      "act_id": "hindu_marriage_act",
+      "section": "13B"
+    },
+    {
+      "issue_profile": "divorce_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Hindu Marriage Act",
+      "act_id": "hindu_marriage_act",
+      "section": "24"
+    }
+  ],
+  "unmapped_acts": [
+    {
+      "issue_profile": "workplace_sexual_harassment",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon.json",
+      "act": "Sexual Harassment of Women at Workplace Act",
+      "section": "3"
+    },
+    {
+      "issue_profile": "ragging_hazing",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon.json",
+      "act": "University Grants Commission Regulations",
+      "section": "anti_ragging"
+    },
+    {
+      "issue_profile": "domestic_worker_abuse",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon.json",
+      "act": "Minimum Wages Act",
+      "section": "22"
+    },
+    {
+      "issue_profile": "human_trafficking",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon.json",
+      "act": "Immoral Traffic (Prevention) Act",
+      "section": "5"
+    },
+    {
+      "issue_profile": "child_labour",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon.json",
+      "act": "Child and Adolescent Labour (Prohibition and Regulation) Act",
+      "section": "3"
+    },
+    {
+      "issue_profile": "elder_abuse",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon.json",
+      "act": "Maintenance and Welfare of Parents and Senior Citizens Act",
+      "section": "24"
+    },
+    {
+      "issue_profile": "organ_trafficking",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon.json",
+      "act": "Transplantation of Human Organs and Tissues Act",
+      "section": "19"
+    },
+    {
+      "issue_profile": "forced_marriage",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon.json",
+      "act": "Prohibition of Child Marriage Act",
+      "section": "9"
+    },
+    {
+      "issue_profile": "rera_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Real Estate (Regulation and Development) Act",
+      "section": "3"
+    },
+    {
+      "issue_profile": "rera_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Real Estate (Regulation and Development) Act",
+      "section": "14(3)"
+    },
+    {
+      "issue_profile": "rera_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Real Estate (Regulation and Development) Act",
+      "section": "18"
+    },
+    {
+      "issue_profile": "rera_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Real Estate (Regulation and Development) Act",
+      "section": "31"
+    },
+    {
+      "issue_profile": "cheque_bounce_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Negotiable Instruments Act",
+      "section": "138"
+    },
+    {
+      "issue_profile": "cheque_bounce_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Negotiable Instruments Act",
+      "section": "139"
+    },
+    {
+      "issue_profile": "loan_recovery_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "SARFAESI Act",
+      "section": "13(2)"
+    },
+    {
+      "issue_profile": "loan_recovery_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "SARFAESI Act",
+      "section": "13(4)"
+    },
+    {
+      "issue_profile": "loan_recovery_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "SARFAESI Act",
+      "section": "17"
+    },
+    {
+      "issue_profile": "loan_recovery_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "SARFAESI Act",
+      "section": "18"
+    },
+    {
+      "issue_profile": "loan_recovery_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "RDB Act",
+      "section": "19"
+    },
+    {
+      "issue_profile": "loan_recovery_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "RBI Guidelines",
+      "section": "NPA_CLASSIFICATION"
+    },
+    {
+      "issue_profile": "loan_recovery_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "RBI Guidelines",
+      "section": "FAIR_PRACTICES_CODE"
+    },
+    {
+      "issue_profile": "loan_recovery_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "RBI Guidelines",
+      "section": "LOAN_RESTRUCTURING"
+    },
+    {
+      "issue_profile": "loan_recovery_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "RBI Guidelines",
+      "section": "DIGITAL_LENDING"
+    },
+    {
+      "issue_profile": "traffic_violations_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Traffic Law",
+      "section": "Article 49"
+    },
+    {
+      "issue_profile": "traffic_violations_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Traffic Law",
+      "section": "Article 53"
+    },
+    {
+      "issue_profile": "traffic_violations_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Traffic Law",
+      "section": "Article 49(1)"
+    },
+    {
+      "issue_profile": "traffic_violations_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 384"
+    },
+    {
+      "issue_profile": "traffic_violations_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Traffic Law",
+      "section": "Article 50"
+    },
+    {
+      "issue_profile": "traffic_violations_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Traffic Law",
+      "section": "Article 52"
+    },
+    {
+      "issue_profile": "traffic_violations_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Road Traffic Act",
+      "section": "Section 36"
+    },
+    {
+      "issue_profile": "traffic_violations_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Road Traffic Regulation Act",
+      "section": "Section 89"
+    },
+    {
+      "issue_profile": "traffic_violations_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Road Traffic Act",
+      "section": "Section 2"
+    },
+    {
+      "issue_profile": "traffic_violations_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Road Traffic Act",
+      "section": "Section 5"
+    },
+    {
+      "issue_profile": "traffic_violations_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Road Traffic Act",
+      "section": "Section 87"
+    },
+    {
+      "issue_profile": "traffic_violations_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Road Traffic Act",
+      "section": "Section 14"
+    },
+    {
+      "issue_profile": "traffic_violations_ksa",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Saudi Traffic Law",
+      "section": "Article 65"
+    },
+    {
+      "issue_profile": "traffic_violations_ksa",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Saudi Traffic Law",
+      "section": "Article 61"
+    },
+    {
+      "issue_profile": "traffic_violations_ksa",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Saudi Traffic Law",
+      "section": "Article 67"
+    },
+    {
+      "issue_profile": "traffic_violations_ksa",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Saudi Traffic Law",
+      "section": "Article 66"
+    },
+    {
+      "issue_profile": "traffic_violations_ksa",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Saudi Traffic Law",
+      "section": "Article 4"
+    },
+    {
+      "issue_profile": "traffic_violations_ksa",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Saudi Traffic Law",
+      "section": "Article 71"
+    },
+    {
+      "issue_profile": "rape_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Sexual Offences Act",
+      "section": "Section 1"
+    },
+    {
+      "issue_profile": "rape_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Sexual Offences Act",
+      "section": "Section 2"
+    },
+    {
+      "issue_profile": "rape_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Sexual Offences Act",
+      "section": "Section 3"
+    },
+    {
+      "issue_profile": "rape_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Sexual Offences Act",
+      "section": "Section 4"
+    },
+    {
+      "issue_profile": "rape_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 354"
+    },
+    {
+      "issue_profile": "rape_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 355"
+    },
+    {
+      "issue_profile": "rape_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 356"
+    },
+    {
+      "issue_profile": "rape_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 359"
+    },
+    {
+      "issue_profile": "divorce_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Personal Status Law",
+      "section": "Article 99"
+    },
+    {
+      "issue_profile": "divorce_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Personal Status Law",
+      "section": "Article 110"
+    },
+    {
+      "issue_profile": "divorce_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Personal Status Law",
+      "section": "Article 115"
+    },
+    {
+      "issue_profile": "divorce_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Personal Status Law",
+      "section": "Article 140"
+    },
+    {
+      "issue_profile": "divorce_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Matrimonial Causes Act",
+      "section": "Section 1"
+    },
+    {
+      "issue_profile": "divorce_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Matrimonial Causes Act",
+      "section": "Section 23"
+    },
+    {
+      "issue_profile": "divorce_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Children Act",
+      "section": "Section 8"
+    },
+    {
+      "issue_profile": "divorce_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Divorce, Dissolution and Separation Act",
+      "section": "Section 1"
+    },
+    {
+      "issue_profile": "assault_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 333"
+    },
+    {
+      "issue_profile": "assault_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 334"
+    },
+    {
+      "issue_profile": "assault_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 335"
+    },
+    {
+      "issue_profile": "assault_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Offences Against the Person Act",
+      "section": "Section 18"
+    },
+    {
+      "issue_profile": "assault_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Offences Against the Person Act",
+      "section": "Section 20"
+    },
+    {
+      "issue_profile": "assault_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Offences Against the Person Act",
+      "section": "Section 47"
+    },
+    {
+      "issue_profile": "assault_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Criminal Justice Act",
+      "section": "Section 39"
+    },
+    {
+      "issue_profile": "extortion_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 399"
+    },
+    {
+      "issue_profile": "extortion_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 400"
+    },
+    {
+      "issue_profile": "extortion_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Theft Act",
+      "section": "Section 21"
+    },
+    {
+      "issue_profile": "land_dispute_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Land Registration Act",
+      "section": "Section 58"
+    },
+    {
+      "issue_profile": "land_dispute_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Law of Property Act",
+      "section": "Section 52"
+    },
+    {
+      "issue_profile": "land_dispute_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Limitation Act",
+      "section": "Section 15"
+    },
+    {
+      "issue_profile": "land_dispute_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Housing Act",
+      "section": "Section 21"
+    },
+    {
+      "issue_profile": "land_dispute_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Landlord and Tenant Act",
+      "section": "Section 11"
+    },
+    {
+      "issue_profile": "land_dispute_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Party Wall Act",
+      "section": "Section 1"
+    },
+    {
+      "issue_profile": "land_dispute_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Civil Code",
+      "section": "Article 1191"
+    },
+    {
+      "issue_profile": "land_dispute_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Civil Code",
+      "section": "Article 1320"
+    },
+    {
+      "issue_profile": "land_dispute_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Civil Code",
+      "section": "Article 1340"
+    },
+    {
+      "issue_profile": "land_dispute_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Law No. 26",
+      "section": "Article 25"
+    },
+    {
+      "issue_profile": "land_dispute_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Law No. 26",
+      "section": "Article 26"
+    },
+    {
+      "issue_profile": "land_dispute_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Dubai Law No. 7",
+      "section": "Article 1"
+    },
+    {
+      "issue_profile": "land_dispute_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Federal Law No. 5",
+      "section": "Article 1235"
+    },
+    {
+      "issue_profile": "murder_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Homicide Act",
+      "section": "Section 1"
+    },
+    {
+      "issue_profile": "murder_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Coroners and Justice Act",
+      "section": "Section 54"
+    },
+    {
+      "issue_profile": "murder_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Homicide Act",
+      "section": "Section 2"
+    },
+    {
+      "issue_profile": "murder_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Criminal Justice Act",
+      "section": "Schedule 21"
+    },
+    {
+      "issue_profile": "murder_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 332"
+    },
+    {
+      "issue_profile": "murder_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 339"
+    },
+    {
+      "issue_profile": "murder_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 340"
+    },
+    {
+      "issue_profile": "murder_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 341"
+    },
+    {
+      "issue_profile": "robbery_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Theft Act",
+      "section": "Section 8"
+    },
+    {
+      "issue_profile": "robbery_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Theft Act",
+      "section": "Section 1"
+    },
+    {
+      "issue_profile": "robbery_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Firearms Act",
+      "section": "Section 17"
+    },
+    {
+      "issue_profile": "robbery_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Prevention of Crime Act",
+      "section": "Section 1"
+    },
+    {
+      "issue_profile": "robbery_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 383"
+    },
+    {
+      "issue_profile": "robbery_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 384"
+    },
+    {
+      "issue_profile": "robbery_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 385"
+    },
+    {
+      "issue_profile": "robbery_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Penal Code",
+      "section": "Article 399"
+    },
+    {
+      "issue_profile": "commercial_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Indian Contract Act",
+      "section": "73"
+    },
+    {
+      "issue_profile": "commercial_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Indian Contract Act",
+      "section": "74"
+    },
+    {
+      "issue_profile": "commercial_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Companies Act",
+      "section": "241"
+    },
+    {
+      "issue_profile": "commercial_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Companies Act",
+      "section": "242"
+    },
+    {
+      "issue_profile": "commercial_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Partnership Act",
+      "section": "42"
+    },
+    {
+      "issue_profile": "commercial_india",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Specific Relief Act",
+      "section": "10"
+    },
+    {
+      "issue_profile": "commercial_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Contract Law",
+      "section": "Common Law"
+    },
+    {
+      "issue_profile": "commercial_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Sale of Goods Act",
+      "section": "Section 14"
+    },
+    {
+      "issue_profile": "commercial_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Companies Act",
+      "section": "Section 994"
+    },
+    {
+      "issue_profile": "commercial_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Companies Act",
+      "section": "Section 171"
+    },
+    {
+      "issue_profile": "commercial_uk",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "Partnership Act",
+      "section": "Section 24"
+    },
+    {
+      "issue_profile": "commercial_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Civil Code",
+      "section": "Article 246"
+    },
+    {
+      "issue_profile": "commercial_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Civil Code",
+      "section": "Article 389"
+    },
+    {
+      "issue_profile": "commercial_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Commercial Companies Law",
+      "section": "Article 318"
+    },
+    {
+      "issue_profile": "commercial_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Commercial Companies Law",
+      "section": "Article 194"
+    },
+    {
+      "issue_profile": "commercial_uae",
+      "source": "C:\\Users\\shash\\OneDrive\\Documents\\NYAI\\backend\\core\\addons\\offense_subtypes_addon_multi_jurisdiction.json",
+      "act": "UAE Commercial Transactions Law",
+      "section": "Article 10"
+    }
+  ],
+  "missing_act_data": []
+}

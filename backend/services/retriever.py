@@ -37,8 +37,8 @@ class HybridLegalRetriever:
         self._build_indexes()
 
     def _default_data_path(self) -> Path:
-        repo_root = Path(__file__).resolve().parents[2]
-        return repo_root / "data" / "statutes.json"
+        backend_root = Path(__file__).resolve().parents[1]
+        return backend_root / "data" / "statutes.json"
 
     def _load_records(self, path: Path) -> List[Dict[str, Any]]:
         if not path.exists():
@@ -66,8 +66,8 @@ class HybridLegalRetriever:
         except ImportError:
             from Nyaya_AI.data_bridge.loader import JSONLoader
 
-        repo_root = Path(__file__).resolve().parents[2]
-        db_path = repo_root / "Nyaya_AI" / "db"
+        backend_root = Path(__file__).resolve().parents[1]
+        db_path = backend_root / "db"
         if not db_path.exists():
             logger.warning("DB path not found for fallback: %s", db_path)
             return []

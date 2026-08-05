@@ -1,9 +1,9 @@
 """Ecosystem integration health endpoints (Phase VI — gated, non-blocking)."""
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Body
 
 ecosystem_router = APIRouter(prefix="/ecosystem", tags=["ecosystem"])
 
@@ -52,8 +52,9 @@ async def samachar_health() -> Dict[str, Any]:
 
 @ecosystem_router.post("/samachar/event")
 @ecosystem_router.post("/svacs/event")
-async def samachar_event(event_payload: Dict[str, Any]) -> Dict[str, Any]:
+async def samachar_event(event_payload: Optional[Dict[str, Any]] = Body(default=None)) -> Dict[str, Any]:
     from ecosystem.samachar_client import handle_refresh_event
 
-    return handle_refresh_event(event_payload)
+    payload = event_payload or {}
+    return handle_refresh_event(payload)
 
