@@ -23,6 +23,9 @@ NYAI is wired as a **gated, feature-flagged** participant in the BHIV Tantra eco
 158 passed (pytest tests/ --ignore=tests/test_faiss_search.py)
 ```
 
+- **Manual Validation Report**: Refer to [Validation_Report.md](../Live%20Tantra%20Runtime%20Integration%20(NYAI__%20Phase%20VI)/Validation_Report.md) by Ranjit Patil. Core query functionality passes for India, UAE, and UK, and the UK labour query remedies issue is verified as resolved.
+
+
 ## Human decisions required before production enablement
 
 - [ ] Bucket Writer Authority Matrix: add NYAI (`nyai.*` source_module_id)

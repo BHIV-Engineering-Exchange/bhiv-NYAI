@@ -38,6 +38,7 @@
 - `Live Tantra Runtime Integration (NYAI__ Phase VI)/Ecosystem_Access_Scopes.md`
 - `Live Tantra Runtime Integration (NYAI__ Phase VI)/Testing_And_Benchmarks.md`
 - `Live Tantra Runtime Integration (NYAI__ Phase VI)/CLO_SAMACHAR_Integration.md`
+- `Live Tantra Runtime Integration (NYAI__ Phase VI)/Validation_Report.md`
 
 ## Not modified (by design)
 
