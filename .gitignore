@@ -64,3 +64,6 @@ bucket
 Shakti-GC-Infra
 bhiv-registry
 bhiv-SVACS/
+
+# Test Results
+frontend/test-results/
