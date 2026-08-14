@@ -1,5 +1,7 @@
 # Nyaya AI - Sovereign Legal Intelligence Platform
 
+> ⚠️ **ARCHIVED / SUPERSEDED** — This file is a historical Phase IV document, kept for reference. The authoritative documentation now lives in the root `docs/` hub: [Setup](../docs/SETUP.md) · [API Reference](../docs/API_REFERENCE.md) · [Architecture](../docs/ARCHITECTURE.md) · [Testing](../docs/TESTING.md) · [Deployment](../docs/DEPLOYMENT.md) · [Validation Report](../docs/validation/VALIDATION_REPORT.md).
+
 ## Phase IV: Constitutional Evidence Infrastructure (23 June 2026)
 
 | | |

@@ -1,5 +1,7 @@
 # Nyaya AI System Validation Report
 
+> ⚠️ **ARCHIVED / SUPERSEDED** — Legacy validation snapshot predating the current 165-test suite. Current evidence: [docs/validation/VALIDATION_REPORT.md](../docs/validation/VALIDATION_REPORT.md) and [docs/TESTING.md](../docs/TESTING.md).
+
 ## Validation Summary
 - **Status**: ✅ VALIDATION COMPLETE
 - **Components Checked**: All modules and integrations verified

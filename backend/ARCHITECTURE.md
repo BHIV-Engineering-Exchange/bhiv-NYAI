@@ -1,5 +1,7 @@
 # Nyaya AI Architecture Diagram
 
+> ⚠️ **ARCHIVED / SUPERSEDED** — Early architecture narrative predating TANTRA v3. Current: [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md).
+
 ## System Overview
 
 ```

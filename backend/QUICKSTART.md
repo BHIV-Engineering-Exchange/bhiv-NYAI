@@ -1,5 +1,7 @@
 # Quick Start Guide - Nyaya AI Integrated System
 
+> ⚠️ **SUPERSEDED** — This guide is kept as a legacy reference and is **no longer the canonical quick start**. It still contains hardcoded `C:\Users\Gauri\Desktop\...` paths and curl examples that are missing the required `X-API-Key` header. Use the authoritative guides instead: [Setup](../docs/SETUP.md) · [API Reference](../docs/API_REFERENCE.md) · [Testing](../docs/TESTING.md). Retained unmodified except this banner to preserve the historical record.
+
 ## 🚀 Starting the Backend
 
 ### Option 1: Using the Startup Script (Recommended)

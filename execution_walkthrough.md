@@ -1,5 +1,7 @@
 # Nyaya AI — Execution Walkthrough
 
+> ⚠️ **LEGACY WALKTHROUGH** — Retained as a historical record. It traces the **pre-TANTRA v3** execution path: §14 references the removed `backend/enforcement_engine/engine.py` and the obsolete `ALLOW_INFORMATIONAL / RESTRICT / SAFE_REDIRECT` enforcement decisions. The current system is TANTRA v3 (advisory `INFORM / REVIEW / ESCALATE / INSUFFICIENT_DATA`, no blocking). See the authoritative flow in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
 > This document traces the exact execution path of a user query through the entire system.
 
 ---

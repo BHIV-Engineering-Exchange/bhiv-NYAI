@@ -1,5 +1,7 @@
 # 📋 Nyaya AI — Full Disclosure & Integration Report
 
+> 🗄️ **HISTORICAL RECORD** — Dated 2026-04-16. One-time governance disclosure kept for reference; superseded by the [docs/ hub](docs/README.md).
+
 > **Date**: April 16, 2026  
 > **Scope**: `NYAI-Integrated/backend` + `NYAI-Integrated/frontend`  
 > **Purpose**: Deep analysis of both folders → Integration plan → Deployment strategy

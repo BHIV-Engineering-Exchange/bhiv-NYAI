@@ -1,5 +1,7 @@
 # 🔗 Nyaya AI — Integration Plan
 
+> 🗄️ **HISTORICAL RECORD** — Dated 2026-04-16. This integration plan documents the original cross-repo integration strategy and is kept for reference. The current system has since moved to TANTRA v3; authoritative docs live in the [docs/ hub](docs/README.md).
+
 > **Date**: April 16, 2026  
 > **Status**: Ready for Execution  
 > **Prerequisite**: Read `DISCLOSURE_REPORT.md` for full system analysis

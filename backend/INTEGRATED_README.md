@@ -1,5 +1,7 @@
 # Nyaya AI - Integrated Legal Intelligence Platform
 
+> ⚠️ **ARCHIVED / SUPERSEDED** — Early integrated-system overview, kept for reference. Authoritative docs: [docs/ hub](../docs/README.md).
+
 ## 🔍 System Overview
 
 Nyaya AI is a unified sovereign-compliant multi-agent legal intelligence platform that combines:

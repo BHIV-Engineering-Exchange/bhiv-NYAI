@@ -1,5 +1,7 @@
 # Nyaya AI — Integration Note
 
+> 🗄️ **HISTORICAL RECORD** — Dated 2026-04-16. Kept for reference; superseded by the [docs/ hub](docs/README.md).
+
 > Date: April 16, 2026
 > Integrator: System AI
 > Repo: https://github.com/praj33/NYAI.git

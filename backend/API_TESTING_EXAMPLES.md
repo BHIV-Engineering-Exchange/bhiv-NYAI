@@ -1,5 +1,7 @@
 # API Testing Examples - Nyaya AI
 
+> ⚠️ **ARCHIVED / SUPERSEDED** — Legacy curl examples. Some requests omit the now-required `X-API-Key` header (protected routes return `401`) and refer to the pre-TANTRA v3 response shape. Current: [docs/API_REFERENCE.md](../docs/API_REFERENCE.md) §11.
+
 ## Base URL
 ```
 http://localhost:8000

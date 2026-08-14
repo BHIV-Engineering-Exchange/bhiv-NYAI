@@ -1,5 +1,7 @@
 # Nyaya AI — FAQ
 
+> 🗄️ **HISTORICAL RECORD** — Retained unmodified as a legacy FAQ (pre-TANTRA v3). Authoritative documentation: [docs/ hub](docs/README.md).
+
 ---
 
 ### Q: How do I start the backend?

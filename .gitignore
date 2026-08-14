@@ -58,6 +58,7 @@ backend/promotion_logs/
 backend/workspace_store/
 backend/output/
 
+#Integration Repo (Only for Integration, no use in NYAI beyond that, currenlty archive as all done)
 BHIV-Core-TANTRA-Sutradhar
 bucket
 Shakti-GC-Infra
