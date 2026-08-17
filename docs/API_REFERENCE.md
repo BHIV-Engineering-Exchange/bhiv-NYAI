@@ -1,6 +1,6 @@
 # NYAI — API Reference
 
-> Verified against `backend/api/*.py` route decorators (2026-08-14). 80 endpoints total. Base URL: `http://localhost:8000` locally, `https://nyai-backend-n9h8.onrender.com` in production.
+> Verified against `backend/api/*.py` route decorators (2026-08-17). 80 endpoints total. Base URL: `http://localhost:8000` locally, `https://nyai-backend-n9h8.onrender.com` in production.
 
 ---
 
@@ -26,7 +26,29 @@
 
 ---
 
-## 2. System Endpoints
+## 2. Per-File Endpoint Counts (verified 2026-08-17)
+
+| Router File | Count | Notes |
+|---|---|---|
+| `api/health.py` | 3 | `/health`, `/health/live`, `/health/ready` |
+| `api/metrics.py` | 1 | `/metrics` |
+| `api/main.py` | 1 | `/` |
+| `api/router.py` | 14 | All `/nyaya/*` core endpoints |
+| `api/procedure_router.py` | 7 | Base procedure routes |
+| `api/evidence_router.py` | 11 | All `/evidence/*` endpoints |
+| `api/ecosystem_router.py` | 8 | All `/ecosystem/*` endpoints |
+| `api/knowledge_router.py` | 14 | All `/knowledge/*` endpoints |
+| `api/workspace_router.py` | 7 | All `/workspace/*` endpoints |
+| `api/graph_router.py` | 8 | All `/graph/*` endpoints |
+| `api/debug_router.py` | 3 | Only when `ENABLE_DEBUG_ROUTES=true` |
+| `legal_database/enhanced_procedure_endpoints.py` | 3 | Added to `procedure_router` |
+| **Total** | **80** | |
+
+> Note: `procedure_router.py` (7) + `enhanced_procedure_endpoints.py` (3) = 10 procedure endpoints total. The 3 enhanced routes are registered on the same router object via import.
+
+---
+
+## 3. System Endpoints
 
 ### `GET /` — API info
 Unprotected. Returns service name/version and endpoint map.
@@ -48,7 +70,7 @@ Returns `200` or `503` with `{status, dependencies, checks_passed}`. Dependencie
 
 ---
 
-## 3. Legal Query Endpoints (`/nyaya` — requires `X-API-Key`)
+## 4. Legal Query Endpoints (`/nyaya` — requires `X-API-Key`)
 
 ### `POST /nyaya/query`
 Executes a single-jurisdiction legal query.
@@ -132,7 +154,7 @@ Raw output-bucket record for a trace.
 
 ---
 
-## 4. Procedure Intelligence (`/nyaya/procedures` — requires `X-API-Key`)
+## 5. Procedure Intelligence (`/nyaya/procedures` — requires `X-API-Key`)
 
 | Method | Path | Body / Params |
 |---|---|---|
@@ -153,7 +175,7 @@ Raw output-bucket record for a trace.
 
 ---
 
-## 5. Evidence (`/evidence` — requires `X-API-Key`)
+## 6. Evidence (`/evidence` — requires `X-API-Key`)
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -171,7 +193,7 @@ Raw output-bucket record for a trace.
 
 ---
 
-## 6. Ecosystem (`/ecosystem` — unauthenticated)
+## 7. Ecosystem (`/ecosystem` — unauthenticated)
 
 - `GET /ecosystem/bhiv-core/health`
 - `GET /ecosystem/bucket/health`
@@ -184,7 +206,7 @@ Raw output-bucket record for a trace.
 
 ---
 
-## 7. Knowledge Repository (`/knowledge` — requires `X-API-Key`; GET also accepts `ECOSYSTEM_READ_API_KEY`)
+## 8. Knowledge Repository (`/knowledge` — requires `X-API-Key`; GET also accepts `ECOSYSTEM_READ_API_KEY`)
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -203,7 +225,7 @@ Raw output-bucket record for a trace.
 | GET | `/knowledge/ingestion` | Ingestion log |
 | GET | `/knowledge/ingestion/{log_id}` | Single ingestion record |
 
-## 8. Workspace (`/workspace` — requires `X-API-Key`)
+## 9. Workspace (`/workspace` — requires `X-API-Key`)
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -215,7 +237,7 @@ Raw output-bucket record for a trace.
 | PATCH | `/workspace/documents/{doc_id}/metadata` | Update metadata |
 | POST | `/workspace/annotations` | Add annotation |
 
-## 9. Graph Runtime (`/graph` — requires `X-API-Key`; GET also accepts `ECOSYSTEM_READ_API_KEY`)
+## 10. Graph Runtime (`/graph` — requires `X-API-Key`; GET also accepts `ECOSYSTEM_READ_API_KEY`)
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -228,7 +250,7 @@ Raw output-bucket record for a trace.
 | GET | `/graph/path` | Path finding |
 | POST | `/graph/relationships` | Register relationship |
 
-## 10. Debug (`/debug` — **only when `ENABLE_DEBUG_ROUTES=true`**)
+## 11. Debug (`/debug` — **only when `ENABLE_DEBUG_ROUTES=true`**)
 
 - `GET /debug/generate-nonce`
 - `GET /debug/nonce-state`
@@ -236,7 +258,7 @@ Raw output-bucket record for a trace.
 
 ---
 
-## 11. Sample Requests (curl)
+## 12. Sample Requests (curl)
 
 ```bash
 # Health (no auth)
@@ -269,4 +291,4 @@ curl http://localhost:8000/health/ready
 
 ---
 
-*Cross-checked against route decorators on 2026-08-14. If an endpoint is missing here, it is documented in [Archive](ARCHIVE.md) as removed.*
+*Cross-checked against route decorators on 2026-08-17. If an endpoint is missing here, it is documented in [Archive](ARCHIVE.md) as removed.*

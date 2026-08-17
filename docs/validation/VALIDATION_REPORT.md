@@ -1,6 +1,6 @@
 # NYAI — End-to-End Validation Report
 
-> **Date**: 2026-08-14
+> **Date**: 2026-08-17 (re-validated; original execution 2026-08-14)
 > **Scope**: Full codebase audit and end-to-end test execution for the NYAI platform.
 > **Environment**: Windows 10/11, Python 3.13.7 (local), Node v24.12.0, npm 11.10.0, pytest 9.0.1, Playwright 1.x.
 > **Production pin**: Python 3.11.9 (`backend/runtime.txt`).
@@ -255,3 +255,6 @@ POST /debug/test-nonce
 2. **`frontend/src/tests/DAY3_TEST_RUNNER.js`** — calls `/nyaya/query` without `X-API-Key`; would receive 401. Legacy; superseded by the Playwright E2E suite.
 3. **Committed credentials**: `frontend/.env` contains a live `VITE_NYAI_API_KEY` value; `backend/tests/test_live_backend.py:11` embeds the same key. Flagged for rotation; documented only per instructions.
 4. **Deprecation warnings** (non-fatal): `datetime.utcnow()`, Pydantic v1 `@validator` / `.dict()` usage, FastAPI `on_event`. 1,610 warnings during pytest run — none cause failures.
+5. **`SIGNING_KEY_ID` default mismatch**: Docs previously claimed `primary-key-2026`; actual source default is `primary-key-2025` (`provenance_chain/event_signer.py:15`). Fixed in `ENVIRONMENT_VARIABLES.md` on 2026-08-17.
+6. **Undocumented environment variables**: `GROQ_QUERY_UNDERSTANDING_ENABLED` (`core/llm/groq_retrieval.py:148`) and `SVACS_ENDPOINT` (`ecosystem/samachar_client.py:21`) were in source but missing from docs. Added 2026-08-17.
+7. **Platform-only variables**: `PYTHON_VERSION`, `LOG_LEVEL`, `LOG_FORMAT`, `LOG_FILE`, `ENFORCEMENT_LEDGER_PATH`, `INPUT_DIRECTORY`, `DATABASE_URL` are in `.env.example` but not consumed by application code. Documented as platform-only 2026-08-17.

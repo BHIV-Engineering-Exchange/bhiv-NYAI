@@ -1,6 +1,6 @@
 # NYAI — Environment Variables
 
-> **Complete, code-verified registry** (2026-08-14). Every variable below was located in the source (`os.getenv` / `os.environ.get`). The authoritative template is `backend/.env.example`; this document adds defaults and exact source locations.
+> **Complete, code-verified registry** (2026-08-17). Every variable below was located in the source (`os.getenv` / `os.environ.get`). The authoritative template is `backend/.env.example`; this document adds defaults and exact source locations.
 
 ---
 
@@ -40,6 +40,7 @@
 | `GROQ_EXPLAINER_MODEL` | `llama-3.1-8b-instant` | `services/explainer.py:32` | Answer generation sub-model |
 | `GROQ_SECTION_RERANK_ENABLED` | `true` | `.env.example` | Groq section rerank toggle (consumed via `GROQ_SECTION_RERANK_CANDIDATES`) |
 | `GROQ_SECTION_RERANK_CANDIDATES` | `18` | `core/llm/groq_retrieval.py:154` | Candidate count for Groq rerank |
+| `GROQ_QUERY_UNDERSTANDING_ENABLED` | `true` | `core/llm/groq_retrieval.py:148` | Query understanding sub-step toggle |
 
 ## 4. Retrieval Pipeline
 
@@ -58,7 +59,7 @@
 |---|---|---|---|
 | `HMAC_SECRET_KEY` | — | `provenance_chain/event_signer.py:18,26` | Key for HMAC-SHA256 event signatures |
 | `SIGNING_METHOD` | `HMAC_SHA256` | `provenance_chain/event_signer.py:14` | Signature algorithm |
-| `SIGNING_KEY_ID` | `primary-key-2026` | `provenance_chain/event_signer.py:15` | Key identifier in signature metadata |
+| `SIGNING_KEY_ID` | `primary-key-2025` | `provenance_chain/event_signer.py:15` | Key identifier in signature metadata |
 | `PROVENANCE_LEDGER_PATH` | `provenance_ledger.json` | `provenance_chain/hash_chain_ledger.py:120`, `api/health.py:47` | Hash-chain ledger file (Render: `/var/data/provenance_ledger.json`) |
 | `ENFORCEMENT_LEDGER_PATH` | `enforcement_ledger.json` | `.env.example` | Legacy ledger path (retained) |
 | `NONCE_TTL_SECONDS` | `300` | `provenance_chain/nonce_manager.py:9` | Nonce validity window |
@@ -92,6 +93,7 @@
 | `SAMACHAR_ENDPOINT` | `http://localhost:8000` | `ecosystem/samachar_client.py:21` | SVACS signal receiver |
 | `SAMACHAR_ENABLED` | `false` | `ecosystem/samachar_client.py:15` | Webhook receiver |
 | `SVACS_ENABLED` | `false` | `ecosystem/samachar_client.py:16` | SVACS event ingestion |
+| `SVACS_ENDPOINT` | *(empty)* | `ecosystem/samachar_client.py:21` | Fallback alias for `SAMACHAR_ENDPOINT` |
 
 ## 8. Test / Tooling Only
 
@@ -102,7 +104,23 @@
 
 ---
 
-## 9. Frontend Variables (`frontend/.env*`)
+## 9. Platform-Only / Unused by Application Code
+
+These variables appear in `backend/.env.example` but are **not consumed** by any Python source via `os.getenv` / `os.environ.get`. They are retained for platform configuration (Render hints) or legacy compatibility.
+
+| Variable | Where Listed | Notes |
+|---|---|---|
+| `PYTHON_VERSION` | `.env.example` | Render build hint only — not read by application code |
+| `LOG_LEVEL` | `.env.example` | Listed but not read; standard `logging` is used without env config |
+| `LOG_FORMAT` | `.env.example` | Listed but not read |
+| `LOG_FILE` | `.env.example` | Listed but not read |
+| `ENFORCEMENT_LEDGER_PATH` | `.env.example` | Legacy; no code reads this (replaced by `PROVENANCE_LEDGER_PATH`) |
+| `INPUT_DIRECTORY` | `.env.example` | Listed but not read; `db/` is hardcoded as the data source |
+| `DATABASE_URL` | `.env.example` | Legacy SQLite URL; not consumed by any module |
+
+---
+
+## 10. Frontend Variables (`frontend/.env*`)
 
 | Variable | Purpose |
 |---|---|
@@ -113,4 +131,4 @@
 
 ---
 
-*Cross-checked against `backend/.env.example` and all source usages. Last verified 2026-08-14.*
+*Cross-checked against `backend/.env.example` and all source usages. Last verified 2026-08-17.*

@@ -1,6 +1,6 @@
 # NYAI — Documentation Index
 
-> Navigational map of every file and document in the repo. File trees verified 2026-08-14. Obsolete/historical content is tracked in [Archive](ARCHIVE.md).
+> Navigational map of every file and document in the repo. File trees verified 2026-08-17. Obsolete/historical content is tracked in [Archive](ARCHIVE.md).
 
 ---
 
@@ -87,9 +87,9 @@ NYAI/
 | `core/llm/profile_utils.py` | Profile/user-context helpers |
 | `core/vector/*` | FAISS embeddings + semantic search (optional, `SEMANTIC_SEARCH_ENABLED`) |
 | `core/ontology/*` | Indian legal ontology, offense subtypes, statute resolver |
-| `core/jurisdiction/detector.py` | IN/UK/UAE/KSA detection |
+| `core/jurisdiction/detector.py` | IN/UK/UAE/KSA detection (+ internal `README.md`) |
 | `core/caselaw/*` | Case-law loader + retriever |
-| `core/addons/*` | Dowry precision layer + addon subtype resolution |
+| `core/addons/*` | Dowry precision layer + addon subtype resolution (includes `offense_subtypes_addon_multi_jurisdiction.json`) |
 | `core/scrapers/*` | SC India scraper + caselaw parser + scheduler |
 | `core/response/enricher.py` | Response enrichment |
 
@@ -118,7 +118,7 @@ NYAI/
 | Path | Purpose |
 |---|---|
 | `evidence/*` | Evidence repository, storage backend, integrity, search, export, replay |
-| `knowledge/*` + `knowledge/graph/*` | Knowledge repository, evidence bridge, graph registry/traversal |
+| `knowledge/*` + `knowledge/graph/*` | Knowledge repository, evidence bridge, graph registry/traversal (+ `graph/models.py`) |
 | `ingestion/*` | Extraction pipeline, validation, audit logging |
 | `promotion/*` | Draft→review→approved lifecycle, approval trail, rollback |
 | `workspace/*` | Document + annotation stores, diff |
@@ -131,7 +131,7 @@ NYAI/
 | `bhiv_core_client.py` | BHIV Core client |
 | `insightflow_publisher.py` | InsightFlow dataset registration + telemetry (handles `409`) |
 | `clo_consumer.py` | CLO consumption + ontology sync |
-| `samachar_client.py` | SVACS event receiver |
+| `samachar_client.py` | SVACS event receiver (+ `proposed_nyai_registry_entry.json`) |
 
 ### Procedures (`procedures/`)
 | File | Purpose |
@@ -139,6 +139,8 @@ NYAI/
 | `intelligence.py` | Procedural intelligence engine |
 | `loader.py` | Procedure data loader |
 | `integration.py` | Procedure integration |
+| `schemas/` | 10 schema/doc files for procedure validation |
+| `data/` | Jurisdiction data dirs (`india/`, `ksa/`, `uae/`, `uk/`) |
 
 ### Data & Deployment
 | Path | Purpose |
@@ -153,7 +155,7 @@ NYAI/
 | `final_decision_contract.json` | *(root)* TANTRA v3 contract |
 
 ### Backend Tests (`backend/tests/`)
-Authoritative suite (165 tests). Key files: `test_production_hardening.py`, `test_tantra_convergence.py`, `test_evidence_infrastructure.py`, `test_knowledge_repository.py`, `test_graph_runtime.py`, `test_live_backend.py` (live, key embedded). `test_faiss_search.py` requires FAISS. Legacy standalone scripts `backend/test_*.py` are tracked in [Archive](ARCHIVE.md) §5.
+Authoritative suite (165 tests). 39 Python files (30 `test_*.py` files + 9 support files: `conftest.py`, `debug_*.py`, `run_gold_tests.py`, `verify_db_loading.py`). Key files: `test_production_hardening.py`, `test_tantra_convergence.py`, `test_evidence_infrastructure.py`, `test_knowledge_repository.py`, `test_graph_runtime.py`, `test_live_backend.py` (live, key embedded). `test_faiss_search.py` requires FAISS. `gold_cases/` contains 6 golden test JSON files. Legacy standalone scripts `backend/test_*.py` (21 scripts) are tracked in [Archive](ARCHIVE.md) §5. Additional legacy verify scripts: `verify_indian_law_dataset.py`, `verify_indian_law_complete.py`, `verify_all_files_loaded.py`, `data_bridge/test_loader.py`.
 
 ---
 

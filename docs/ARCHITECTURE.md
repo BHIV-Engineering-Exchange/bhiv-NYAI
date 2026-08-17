@@ -1,6 +1,6 @@
 # NYAI — System Architecture
 
-> Verified against the live codebase (2026-08-14). Supersedes the legacy `backend/ARCHITECTURE.md` (see [Archive](ARCHIVE.md)).
+> Verified against the live codebase (2026-08-17). Supersedes the legacy `backend/ARCHITECTURE.md` (see [Archive](ARCHIVE.md)).
 
 ---
 
@@ -58,7 +58,7 @@ NYAI (Nyaya AI) is a sovereign-compliant multi-agent legal intelligence platform
 | `procedures/` | Jurisdiction procedure intelligence (4 jurisdictions × 4 domains) |
 | `jurisdiction_router/` | Resolver pipeline, confidence aggregator, fallback manager |
 | `sovereign_agents/` | Base/legal agent abstractions |
-| `data_bridge/` | JSON dataset loader & validator |
+| `data_bridge/` | JSON dataset loader & validator (+ `schemas/` subdir, colocated `test_loader.py`) |
 | `legal_database/` | Enhanced procedure endpoints + full-section retrieval |
 | `db/` | 70 JSON statute datasets (BNS, IPC, CrPC, UK, UAE, …) — 9,723 sections |
 

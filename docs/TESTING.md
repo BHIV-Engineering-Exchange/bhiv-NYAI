@@ -1,6 +1,6 @@
 # NYAI — Testing Guide
 
-> How to run every test suite and how to validate that the platform works. Results from the 2026-08-14 full run are in [Validation Report](validation/VALIDATION_REPORT.md).
+> How to run every test suite and how to validate that the platform works. Results from the 2026-08-14 full run are in [Validation Report](validation/VALIDATION_REPORT.md). Re-verified 2026-08-17.
 
 ---
 
@@ -166,6 +166,17 @@ curl -s -X POST http://127.0.0.1:8000/nyaya/query \
 - **Run**: `python test_<name>.py`
 - **Baseline (2026-08-14)**: 15 pass · 6 fail. Failures are legacy drift (removed `enhanced_legal_advisor` module, changed `query_legal` signature, missing `X-API-Key` header, old advisor behavior). 3 of the 6 pass with `PYTHONIOENCODING=utf-8` (Windows console emoji issue).
 - Use `tests/` instead for authoritative results.
+
+### Additional Legacy Scripts (not in `tests/`)
+
+These scripts exist at the backend root or in subdirectories but are not part of the authoritative test suite:
+
+| File | Purpose |
+|---|---|
+| `verify_indian_law_dataset.py` | Dataset verification |
+| `verify_indian_law_complete.py` | Completeness check |
+| `verify_all_files_loaded.py` | File loading verification |
+| `data_bridge/test_loader.py` | Colocated data bridge test |
 
 ---
 

@@ -1,6 +1,6 @@
 # NYAI — Setup Guide
 
-> How to install, configure, and run the NYAI platform locally. Production deployment is covered in [Deployment](DEPLOYMENT.md).
+> How to install, configure, and run the NYAI platform locally. Production deployment is covered in [Deployment](DEPLOYMENT.md). Re-verified 2026-08-17.
 
 ---
 

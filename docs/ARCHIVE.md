@@ -1,6 +1,6 @@
 # NYAI — Archive
 
-> Registry of obsolete, superseded, and historical documentation. **Nothing is deleted** — files below are either updated with an archive banner pointing here, or retained untouched as historical records. Replacement docs live in [the hub](../README.md).
+> Registry of obsolete, superseded, and historical documentation. **Nothing is deleted** — files below are either updated with an archive banner pointing here, or retained untouched as historical records. Replacement docs live in [the hub](../README.md). Re-verified 2026-08-17.
 
 ---
 

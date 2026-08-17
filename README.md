@@ -17,7 +17,7 @@ Nyaya AI (NYAI) is a sovereign-compliant multi-agent legal intelligence platform
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | A–Z deployment & operations manual |
 | [docs/DOCUMENTATION_INDEX.md](docs/DOCUMENTATION_INDEX.md) | Map of every module and file |
 | [docs/ARCHIVE.md](docs/ARCHIVE.md) | Obsolete/superseded docs registry |
-| [docs/validation/VALIDATION_REPORT.md](docs/validation/VALIDATION_REPORT.md) | 2026-08-14 validation evidence |
+| [docs/validation/VALIDATION_REPORT.md](docs/validation/VALIDATION_REPORT.md) | 2026-08-17 validation evidence |
 
 ## 🚀 Quick Start
 

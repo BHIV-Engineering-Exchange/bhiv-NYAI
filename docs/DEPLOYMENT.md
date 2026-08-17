@@ -254,4 +254,4 @@ Persist `/var/data` (or `OUTPUT_DIRECTORY`) with a volume for the same durabilit
 
 ---
 
-*Last verified 2026-08-14 against the deployed production endpoints.*
+*Last verified 2026-08-17 against the deployed production endpoints.*
