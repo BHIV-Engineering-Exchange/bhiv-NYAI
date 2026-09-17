@@ -101,7 +101,7 @@ def analyze_query_fallback(query: str) -> Dict[str, Any]:
     domain = "civil"
     if _contains_any(query_lower, ["divorce", "marriage", "custody", "domestic violence", "abuse", "dowry", "cruelty", "beating"]):
         domain = "family"
-    elif _contains_any(query_lower, ["theft", "assault", "murder", "rape", "robbery", "fir", "arrest"]):
+    elif _contains_any(query_lower, ["theft", "assault", "murder", "rape", "rapist", "raping", "rap", "robbery", "fir", "arrest", "crime", "punishment", "penalty", "jail", "imprisonment", "bail", "offense", "offence", "pocso", "posh", "molestation", "harassment", "ipc", "bns", "crpc", "bnss"]):
         domain = "criminal"
     elif _contains_any(query_lower, ["property", "land", "tenant", "title deed", "sale deed"]):
         domain = "property"

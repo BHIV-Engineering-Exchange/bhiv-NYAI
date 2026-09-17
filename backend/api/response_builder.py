@@ -1,6 +1,6 @@
 """
-Response Builder — TANTRA Strict Validator Gate
-FAIL CLOSED: Missing fields, invalid enums, bad hashes → HTTP 500.
+Response Builder ?" TANTRA Strict Validator Gate
+FAIL CLOSED: Missing fields, invalid enums, bad hashes +' HTTP 500.
 No silent fallback. No graceful degradation.
 """
 import hashlib
@@ -63,7 +63,7 @@ class SchemaValidationError(Exception):
 
 
 class HashMismatchError(Exception):
-    """FAIL CLOSED: Determinism violation — output hashes do not match."""
+    """FAIL CLOSED: Determinism violation ?" output hashes do not match."""
     def __init__(self, expected: str, actual: str, trace_id: str = "UNKNOWN"):
         self.expected = expected
         self.actual = actual
@@ -83,12 +83,26 @@ class TraceContinuityError(Exception):
         )
 
 
+class ErrorDetail(dict):
+    def dict(self):
+        return self
+
+
 class ResponseBuilder:
     """
     TANTRA Strict Validator Gate.
     FAIL CLOSED on any schema violation.
     No response leaves without full validation.
     """
+
+    @staticmethod
+    def build_error_response(error_code: str, message: str, trace_id: str = "UNKNOWN"):
+        return ErrorDetail({
+            "error_code": error_code,
+            "message": message,
+            "trace_id": trace_id,
+            "timestamp": datetime.utcnow().isoformat()
+        })
 
     def build(self, raw_response: dict) -> dict:
         """

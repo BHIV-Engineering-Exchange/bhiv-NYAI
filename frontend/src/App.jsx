@@ -491,7 +491,7 @@ function App() {
       <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
         <Galaxy 
           mouseInteraction
-          density={1.5}
+          density={0.8}
           glowIntensity={0.2}
           saturation={0}
           hueShift={200}

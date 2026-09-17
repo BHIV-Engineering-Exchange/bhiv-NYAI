@@ -1,5 +1,5 @@
 import { Renderer, Program, Mesh, Color, Triangle } from 'ogl';
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './Galaxy.css';
 
 const vertexShader = `
@@ -170,7 +170,7 @@ void main() {
 }
 `;
 
-export default function Galaxy({
+function GalaxyComponent({
   focal = [0.5, 0.5],
   rotation = [1.0, 0.0],
   starSpeed = 0.5,
@@ -200,7 +200,8 @@ export default function Galaxy({
     const ctn = ctnDom.current;
     const renderer = new Renderer({
       alpha: transparent,
-      premultipliedAlpha: false
+      premultipliedAlpha: false,
+      dpr: Math.min(window.devicePixelRatio || 1, 1.25)
     });
     const gl = renderer.gl;
 
@@ -261,8 +262,15 @@ export default function Galaxy({
     const mesh = new Mesh(gl, { geometry, program });
     let animateId;
 
+    let lastRenderTime = 0;
+    const targetFpsInterval = 1000 / 30; // 30 FPS throttle to eliminate GPU lag
+
     function update(t) {
       animateId = requestAnimationFrame(update);
+      if (document.hidden) return; // Pause when tab hidden
+      const elapsed = t - lastRenderTime;
+      if (elapsed < targetFpsInterval) return;
+      lastRenderTime = t - (elapsed % targetFpsInterval);
       if (!disableAnimation) {
         program.uniforms.uTime.value = t * 0.001;
         program.uniforms.uStarSpeed.value = (t * 0.001 * starSpeed) / 10.0;
@@ -331,3 +339,5 @@ export default function Galaxy({
 
   return <div ref={ctnDom} className="galaxy-container" {...rest} />;
 }
+
+export default React.memo(GalaxyComponent);

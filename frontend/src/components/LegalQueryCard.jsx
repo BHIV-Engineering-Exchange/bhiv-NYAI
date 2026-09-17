@@ -10,6 +10,7 @@ const LegalQueryCard = ({ onResponseReceived, isOffline: _isOffline }) => {
   const [traceId, setTraceId] = useState(null)
   const [backendStatus, setBackendStatus] = useState('checking') // 'checking', 'ready', 'waking', 'processing'
   const [isFirstRequest, setIsFirstRequest] = useState(true)
+  const [showTechDetails, setShowTechDetails] = useState(false)
 
   useEffect(() => {
     setBackendStatus('ready')
@@ -408,6 +409,35 @@ const LegalQueryCard = ({ onResponseReceived, isOffline: _isOffline }) => {
             </div>
           )}
 
+
+          {/* User-Friendly Toggle for Developer/Technical Details */}
+          <div style={{ marginTop: '20px', marginBottom: '20px', textAlign: 'center' }}>
+            <button 
+              onClick={() => setShowTechDetails(!showTechDetails)}
+              style={{
+                padding: '8px 18px',
+                background: showTechDetails ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255, 255, 255, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '20px',
+                color: '#fff',
+                fontSize: '13px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease-in-out'
+              }}
+            >
+              {showTechDetails ? '🙈 Hide Developer Details' : '🛠️ Show Developer / Pipeline Details'}
+            </button>
+          </div>
+
+          {showTechDetails && (
+            <div style={{
+              padding: '20px',
+              background: 'rgba(0, 0, 0, 0.25)',
+              border: '1px dashed rgba(255, 255, 255, 0.2)',
+              borderRadius: '12px',
+              marginBottom: '24px'
+            }}>
           {response.legal_route && response.legal_route.length > 0 && (
             <div style={{ marginBottom: '24px' }}>
               <h4 style={{ 
@@ -488,6 +518,9 @@ const LegalQueryCard = ({ onResponseReceived, isOffline: _isOffline }) => {
             <span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px' }}>Trace ID: </span>
             <span data-testid="trace-id" style={{ color: '#fff', fontSize: '13px', fontFamily: 'monospace' }}>{traceId}</span>
           </div>
+
+          </div>
+          )}
 
           <FeedbackButtons traceId={traceId} context="Legal Query Response" />
         </div>
