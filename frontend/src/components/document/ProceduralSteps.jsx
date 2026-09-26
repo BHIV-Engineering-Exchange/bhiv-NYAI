@@ -5,6 +5,7 @@
  * Empty array → formal "No procedural steps required" state (never blank space).
  */
 import React from 'react'
+import { ClipboardList, FileText } from 'lucide-react'
 
 const TYPE_CONFIG = {
   required:    { color: '#dc2626', label: 'Required' },
@@ -32,7 +33,7 @@ const ProceduralSteps = ({ proceduralSteps }) => (
         alignItems: 'center',
         gap: '12px'
       }}>
-        <span style={{ fontSize: '18px' }}>📋</span>
+        <ClipboardList size={18} color="#6b7280" />
         <p style={{ margin: 0, fontSize: '13px', color: '#6b7280', fontStyle: 'italic' }}>
           No procedural steps required for this determination.
         </p>
@@ -82,9 +83,11 @@ const ProceduralSteps = ({ proceduralSteps }) => (
                       <span key={j} style={{
                         fontSize: '11px', color: '#374151',
                         backgroundColor: '#f3f4f6', border: '1px solid #d1d5db',
-                        borderRadius: '4px', padding: '2px 8px'
+                        borderRadius: '4px', padding: '2px 8px',
+                        display: 'inline-flex', alignItems: 'center', gap: '4px'
                       }}>
-                        📄 {doc}
+                        <FileText size={12} color="#6b7280" />
+                        <span>{doc}</span>
                       </span>
                     ))}
                   </div>

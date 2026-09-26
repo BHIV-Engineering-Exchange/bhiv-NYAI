@@ -1,12 +1,13 @@
-// ErrorBoundary.jsx — React ErrorBoundary class component
-// Catches unhandled frontend exceptions and renders SystemCrash UI overlay.
-// Wraps GravitasDocumentView and RecommendationGatekeeper to prevent white screen of death.
 import React from 'react'
-import ApiErrorState from './ApiErrorState.jsx'
+import { AlertTriangle } from 'lucide-react'
+import GlassCard from './ui/GlassCard.jsx'
+import BHIVButton from './ui/BHIVButton.jsx'
+import StatusBadge from './ui/StatusBadge.jsx'
+import DeveloperDetails from './ui/DeveloperDetails.jsx'
 
 /**
  * SystemCrash - Full-page overlay for unhandled React errors
- * Displays trace_id and "Return to Dashboard" action button
+ * Displays trace_id, DeveloperDetails diagnostic, and "Return to Dashboard" action
  */
 const SystemCrash = ({ traceId, errorMessage, onReturnToDashboard, onRetry }) => {
   const handleReturn = () => {
@@ -20,140 +21,88 @@ const SystemCrash = ({ traceId, errorMessage, onReturnToDashboard, onRetry }) =>
   return (
     <div style={{
       position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'rgba(0, 0, 0, 0.9)',
+      inset: 0,
+      background: 'rgba(11, 15, 25, 0.95)',
+      backdropFilter: 'blur(16px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       zIndex: 9999,
-      padding: '20px'
+      padding: 'var(--space-4)'
     }}>
-      <div style={{
-        background: 'linear-gradient(135deg, rgba(220, 53, 69, 0.15) 0%, rgba(0, 0, 0, 0.8) 100%)',
-        border: '1px solid rgba(220, 53, 69, 0.4)',
-        borderRadius: '16px',
-        padding: '48px',
-        maxWidth: '550px',
-        width: '100%',
-        textAlign: 'center'
-      }}>
-        {/* Critical Error Icon */}
-        <div style={{
-          fontSize: '64px',
-          marginBottom: '24px'
-        }}>
-          ⚠️
-        </div>
-
-        {/* Title */}
-        <h2 style={{
-          color: '#ef4444',
-          marginBottom: '16px',
-          fontSize: '28px',
-          fontWeight: '700'
-        }}>
-          System Critical Error
-        </h2>
-
-        {/* Error Message */}
-        <p style={{
-          color: 'rgba(255, 255, 255, 0.8)',
-          fontSize: '15px',
-          lineHeight: '1.6',
-          marginBottom: '24px'
-        }}>
-          {errorMessage || 'An unexpected error occurred. The application encountered an unhandled exception.'}
-        </p>
-
-        {/* Technical Details */}
-        <div style={{
-          background: 'rgba(0, 0, 0, 0.4)',
-          borderRadius: '8px',
-          padding: '16px',
-          marginBottom: '24px',
-          textAlign: 'left'
-        }}>
-          <p style={{
-            color: 'rgba(255, 255, 255, 0.6)',
-            fontSize: '12px',
-            marginBottom: '8px',
-            textTransform: 'uppercase',
-            letterSpacing: '1px'
-          }}>
-            Technical Details
-          </p>
-          <p style={{
-            color: 'rgba(255, 255, 255, 0.5)',
-            fontSize: '12px',
-            fontFamily: 'monospace',
-            wordBreak: 'break-word'
-          }}>
-            Uncaught JavaScript exception in React component tree.
-            Check browser console for stack trace.
-          </p>
-        </div>
-
-        {/* Trace ID */}
-        {traceId && (
-          <div style={{
-            display: 'inline-block',
-            padding: '8px 16px',
-            background: 'rgba(0, 0, 0, 0.3)',
-            borderRadius: '4px',
-            fontSize: '12px',
-            fontFamily: 'monospace',
-            color: 'rgba(255, 255, 255, 0.7)',
-            marginBottom: '32px',
-            wordBreak: 'break-all'
-          }}>
-            Reference ID: {traceId}
+      <div style={{ maxWidth: '580px', width: '100%' }}>
+        <GlassCard
+          variant="primary"
+          style={{
+            padding: 'var(--space-8)',
+            borderColor: 'rgba(239, 68, 68, 0.3)',
+            textAlign: 'center'
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-3)', color: '#ef4444' }}>
+            <AlertTriangle size={48} />
           </div>
-        )}
 
-        {/* Action Buttons */}
-        <div style={{
-          display: 'flex',
-          gap: '12px',
-          justifyContent: 'center',
-          flexWrap: 'wrap'
-        }}>
-          <button
-            onClick={handleReturn}
-            style={{
-              background: '#ef4444',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '14px 28px',
-              color: '#fff',
-              cursor: 'pointer',
-              fontSize: '15px',
-              fontWeight: '600'
-            }}
-          >
-            Return to Dashboard
-          </button>
-          
-          {onRetry && (
-            <button
-              onClick={onRetry}
-              style={{
-                background: 'transparent',
-                border: '1px solid rgba(239, 68, 68, 0.5)',
-                borderRadius: '8px',
-                padding: '14px 28px',
-                color: '#ef4444',
-                cursor: 'pointer',
-                fontSize: '15px',
-                fontWeight: '600'
-              }}
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-2)' }}>
+            <StatusBadge variant="error" size="md">
+              SYSTEM CRITICAL ERROR
+            </StatusBadge>
+          </div>
+
+          <h2 style={{
+            fontFamily: 'var(--font-family-heading)',
+            fontSize: 'var(--text-2xl)',
+            fontWeight: 'var(--font-bold)',
+            color: 'var(--color-text)',
+            margin: 'var(--space-2) 0 var(--space-3) 0'
+          }}>
+            Operational Fault Detected
+          </h2>
+
+          <p style={{
+            color: 'var(--color-text-secondary)',
+            fontSize: 'var(--text-sm)',
+            lineHeight: 'var(--line-height-relaxed)',
+            margin: '0 0 var(--space-5) 0'
+          }}>
+            {errorMessage || 'The application encountered an unexpected runtime exception in the component tree.'}
+          </p>
+
+          <div style={{ marginBottom: 'var(--space-6)', textAlign: 'left' }}>
+            <DeveloperDetails title="Technical Diagnostic Data" defaultOpen={false}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                {traceId && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>Trace ID:</span>
+                    <span style={{ fontFamily: 'var(--font-family-mono)', fontSize: 'var(--text-xs)', color: 'var(--color-text)' }}>{traceId}</span>
+                  </div>
+                )}
+                <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>
+                  Check the browser developer console for the unhandled exception stack trace.
+                </div>
+              </div>
+            </DeveloperDetails>
+          </div>
+
+          <div style={{ display: 'flex', gap: 'var(--space-3)', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <BHIVButton
+              variant="primary"
+              size="md"
+              onClick={handleReturn}
             >
-              Try Again
-            </button>
-          )}
-        </div>
+              Return to Overview
+            </BHIVButton>
+            {onRetry && (
+              <BHIVButton
+                variant="outline"
+                size="md"
+                onClick={onRetry}
+              >
+                Recover Session
+              </BHIVButton>
+            )}
+          </div>
+        </GlassCard>
       </div>
     </div>
   )
@@ -161,18 +110,6 @@ const SystemCrash = ({ traceId, errorMessage, onReturnToDashboard, onRetry }) =>
 
 /**
  * ErrorBoundary - React class component that catches JavaScript errors in child component tree
- * 
- * Features:
- * - Catches unhandled exceptions in React components
- * - Prevents white screen of death
- * - Displays SystemCrash overlay with trace_id
- * - Provides "Return to Dashboard" action
- * - Supports optional retry functionality
- * 
- * Usage:
- *   <ErrorBoundary>
- *     <GravitasDocumentView />
- *   </ErrorBoundary>
  */
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -189,24 +126,13 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    // Log error to console for debugging
     console.error('ErrorBoundary caught unhandled error:', error, errorInfo)
-    
-    // Store error info for potential reporting
     this.setState({ errorInfo })
-    
-    // Optionally report to error tracking service
     this._reportError(error, errorInfo)
   }
 
-  /**
-   * Report error to external tracking service (if configured)
-   */
   _reportError(error, errorInfo) {
-    // Could integrate with Sentry, Datadog, etc.
     const traceId = window.__gravitas_active_trace_id || null
-    
-    // Build error payload
     const errorPayload = {
       message: error?.message || 'Unknown error',
       stack: error?.stack || '',
@@ -215,21 +141,13 @@ class ErrorBoundary extends React.Component {
       timestamp: new Date().toISOString(),
       userAgent: navigator?.userAgent || ''
     }
-    
-    // Log for now - could be sent to backend
     console.error('Error payload for reporting:', errorPayload)
   }
 
-  /**
-   * Reset error state to attempt recovery
-   */
   handleRetry = () => {
     this.setState({ hasError: false, error: null, errorInfo: null })
   }
 
-  /**
-   * Navigate to dashboard
-   */
   handleReturnToDashboard = () => {
     window.location.href = '/'
   }
@@ -240,7 +158,6 @@ class ErrorBoundary extends React.Component {
       const errorMessage = this.state.error?.message || 'An unexpected error occurred'
       const { onReturnToDashboard, onRetry } = this.props
 
-      // Use custom fallback if provided, otherwise default SystemCrash
       if (this.props.fallback) {
         return this.props.fallback({
           error: this.state.error,
@@ -266,6 +183,4 @@ class ErrorBoundary extends React.Component {
 }
 
 export default ErrorBoundary
-
-// Also export SystemCrash for direct usage if needed
 export { SystemCrash }

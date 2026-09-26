@@ -3,29 +3,31 @@
  * Fields consumed: trace_id, recommendation, jurisdiction
  */
 import React from 'react'
+import { Info, Clock, TrendingUp, HelpCircle } from 'lucide-react'
 
 const RECOMMENDATION_CONFIG = {
   INFORM: {
     color: '#1a7f4b', bg: '#d1fae5', border: '#6ee7b7',
-    icon: 'ℹ️', label: 'Informational Guidance'
+    Icon: Info, label: 'Informational Guidance'
   },
   REVIEW: {
     color: '#92400e', bg: '#fef3c7', border: '#fcd34d',
-    icon: '⏳', label: 'Review Recommended'
+    Icon: Clock, label: 'Review Recommended'
   },
   ESCALATE: {
     color: '#991b1b', bg: '#fee2e2', border: '#fca5a5',
-    icon: '📈', label: 'Escalation Advised'
+    Icon: TrendingUp, label: 'Escalation Advised'
   },
   INSUFFICIENT_DATA: {
     color: '#4338ca', bg: '#e0e7ff', border: '#a5b4fc',
-    icon: '❓', label: 'Insufficient Data'
+    Icon: HelpCircle, label: 'Insufficient Data'
   }
 }
 
 const DecisionHeader = ({ traceId, recommendation, jurisdiction }) => {
   const recType = recommendation?.type ?? 'REVIEW'
   const cfg = RECOMMENDATION_CONFIG[recType] ?? RECOMMENDATION_CONFIG.REVIEW
+  const IconComp = cfg.Icon
 
   return (
     <header style={{
@@ -57,7 +59,7 @@ const DecisionHeader = ({ traceId, recommendation, jurisdiction }) => {
             border: `1.5px solid ${cfg.border}`, borderRadius: '20px',
             fontSize: '13px', fontWeight: '600', color: cfg.color
           }}>
-            <span>{cfg.icon}</span>
+            {IconComp && <IconComp size={15} />}
             <span>{recType}</span>
           </div>
 

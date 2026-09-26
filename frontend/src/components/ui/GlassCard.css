@@ -1,0 +1,70 @@
+/**
+ * BHIV Design System - GlassCard Styles
+ */
+
+.bhiv-glass-card {
+  position: relative;
+  background: var(--bhiv-glass-bg, rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(var(--bhiv-glass-blur, 16px));
+  -webkit-backdrop-filter: blur(var(--bhiv-glass-blur, 16px));
+  border: 1px solid var(--bhiv-glass-border, rgba(255, 255, 255, 0.10));
+  border-radius: var(--bhiv-radius-lg, 16px);
+  color: var(--bhiv-text-primary, #f9fafb);
+  box-shadow: var(--bhiv-shadow-sm);
+  transition:
+    background-color var(--bhiv-transition-base),
+    border-color var(--bhiv-transition-base),
+    box-shadow var(--bhiv-transition-base),
+    transform var(--bhiv-transition-base);
+  overflow: hidden;
+  max-width: 100%;
+}
+
+/* Padding variants */
+.bhiv-glass-card--padding-none {
+  padding: 0;
+}
+
+.bhiv-glass-card--padding-compact {
+  padding: var(--bhiv-space-3, 12px) var(--bhiv-space-4, 16px);
+}
+
+.bhiv-glass-card--padding-normal {
+  padding: var(--bhiv-space-6, 24px);
+}
+
+.bhiv-glass-card--padding-spacious {
+  padding: var(--bhiv-space-8, 32px);
+}
+
+/* Interactive / Hoverable variant */
+.bhiv-glass-card--interactive {
+  cursor: pointer;
+}
+
+.bhiv-glass-card--interactive:hover {
+  background: var(--bhiv-glass-bg-hover, rgba(255, 255, 255, 0.08));
+  border-color: var(--bhiv-glass-border-hover, rgba(255, 255, 255, 0.14));
+  transform: translateY(-2px);
+  box-shadow: var(--bhiv-shadow-glass);
+}
+
+.bhiv-glass-card--interactive:active {
+  transform: translateY(0);
+}
+
+.bhiv-glass-card--interactive:focus-visible {
+  outline: 2px solid var(--bhiv-primary);
+  outline-offset: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .bhiv-glass-card--padding-normal {
+    padding: var(--bhiv-space-4, 16px);
+  }
+
+  .bhiv-glass-card--padding-spacious {
+    padding: var(--bhiv-space-5, 20px);
+  }
+}

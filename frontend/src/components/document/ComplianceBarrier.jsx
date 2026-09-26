@@ -6,6 +6,7 @@
  * Legacy barrier UI — advisory routing now uses RecommendationGatekeeper upstream.
  */
 import React from 'react'
+import { Ban } from 'lucide-react'
 
 const ComplianceBarrier = ({ traceId, reason, blockedPath, barriers, safeExplanation }) => (
   <div style={{
@@ -23,7 +24,7 @@ const ComplianceBarrier = ({ traceId, reason, blockedPath, barriers, safeExplana
       alignItems: 'center',
       gap: '16px'
     }}>
-      <span style={{ fontSize: '28px', lineHeight: 1 }}>🚫</span>
+      <Ban size={28} color="#fff" />
       <div>
         <div style={{
           fontSize: '11px', fontWeight: '700', letterSpacing: '2px',

@@ -1,0 +1,99 @@
+/**
+ * BHIV Design System - DeveloperDetails Styles
+ */
+
+.bhiv-dev-details {
+  border: 1px solid var(--bhiv-border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: var(--bhiv-radius-md, 12px);
+  background-color: rgba(11, 15, 25, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  overflow: hidden;
+  transition: border-color var(--bhiv-transition-base);
+  margin: var(--bhiv-space-4, 16px) 0;
+}
+
+.bhiv-dev-details--expanded {
+  border-color: var(--bhiv-border, rgba(255, 255, 255, 0.15));
+}
+
+.bhiv-dev-details__summary {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--bhiv-space-3, 12px) var(--bhiv-space-4, 16px);
+  background: transparent;
+  border: none;
+  color: var(--bhiv-text-secondary, #9ca3af);
+  font-family: var(--bhiv-font-body);
+  font-size: var(--bhiv-text-sm, 0.875rem);
+  font-weight: var(--bhiv-weight-medium, 500);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background-color var(--bhiv-transition-fast),
+    color var(--bhiv-transition-fast);
+}
+
+.bhiv-dev-details__summary:hover {
+  background-color: var(--bhiv-glass-bg, rgba(255, 255, 255, 0.05));
+  color: var(--bhiv-text-primary, #f9fafb);
+}
+
+.bhiv-dev-details__summary:focus-visible {
+  outline: 2px solid var(--bhiv-primary, #6366f1);
+  outline-offset: -2px;
+}
+
+.bhiv-dev-details__title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--bhiv-space-2, 8px);
+}
+
+.bhiv-dev-details__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bhiv-primary-hover, #818cf8);
+  flex-shrink: 0;
+}
+
+.bhiv-dev-details__title {
+  color: inherit;
+}
+
+.bhiv-dev-details__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--bhiv-space-3, 12px);
+}
+
+.bhiv-dev-details__chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--bhiv-text-muted, #6b7280);
+  transition: transform var(--bhiv-transition-base);
+}
+
+.bhiv-dev-details--expanded .bhiv-dev-details__chevron {
+  transform: rotate(180deg);
+  color: var(--bhiv-text-secondary, #9ca3af);
+}
+
+.bhiv-dev-details__content {
+  padding: var(--bhiv-space-4, 16px);
+  border-top: 1px solid var(--bhiv-border-subtle, rgba(255, 255, 255, 0.06));
+  background-color: rgba(0, 0, 0, 0.25);
+  font-family: var(--bhiv-font-mono, monospace);
+  font-size: var(--bhiv-text-xs, 0.75rem);
+  line-height: var(--bhiv-leading-normal, 1.5);
+  color: var(--bhiv-text-secondary, #9ca3af);
+  overflow-x: auto;
+}
+
+.bhiv-dev-details__content pre,
+.bhiv-dev-details__content code {
+  font-family: inherit;
+}

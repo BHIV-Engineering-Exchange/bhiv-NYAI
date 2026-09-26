@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 import { procedureService } from '../services/nyayaApi.js'
+import GlassCard from './ui/GlassCard.jsx'
+import BHIVButton from './ui/BHIVButton.jsx'
+import StatusBadge from './ui/StatusBadge.jsx'
+import WorkspaceHeader from './layout/WorkspaceHeader.jsx'
 
-const Documentation = ({ onBack }) => {
+const Documentation = ({ onBack, onNavigateHome }) => {
   const [activeSection, setActiveSection] = useState('overview')
   const [testResults, setTestResults] = useState({})
   const [testing, setTesting] = useState(false)
@@ -11,9 +15,9 @@ const Documentation = ({ onBack }) => {
     setTestResults(prev => ({ ...prev, [name]: 'Testing...' }))
     try {
       const result = await testFn()
-      setTestResults(prev => ({ ...prev, [name]: result.success ? '✅ Success' : `❌ ${result.error}` }))
+      setTestResults(prev => ({ ...prev, [name]: result.success ? 'Success' : `Failed: ${result.error}` }))
     } catch (error) {
-      setTestResults(prev => ({ ...prev, [name]: `❌ ${error.message}` }))
+      setTestResults(prev => ({ ...prev, [name]: `Failed: ${error.message}` }))
     }
     setTesting(false)
   }
@@ -66,127 +70,148 @@ const Documentation = ({ onBack }) => {
       ]
     },
     api: {
-      title: 'Test API Endpoints',
+      title: 'API Endpoints',
       content: [
-        { heading: 'Procedure Endpoints', text: 'Test all backend procedure endpoints to verify connectivity and functionality.' }
+        { heading: 'Backend Connectivity Verification', text: 'Trigger real-time diagnostic checks against Nyaya sovereign procedure services.' }
       ]
     }
   }
 
-  return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-      <button
-        onClick={onBack}
-        style={{
-          background: 'rgba(255, 255, 255, 0.1)',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-          borderRadius: '8px',
-          padding: '10px 20px',
-          color: '#fff',
-          cursor: 'pointer',
-          marginBottom: '20px',
-          fontSize: '14px'
-        }}
-      >
-        ← Back to Dashboard
-      </button>
+  const handleHomeClick = onNavigateHome || onBack;
 
-      <div style={{
-        background: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        borderRadius: '16px',
-        padding: '32px'
-      }}>
-        <h1 style={{ color: '#fff', fontSize: '32px', marginBottom: '12px' }}>Documentation</h1>
-        <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '16px', marginBottom: '32px' }}>
-          Learn how to use NYAI and understand legal procedures across jurisdictions
+  return (
+    <div style={{ maxWidth: '1000px', margin: '0 auto', width: '100%', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+      {/* Contextual Workspace Header */}
+      <WorkspaceHeader
+        breadcrumbs={[
+          { label: 'NYAI', onClick: handleHomeClick },
+          { label: 'Reference' },
+          { label: 'Documentation' }
+        ]}
+        title="NYAI Platform Documentation"
+        description="Operational guides, legal frameworks, and system verification utilities."
+        badge="DOCUMENTATION"
+        onBack={handleHomeClick}
+      />
+
+      {/* Header */}
+      <GlassCard variant="primary" style={{ padding: 'var(--space-6)' }}>
+        <div style={{
+          fontSize: 'var(--text-xs)',
+          fontWeight: 'var(--font-semibold)',
+          color: 'var(--color-primary-light)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.08em'
+        }}>
+          Knowledge & Guidelines
+        </div>
+        <h2 style={{
+          fontFamily: 'var(--font-family-heading)',
+          fontSize: 'var(--text-2xl)',
+          fontWeight: 'var(--font-semibold)',
+          color: 'var(--color-text)',
+          margin: 'var(--space-1) 0 0 0'
+        }}>
+          NYAI Platform Documentation
+        </h2>
+        <p style={{ margin: 'var(--space-2) 0 0 0', fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)' }}>
+          Operational guides, legal frameworks, and system verification utilities.
         </p>
 
-        {/* Navigation Tabs */}
-        <div style={{ display: 'flex', gap: '12px', marginBottom: '32px', flexWrap: 'wrap' }}>
+        {/* Section Tabs */}
+        <div style={{ display: 'flex', gap: 'var(--space-2)', marginTop: 'var(--space-5)', flexWrap: 'wrap' }}>
           {Object.keys(sections).map(key => (
-            <button
+            <BHIVButton
               key={key}
+              variant={activeSection === key ? 'primary' : 'outline'}
+              size="sm"
               onClick={() => setActiveSection(key)}
-              style={{
-                padding: '10px 20px',
-                border: activeSection === key ? '2px solid #3b82f6' : '2px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '8px',
-                background: activeSection === key ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                color: '#fff',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '600',
-                textTransform: 'capitalize'
-              }}
             >
               {sections[key].title}
-            </button>
+            </BHIVButton>
           ))}
         </div>
+      </GlassCard>
 
-        {/* Content Section */}
-        <div>
-          <h2 style={{ color: '#fff', fontSize: '24px', marginBottom: '24px', borderBottom: '2px solid rgba(59, 130, 246, 0.5)', paddingBottom: '12px' }}>
-            {sections[activeSection].title}
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            {sections[activeSection].content.map((item, idx) => (
-              <div
-                key={idx}
-                style={{
-                  padding: '24px',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '12px'
-                }}
-              >
-                <h3 style={{ color: '#fff', fontSize: '18px', marginBottom: '12px', fontWeight: '600' }}>
-                  {item.heading}
-                </h3>
-                <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '15px', lineHeight: '1.7', margin: 0 }}>
-                  {item.text}
-                </p>
-              </div>
-            ))}
-          </div>
+      {/* Content Section */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        {sections[activeSection].content.map((item, idx) => (
+          <GlassCard key={idx} variant="secondary" style={{ padding: 'var(--space-5)' }}>
+            <h3 style={{
+              fontFamily: 'var(--font-family-heading)',
+              fontSize: 'var(--text-base)',
+              fontWeight: 'var(--font-semibold)',
+              color: 'var(--color-text)',
+              marginBottom: 'var(--space-2)',
+              marginTop: 0
+            }}>
+              {item.heading}
+            </h3>
+            <p style={{
+              color: 'var(--color-text-secondary)',
+              fontSize: 'var(--text-sm)',
+              lineHeight: 'var(--line-height-relaxed)',
+              margin: 0
+            }}>
+              {item.text}
+            </p>
+          </GlassCard>
+        ))}
 
-          {/* API Testing Section */}
-          {activeSection === 'api' && (
-            <div style={{ marginTop: '24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '12px' }}>
-              <button onClick={() => testEndpoint('list', () => procedureService.listProcedures())} disabled={testing} style={{ padding: '12px', background: 'rgba(59, 130, 246, 0.2)', border: '1px solid rgba(59, 130, 246, 0.4)', borderRadius: '8px', color: '#fff', cursor: 'pointer', fontSize: '13px' }}>
-                Test List Procedures {testResults.list}
-              </button>
-              <button onClick={() => testEndpoint('schemas', () => procedureService.getSchemas())} disabled={testing} style={{ padding: '12px', background: 'rgba(59, 130, 246, 0.2)', border: '1px solid rgba(59, 130, 246, 0.4)', borderRadius: '8px', color: '#fff', cursor: 'pointer', fontSize: '13px' }}>
-                Test Get Schemas {testResults.schemas}
-              </button>
-              <button onClick={() => testEndpoint('summary', () => procedureService.getProcedureSummary('IN', 'civil'))} disabled={testing} style={{ padding: '12px', background: 'rgba(59, 130, 246, 0.2)', border: '1px solid rgba(59, 130, 246, 0.4)', borderRadius: '8px', color: '#fff', cursor: 'pointer', fontSize: '13px' }}>
-                Test Procedure Summary {testResults.summary}
-              </button>
-              <button onClick={() => testEndpoint('enhanced', () => procedureService.getEnhancedAnalysis('IN', 'civil'))} disabled={testing} style={{ padding: '12px', background: 'rgba(59, 130, 246, 0.2)', border: '1px solid rgba(59, 130, 246, 0.4)', borderRadius: '8px', color: '#fff', cursor: 'pointer', fontSize: '13px' }}>
-                Test Enhanced Analysis {testResults.enhanced}
-              </button>
-              <button onClick={() => testEndpoint('domain', () => procedureService.getDomainClassification('IN'))} disabled={testing} style={{ padding: '12px', background: 'rgba(59, 130, 246, 0.2)', border: '1px solid rgba(59, 130, 246, 0.4)', borderRadius: '8px', color: '#fff', cursor: 'pointer', fontSize: '13px' }}>
-                Test Domain Classification {testResults.domain}
-              </button>
-              <button onClick={() => testEndpoint('sections', () => procedureService.getLegalSections('IN', 'civil'))} disabled={testing} style={{ padding: '12px', background: 'rgba(59, 130, 246, 0.2)', border: '1px solid rgba(59, 130, 246, 0.4)', borderRadius: '8px', color: '#fff', cursor: 'pointer', fontSize: '13px' }}>
-                Test Legal Sections {testResults.sections}
-              </button>
+        {/* API Diagnostics */}
+        {activeSection === 'api' && (
+          <GlassCard variant="secondary" style={{ padding: 'var(--space-6)' }}>
+            <h3 style={{
+              fontFamily: 'var(--font-family-heading)',
+              fontSize: 'var(--text-base)',
+              fontWeight: 'var(--font-semibold)',
+              color: 'var(--color-text)',
+              margin: '0 0 var(--space-4) 0'
+            }}>
+              Procedure Service Diagnostics
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--space-3)' }}>
+              {[
+                { name: 'list', label: 'List Procedures', fn: () => procedureService.listProcedures() },
+                { name: 'schemas', label: 'Get Schemas', fn: () => procedureService.getSchemas() },
+                { name: 'summary', label: 'Procedure Summary (IN Civil)', fn: () => procedureService.getProcedureSummary('IN', 'civil') },
+                { name: 'enhanced', label: 'Enhanced Analysis (IN Civil)', fn: () => procedureService.getEnhancedAnalysis('IN', 'civil') },
+                { name: 'domain', label: 'Domain Classification (IN)', fn: () => procedureService.getDomainClassification('IN') },
+                { name: 'sections', label: 'Legal Sections (IN Civil)', fn: () => procedureService.getLegalSections('IN', 'civil') }
+              ].map(test => (
+                <div
+                  key={test.name}
+                  style={{
+                    padding: 'var(--space-3)',
+                    background: 'var(--color-surface-subtle)',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--radius-md)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 'var(--space-2)'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text)' }}>
+                      {test.label}
+                    </span>
+                    {testResults[test.name] && (
+                      <span style={{ fontSize: 'var(--text-xs)' }}>{testResults[test.name]}</span>
+                    )}
+                  </div>
+                  <BHIVButton
+                    variant="outline"
+                    size="sm"
+                    onClick={() => testEndpoint(test.name, test.fn)}
+                    disabled={testing}
+                  >
+                    Run Test
+                  </BHIVButton>
+                </div>
+              ))}
             </div>
-          )}
-        </div>
-
-        {/* Quick Links */}
-        <div style={{ marginTop: '40px', padding: '24px', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '12px' }}>
-          <h3 style={{ color: '#fff', fontSize: '18px', marginBottom: '16px' }}>Quick Links</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
-            <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '14px' }}>→ Ask Legal Question</div>
-            <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '14px' }}>→ Jurisdiction Procedure</div>
-            <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '14px' }}>→ Case Timeline</div>
-            <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '14px' }}>→ Legal Glossary</div>
-          </div>
-        </div>
+          </GlassCard>
+        )}
       </div>
     </div>
   )

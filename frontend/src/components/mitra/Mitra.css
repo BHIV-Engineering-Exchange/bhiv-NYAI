@@ -1,0 +1,737 @@
+/* =============================================================================
+   Mitra.css — BHIV MITRA Companion Architecture Styling
+   Compliant with BHIV Design System Tokens & Glassmorphism Standards
+   ============================================================================= */
+
+:root {
+  --color-primary: var(--bhiv-primary, #6366f1);
+  --color-primary-hover: var(--bhiv-primary-hover, #818cf8);
+  --color-primary-transparent: var(--bhiv-primary-muted, rgba(99, 102, 241, 0.15));
+  --color-text: var(--bhiv-text-primary, #f9fafb);
+  --color-text-secondary: var(--bhiv-text-secondary, #9ca3af);
+  --color-text-muted: var(--bhiv-text-muted, #6b7280);
+  --color-border: var(--bhiv-border, rgba(255, 255, 255, 0.10));
+  --color-border-hover: var(--bhiv-glass-border-hover, rgba(255, 255, 255, 0.18));
+  --color-surface: var(--bhiv-surface-elevated, #1e293b);
+  --color-surface-muted: rgba(255, 255, 255, 0.05);
+  --glass-surface: var(--bhiv-glass-bg, rgba(255, 255, 255, 0.05));
+  --glass-surface-hover: var(--bhiv-glass-bg-hover, rgba(255, 255, 255, 0.08));
+  --glass-border: var(--bhiv-glass-border, rgba(255, 255, 255, 0.10));
+  --font-family-base: var(--bhiv-font-body, system-ui, sans-serif);
+  --font-family-heading: var(--bhiv-font-heading, system-ui, sans-serif);
+  --font-family-mono: monospace;
+  --text-xs: var(--bhiv-text-xs, 0.75rem);
+  --text-sm: var(--bhiv-text-sm, 0.875rem);
+  --text-base: var(--bhiv-text-base, 1rem);
+  --text-lg: var(--bhiv-text-lg, 1.125rem);
+  --font-medium: var(--bhiv-weight-medium, 500);
+  --font-semibold: var(--bhiv-weight-semibold, 600);
+  --font-bold: var(--bhiv-weight-bold, 700);
+  --radius-sm: var(--bhiv-radius-sm, 4px);
+  --radius-md: var(--bhiv-radius-md, 8px);
+  --radius-lg: var(--bhiv-radius-lg, 12px);
+  --radius-full: var(--bhiv-radius-full, 9999px);
+  --space-1: var(--bhiv-space-1, 4px);
+  --space-2: var(--bhiv-space-2, 8px);
+  --space-3: var(--bhiv-space-3, 12px);
+  --space-4: var(--bhiv-space-4, 16px);
+  --space-5: var(--bhiv-space-5, 20px);
+  --space-6: var(--bhiv-space-6, 24px);
+  --transition-fast: var(--bhiv-transition-fast, 150ms ease);
+}
+
+/* -----------------------------------------------------------------------------
+   Launcher Component
+   ----------------------------------------------------------------------------- */
+.mitra-launcher {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 12px;
+  background: var(--glass-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  color: var(--color-text);
+  font-family: var(--font-family-base);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.mitra-launcher:hover {
+  background: var(--glass-surface-hover);
+  border-color: var(--color-border-hover);
+  transform: translateY(-1px);
+}
+
+.mitra-launcher:active {
+  transform: translateY(0);
+}
+
+.mitra-launcher--active {
+  background: var(--color-primary-transparent);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+}
+
+.mitra-launcher--navbar {
+  padding: 5px 10px;
+  font-size: 11px;
+}
+
+.mitra-launcher__icon {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.mitra-launcher__label {
+  letter-spacing: 0.06em;
+  font-weight: var(--font-semibold);
+}
+
+.mitra-launcher__badge {
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: var(--radius-full);
+  margin-left: 2px;
+}
+
+/* -----------------------------------------------------------------------------
+   Overlay & Drawer Frame
+   ----------------------------------------------------------------------------- */
+.mitra-overlay {
+  position: fixed;
+  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: auto;
+  overflow: hidden;
+  animation: mitraFadeIn 200ms ease-out;
+}
+
+@keyframes mitraFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.mitra-drawer {
+  position: relative;
+  width: 480px;
+  max-width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background: #111827;
+  border-left: 1px solid var(--color-border);
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  z-index: 10001;
+  pointer-events: auto;
+  overflow: hidden;
+  outline: none;
+  animation: mitraSlideLeft 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes mitraSlideLeft {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* -----------------------------------------------------------------------------
+   Header
+   ----------------------------------------------------------------------------- */
+.mitra-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+  background: rgba(11, 15, 25, 0.6);
+  flex-shrink: 0;
+}
+
+.mitra-title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.mitra-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--bhiv-primary-hover, #818cf8);
+}
+
+.mitra-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.mitra-title {
+  font-family: var(--font-family-heading);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-text);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.mitra-subtitle {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  display: block;
+  margin-top: 1px;
+}
+
+.mitra-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.mitra-close-btn {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.mitra-close-btn:hover {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+/* -----------------------------------------------------------------------------
+   Guest Notice Banner
+   ----------------------------------------------------------------------------- */
+.mitra-guest-notice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  background: rgba(245, 158, 11, 0.12);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.25);
+  color: #fbbf24;
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.mitra-guest-notice__icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.mitra-guest-notice__text {
+  flex: 1;
+}
+
+/* -----------------------------------------------------------------------------
+   Body & Message List
+   ----------------------------------------------------------------------------- */
+.mitra-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+}
+
+.mitra-message-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-height: 100%;
+  justify-content: flex-start;
+}
+
+.mitra-message-row {
+  display: flex;
+  width: 100%;
+}
+
+.mitra-message-row--user {
+  justify-content: flex-end;
+}
+
+.mitra-message-row--mitra {
+  justify-content: flex-start;
+}
+
+.mitra-message-bubble {
+  max-width: 88%;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  line-height: var(--line-height-relaxed);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+}
+
+.mitra-message-bubble--user {
+  background: rgba(99, 102, 241, 0.18);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  color: #f3f4f6;
+  border-bottom-right-radius: var(--radius-sm);
+}
+
+.mitra-message-bubble--mitra {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--color-text);
+  border-bottom-left-radius: var(--radius-sm);
+}
+
+.mitra-message-bubble--error {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.mitra-message-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+  font-size: 11px;
+}
+
+.mitra-message-author {
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.02em;
+  color: var(--color-text-secondary);
+}
+
+.mitra-message-bubble--user .mitra-message-author {
+  color: var(--color-primary-light);
+}
+
+.mitra-intent-tag {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--color-primary-light);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+}
+
+.mitra-message-time {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  margin-left: auto;
+}
+
+.mitra-message-content {
+  color: inherit;
+}
+
+.mitra-message-paragraph {
+  margin: 0 0 var(--space-2) 0;
+}
+
+.mitra-message-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.mitra-bullet-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.mitra-bullet-dot {
+  color: var(--color-primary-light);
+  font-weight: bold;
+  line-height: 1.4;
+}
+
+.mitra-bullet-text {
+  flex: 1;
+}
+
+.mitra-inline-code {
+  font-family: var(--font-family-mono);
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1px 4px;
+  border-radius: var(--radius-sm);
+  color: #38bdf8;
+}
+
+.mitra-message-actions {
+  margin-top: var(--space-3);
+  display: flex;
+  gap: var(--space-2);
+}
+
+.mitra-message-diagnostic {
+  margin-top: var(--space-3);
+}
+
+.mitra-diagnostic-pre {
+  margin: 0;
+  font-family: var(--font-family-mono);
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Suggested Action Chips */
+.mitra-suggested-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--space-3);
+}
+
+.mitra-action-chip {
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: var(--radius-full);
+  color: #c7d2fe;
+  font-family: var(--font-family-base);
+  font-size: 11px;
+  font-weight: var(--font-medium);
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+}
+
+.mitra-action-chip:hover {
+  background: rgba(99, 102, 241, 0.25);
+  border-color: var(--color-primary);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* Thinking Indicator */
+.mitra-message-bubble--thinking {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.mitra-thinking-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+}
+
+.mitra-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  animation: mitraPulse 1.2s infinite ease-in-out;
+}
+
+.mitra-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.mitra-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes mitraPulse {
+  0%, 80%, 100% {
+    transform: scale(0.6);
+    opacity: 0.4;
+  }
+  40% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+.mitra-thinking-text {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  margin-left: var(--space-2);
+}
+
+/* -----------------------------------------------------------------------------
+   Composer Footer
+   ----------------------------------------------------------------------------- */
+.mitra-footer {
+  padding: var(--space-3) var(--space-5) var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-border);
+  background: rgba(11, 15, 25, 0.8);
+  flex-shrink: 0;
+}
+
+.mitra-composer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.mitra-composer__input-wrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 6px 8px 6px 12px;
+  transition: all var(--transition-fast);
+}
+
+.mitra-composer__input-wrapper:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-transparent);
+}
+
+.mitra-composer__textarea {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text);
+  font-family: var(--font-family-base);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  resize: none;
+  padding: 4px 0;
+  max-height: 120px;
+  min-height: 24px;
+}
+
+.mitra-composer__textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.mitra-composer__send-btn {
+  position: relative;
+  z-index: 5;
+  pointer-events: auto;
+  flex-shrink: 0;
+  height: 32px;
+  width: 32px;
+  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md) !important;
+}
+
+.mitra-composer__hint {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  display: flex;
+  justify-content: flex-end;
+  padding-right: var(--space-1);
+}
+
+.mitra-composer__hint kbd {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
+  padding: 1px 4px;
+  font-family: var(--font-family-mono);
+  font-size: 9px;
+  color: var(--color-text-secondary);
+}
+
+/* -----------------------------------------------------------------------------
+   Welcome Card / Empty State
+   ----------------------------------------------------------------------------- */
+.mitra-welcome-card {
+  background: var(--glass-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  margin-bottom: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.mitra-welcome-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.mitra-welcome-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--bhiv-primary-hover, #818cf8);
+}
+
+.mitra-welcome-card__title {
+  font-family: var(--font-family-heading);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.mitra-welcome-card__subtitle {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  display: block;
+}
+
+.mitra-welcome-card__text {
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.mitra-welcome-card__suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.mitra-welcome-card__suggestions-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  font-weight: var(--font-semibold);
+}
+
+/* -----------------------------------------------------------------------------
+   Markdown Tables & Code Blocks
+   ----------------------------------------------------------------------------- */
+.mitra-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin: var(--space-2) 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.mitra-markdown-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-xs);
+  text-align: left;
+}
+
+.mitra-markdown-table th {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-text);
+  font-weight: var(--font-semibold);
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.mitra-markdown-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.mitra-markdown-table tr:last-child td {
+  border-bottom: none;
+}
+
+.mitra-code-block {
+  background: #0b0f19;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  overflow-x: auto;
+  font-family: var(--font-family-mono);
+  font-size: 12px;
+  color: #38bdf8;
+  margin: var(--space-2) 0;
+}
+
+.mitra-line-spacer {
+  height: 6px;
+}
+
+/* -----------------------------------------------------------------------------
+   Responsive Breakpoints
+   ----------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .mitra-drawer {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    border-left: none;
+  }
+
+  .mitra-header {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .mitra-body {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .mitra-footer {
+    padding: var(--space-2) var(--space-4) var(--space-3) var(--space-4);
+  }
+
+  .mitra-message-bubble {
+    max-width: 92%;
+  }
+
+  .mitra-composer__hint {
+    display: none;
+  }
+}
+
+@media (max-width: 430px) {
+  .mitra-title {
+    font-size: var(--text-sm);
+  }
+  
+  .mitra-subtitle {
+    font-size: 10px;
+  }
+
+  .mitra-icon {
+    font-size: 20px;
+  }
+}

@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
 import ProceduralTimeline from './ProceduralTimeline.jsx'
 import FeedbackButtons from './FeedbackButtons.jsx'
+import GlassCard from './ui/GlassCard.jsx'
+import BHIVButton from './ui/BHIVButton.jsx'
+import StatusBadge from './ui/StatusBadge.jsx'
+import DeveloperDetails from './ui/DeveloperDetails.jsx'
 import { legalQueryService } from '../services/nyayaApi.js'
 
 const MultiJurisdictionCard = () => {
@@ -12,9 +16,9 @@ const MultiJurisdictionCard = () => {
   const [error, setError] = useState(null)
 
   const availableJurisdictions = [
-    { id: 'India', name: 'India', description: 'Comprehensive analysis under Indian law' },
-    { id: 'UK', name: 'United Kingdom', description: 'UK legal framework and precedents' },
-    { id: 'UAE', name: 'United Arab Emirates', description: 'UAE civil and commercial law' }
+    { id: 'India', name: 'India', description: 'Common law framework with codified statutory provisions' },
+    { id: 'UK', name: 'United Kingdom', description: 'Common law precedents and parliamentary legislation' },
+    { id: 'UAE', name: 'United Arab Emirates', description: 'Civil law codes with Sharia and commercial regulations' }
   ]
 
   const toggleJurisdiction = (jurisdiction) => {
@@ -31,7 +35,6 @@ const MultiJurisdictionCard = () => {
     setIsAnalyzing(true)
     setError(null)
     
-    // Call real Nyaya AI backend
     try {
       const result = await legalQueryService.submitMultiJurisdictionQuery({
         query: query,
@@ -42,227 +45,249 @@ const MultiJurisdictionCard = () => {
         setTraceId(result.trace_id)
         setComparativeAnalysis(result.data)
       } else {
-        setError(result.error || 'Failed to get response from backend')
+        setError(result.error || 'Failed to obtain multi-jurisdiction analysis.')
       }
-    } catch (error) {
-      console.error('Error:', error)
-      setError(error.message || 'Failed to connect to backend')
+    } catch (err) {
+      console.error('Error:', err)
+      setError(err.message || 'Connection failure while contacting multi-jurisdiction engine.')
     } finally {
       setIsAnalyzing(false)
     }
   }
 
   return (
-    <div className="consultation-card">
-      {/* Advisory-Style Heading */}
-      <h2 style={{
-        fontSize: '1.5rem',
-        color: '#2c3e50',
-        marginBottom: '20px',
-        fontWeight: '400'
-      }}>
-        Cross-Jurisdictional Legal Comparison
-      </h2>
-
-      <p style={{
-        color: '#6c757d',
-        marginBottom: '25px',
-        fontSize: '14px'
-      }}>
-        Examining how various legal frameworks address your matter can provide valuable insights for your decision-making process.
-      </p>
-
-      {/* Consultation-Grade Section Label */}
-      <div className="consultation-section">
-        <div className="section-label">State Your Legal Inquiry</div>
-        <textarea
-          className="consultation-input"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="I'm seeking to understand how this legal matter is treated in different jurisdictions. Based on what you've described, could you compare the approaches and highlight the significant distinctions?"
-          style={{ minHeight: '100px' }}
-        />
-      </div>
-
-      {/* Jurisdiction Selection */}
-      <div className="consultation-section">
-        <div className="section-label">Choose Jurisdictions for Comparison</div>
-        <p style={{
-          fontSize: '14px',
-          color: '#6c757d',
-          marginBottom: '15px'
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)', maxWidth: '900px', margin: '0 auto', width: '100%' }}>
+      {/* Overview Card */}
+      <GlassCard variant="primary" style={{ padding: 'var(--space-6)' }}>
+        <div style={{
+          fontSize: 'var(--text-xs)',
+          fontWeight: 'var(--font-semibold)',
+          color: 'var(--color-primary-light)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.08em'
         }}>
-          Select the legal systems you wish me to evaluate on your behalf.
-        </p>
-        
-        <div style={{ 
-          display: 'grid', 
-          gap: '10px',
-          marginBottom: '20px'
-        }}>
-          {availableJurisdictions.map((jurisdiction) => (
-            <label 
-              key={jurisdiction.id}
-              style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                padding: '10px',
-                border: '1px solid #e9ecef',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                backgroundColor: selectedJurisdictions.includes(jurisdiction.id) ? '#f8f9fa' : 'white'
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={selectedJurisdictions.includes(jurisdiction.id)}
-                onChange={() => toggleJurisdiction(jurisdiction.id)}
-                style={{ marginRight: '10px' }}
-              />
-              <div>
-                <div style={{ fontWeight: '600', color: '#2c3e50' }}>
-                  {jurisdiction.name}
-                </div>
-                <div style={{ fontSize: '12px', color: '#6c757d' }}>
-                  {jurisdiction.description}
-                </div>
-              </div>
-            </label>
-          ))}
+          Cross-Border Intelligence
         </div>
-      </div>
+        <h2 style={{
+          fontFamily: 'var(--font-family-heading)',
+          fontSize: 'var(--text-2xl)',
+          fontWeight: 'var(--font-semibold)',
+          color: 'var(--color-text)',
+          margin: 'var(--space-1) 0 0 0'
+        }}>
+          Multi-Jurisdictional Comparative Evaluation
+        </h2>
+        <p style={{ margin: 'var(--space-2) 0 0 0', fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)' }}>
+          Compare legal standards, procedural burdens, and statutory remedies across multiple legal frameworks.
+        </p>
 
-      {/* Jurisdiction-Specific Guidance */}
-      {selectedJurisdictions.length > 0 && (
-        <div className="consultation-section">
-          <div className="section-label">How This Works in Selected Jurisdictions</div>
-          <div style={{ display: 'grid', gap: '15px', marginTop: '15px' }}>
-            {selectedJurisdictions.map((jurisdiction) => {
-              const guidance = {
-                India: {
-                  courtSystem: 'Indian Judicial System',
-                  authorityTone: 'Formal and procedural, emphasizing due process and evidence-based decisions',
-                  emergencyGuidance: 'File FIR at nearest Police Station, contact local magistrate for immediate orders',
-                  emergencyContacts: 'Police: 100 | Ambulance: 108 | Fire: 101'
-                },
-                UK: {
-                  courtSystem: 'UK Courts and Tribunals',
-                  authorityTone: 'Adversarial system with emphasis on precedent and judicial discretion',
-                  emergencyGuidance: 'Contact Police (999) or Crown Prosecution Service for urgent matters',
-                  emergencyContacts: 'Emergency: 999 | Police (non-emergency): 101'
-                },
-                UAE: {
-                  courtSystem: 'UAE Federal Judiciary',
-                  authorityTone: 'Civil law system with Islamic Sharia influences, emphasizing reconciliation',
-                  emergencyGuidance: 'Contact Public Prosecution or local police for immediate legal intervention',
-                  emergencyContacts: 'Police: 999 | Ambulance: 998 | Fire: 997'
-                }
-              }[jurisdiction];
+        {/* Input */}
+        <div style={{ marginTop: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+          <label style={{ fontSize: 'var(--text-xs)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
+            Legal Inquiry / Cross-Border Dispute Facts
+          </label>
+          <textarea
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Describe the cross-border matter, supply dispute, or jurisdictional conflict..."
+            rows={4}
+            style={{
+              width: '100%',
+              padding: 'var(--space-3) var(--space-4)',
+              background: 'var(--color-bg-base)',
+              border: '1px solid var(--color-border)',
+              borderRadius: 'var(--radius-md)',
+              color: 'var(--color-text)',
+              fontSize: 'var(--text-sm)',
+              boxSizing: 'border-box',
+              resize: 'vertical'
+            }}
+          />
+        </div>
 
+        {/* Jurisdiction Selection */}
+        <div style={{ marginTop: 'var(--space-4)' }}>
+          <span style={{ display: 'block', fontSize: 'var(--text-xs)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text-muted)', textTransform: 'uppercase', marginBottom: 'var(--space-2)' }}>
+            Select Comparative Legal Systems
+          </span>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-2)' }}>
+            {availableJurisdictions.map((jurisdiction) => {
+              const isSelected = selectedJurisdictions.includes(jurisdiction.id)
               return (
                 <div
-                  key={jurisdiction}
+                  key={jurisdiction.id}
+                  onClick={() => toggleJurisdiction(jurisdiction.id)}
                   style={{
-                    padding: '15px',
-                    backgroundColor: '#f8f9fa',
-                    borderRadius: '8px',
-                    border: '1px solid #e9ecef'
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 'var(--space-3)',
+                    padding: 'var(--space-3)',
+                    background: isSelected ? 'var(--color-primary-transparent)' : 'var(--color-surface-subtle)',
+                    border: `1px solid ${isSelected ? 'var(--color-primary)' : 'var(--color-border)'}`,
+                    borderRadius: 'var(--radius-md)',
+                    cursor: 'pointer',
+                    transition: 'all var(--transition-fast)'
                   }}
                 >
-                  <h4 style={{
-                    fontSize: '1rem',
-                    color: '#2c3e50',
-                    marginBottom: '10px',
-                    fontWeight: '600'
-                  }}>
-                    {jurisdiction}
-                  </h4>
-                  <div style={{ fontSize: '14px', color: '#495057', lineHeight: '1.5' }}>
-                    <div style={{ marginBottom: '8px' }}>
-                      <strong>Court System:</strong> {guidance.courtSystem}
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={() => {}}
+                    style={{ accentColor: 'var(--color-primary)' }}
+                  />
+                  <div>
+                    <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text)' }}>
+                      {jurisdiction.name}
                     </div>
-                    <div style={{ marginBottom: '8px' }}>
-                      <strong>Authority Tone:</strong> {guidance.authorityTone}
+                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>
+                      {jurisdiction.description}
                     </div>
-                    <div style={{ marginBottom: '8px' }}>
-                      <strong>Emergency Guidance:</strong> {guidance.emergencyGuidance}
-                    </div>
-                    <div style={{ marginBottom: '15px', fontSize: '13px', color: '#dc3545', fontWeight: '600' }}>
-                      <strong>🚨 Emergency Contacts:</strong> {guidance.emergencyContacts}
-                    </div>
-                    <ProceduralTimeline jurisdiction={jurisdiction} />
                   </div>
                 </div>
-              );
+              )
             })}
           </div>
         </div>
-      )}
 
-      <button
-        onClick={handleAnalyze}
-        className="consultation-btn"
-        disabled={isAnalyzing || !query.trim() || selectedJurisdictions.length === 0}
-        style={{ width: '100%' }}
-      >
-        {isAnalyzing ? 'Performing Multi-Jurisdictional Review...' : 'Conduct Comparative Analysis'}
-      </button>
+        <div style={{ marginTop: 'var(--space-5)', display: 'flex', justifyContent: 'flex-end' }}>
+          <BHIVButton
+            variant="primary"
+            size="lg"
+            onClick={handleAnalyze}
+            disabled={isAnalyzing || !query.trim() || selectedJurisdictions.length === 0}
+            loading={isAnalyzing}
+          >
+            {isAnalyzing ? 'Evaluating Frameworks...' : 'Conduct Comparative Analysis →'}
+          </BHIVButton>
+        </div>
+      </GlassCard>
+
+      {/* Jurisdiction-Specific Guidance Panels */}
+      {selectedJurisdictions.length > 0 && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+          {selectedJurisdictions.map((jurisdiction) => {
+            const guidance = {
+              India: {
+                courtSystem: 'Indian Judicial Hierarchy (Supreme Court, High Courts, District Judiciary)',
+                authorityTone: 'Codified common law, emphasizing formal pleadings and evidentiary compliance',
+                emergencyGuidance: 'File FIR at local Police Station, apply for interim injunctive relief before Civil Judge'
+              },
+              UK: {
+                courtSystem: 'UK Courts and Tribunals (Supreme Court, Court of Appeal, High Court)',
+                authorityTone: 'Common law precedent system with extensive judicial discretion',
+                emergencyGuidance: 'Contact Police or Crown Prosecution Service; apply for without-notice injunction'
+              },
+              UAE: {
+                courtSystem: 'UAE Federal Judiciary & Emirate Courts (Cassation, Appeal, First Instance)',
+                authorityTone: 'Civil law codified system with commercial reconciliation emphasis',
+                emergencyGuidance: 'Submit petition to Public Prosecution or urgent matters summary judge'
+              }
+            }[jurisdiction] || {}
+
+            return (
+              <GlassCard key={jurisdiction} variant="secondary" style={{ padding: 'var(--space-5)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-3)' }}>
+                  <h3 style={{ fontFamily: 'var(--font-family-heading)', fontSize: 'var(--text-base)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text)', margin: 0 }}>
+                    {jurisdiction} Sovereign Framework
+                  </h3>
+                  <StatusBadge variant="info" size="sm">
+                    {jurisdiction}
+                  </StatusBadge>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', marginBottom: 'var(--space-4)' }}>
+                  <div>
+                    <strong style={{ color: 'var(--color-text)' }}>Judicial System: </strong>
+                    {guidance.courtSystem}
+                  </div>
+                  <div>
+                    <strong style={{ color: 'var(--color-text)' }}>Procedural Tone: </strong>
+                    {guidance.authorityTone}
+                  </div>
+                  <div>
+                    <strong style={{ color: 'var(--color-text)' }}>Urgent Action Protocol: </strong>
+                    {guidance.emergencyGuidance}
+                  </div>
+                </div>
+
+                <ProceduralTimeline jurisdiction={jurisdiction} />
+              </GlassCard>
+            )
+          })}
+        </div>
+      )}
 
       {/* Comparative Analysis Results */}
       {comparativeAnalysis && (
-        <div style={{ marginTop: '25px' }}>
-          <h3 style={{
-            fontSize: '1.2rem',
-            color: '#2c3e50',
-            marginBottom: '20px'
-          }}>
-            Comparative Legal Assessment
-          </h3>
-          
-          {comparativeAnalysis.results.map((result, index) => (
-            <div 
-              key={result.jurisdiction}
-              style={{
-                marginBottom: '20px',
-                padding: '20px',
-                backgroundColor: '#f8f9fa',
-                borderRadius: '8px',
-                border: '1px solid #e9ecef'
-              }}
-            >
-              <h4 style={{
-                fontSize: '1.1rem',
-                color: '#2c3e50',
-                marginBottom: '10px'
-              }}>
-                Analysis under {result.jurisdiction} Law
-              </h4>
-              
-              <p style={{ marginBottom: '15px', lineHeight: '1.6' }}>
-                {result.analysis}
-              </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+          <GlassCard variant="primary" style={{ padding: 'var(--space-5)' }}>
+            <h3 style={{ fontFamily: 'var(--font-family-heading)', fontSize: 'var(--text-lg)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text)', margin: '0 0 var(--space-3) 0' }}>
+              Comparative Legal Findings
+            </h3>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+              {comparativeAnalysis.results?.map((result) => (
+                <div 
+                  key={result.jurisdiction}
+                  style={{
+                    padding: 'var(--space-4)',
+                    background: 'var(--color-surface-subtle)',
+                    borderRadius: 'var(--radius-md)',
+                    border: '1px solid var(--color-border)'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-2)' }}>
+                    <span style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-bold)', color: 'var(--color-text)' }}>
+                      {result.jurisdiction} Evaluation
+                    </span>
+                    <StatusBadge variant="info" size="sm">{result.jurisdiction}</StatusBadge>
+                  </div>
+                  
+                  <p style={{ margin: '0 0 var(--space-3) 0', fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', lineHeight: 'var(--line-height-normal)' }}>
+                    {result.analysis}
+                  </p>
 
-              <div style={{ marginBottom: '15px' }}>
-                <strong>Key Differences:</strong>
-                <ul style={{ paddingLeft: '20px', marginTop: '5px' }}>
-                  {result.keyDifferences.map((diff, i) => (
-                    <li key={i} style={{ marginBottom: '3px' }}>{diff}</li>
-                  ))}
-                </ul>
-              </div>
+                  {result.keyDifferences && result.keyDifferences.length > 0 && (
+                    <div style={{ marginBottom: 'var(--space-3)' }}>
+                      <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'var(--font-semibold)', color: 'var(--color-warning)' }}>
+                        Key Distinctive Provisions:
+                      </span>
+                      <ul style={{ margin: 'var(--space-1) 0 0 0', paddingLeft: 'var(--space-5)', color: 'var(--color-text-secondary)', fontSize: 'var(--text-xs)' }}>
+                        {result.keyDifferences.map((diff, i) => (
+                          <li key={i}>{diff}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
-              <div>
-                <strong>Recommendations:</strong>
-                <ul style={{ paddingLeft: '20px', marginTop: '5px' }}>
-                  {result.recommendations.map((rec, i) => (
-                    <li key={i} style={{ marginBottom: '3px' }}>{rec}</li>
-                  ))}
-                </ul>
-              </div>
+                  {result.recommendations && result.recommendations.length > 0 && (
+                    <div>
+                      <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'var(--font-semibold)', color: 'var(--color-success)' }}>
+                        Advisory Considerations:
+                      </span>
+                      <ul style={{ margin: 'var(--space-1) 0 0 0', paddingLeft: 'var(--space-5)', color: 'var(--color-text-secondary)', fontSize: 'var(--text-xs)' }}>
+                        {result.recommendations.map((rec, i) => (
+                          <li key={i}>{rec}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
 
-          {/* Feedback Section */}
+            {traceId && (
+              <div style={{ marginTop: 'var(--space-4)' }}>
+                <DeveloperDetails title="Comparative Pipeline Details" defaultOpen={false}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>Trace ID:</span>
+                    <span style={{ fontFamily: 'var(--font-family-mono)', fontSize: 'var(--text-xs)', color: 'var(--color-text)' }}>{traceId}</span>
+                  </div>
+                </DeveloperDetails>
+              </div>
+            )}
+          </GlassCard>
+
           <FeedbackButtons traceId={traceId} context="Multi-Jurisdiction Analysis" />
         </div>
       )}

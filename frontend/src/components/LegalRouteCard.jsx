@@ -1,9 +1,25 @@
 import React from 'react';
-import ApiErrorState from './ApiErrorState.jsx';
+import PropTypes from 'prop-types';
+import GlassCard from './ui/GlassCard.jsx';
+import StatusBadge from './ui/StatusBadge.jsx';
+import ConfidenceIndicator from './ConfidenceIndicator.jsx';
 import SkeletonLoader from './SkeletonLoader.jsx';
+import ApiErrorState from './ApiErrorState.jsx';
 
-const LegalRouteCard = ({ routes, jurisdiction, caseType, traceId, loading, error, onRetry }) => {
-  if (loading) return <SkeletonLoader type="card" count={3} />
+/**
+ * BHIV Legal Route Card
+ * Presents procedural pathways and strategic legal routes in clear sequential order.
+ */
+const LegalRouteCard = ({
+  routes,
+  jurisdiction,
+  caseType,
+  traceId,
+  loading,
+  error,
+  onRetry
+}) => {
+  if (loading) return <SkeletonLoader type="card" count={3} />;
 
   if (error || !routes || !Array.isArray(routes) || routes.length === 0 || !jurisdiction) {
     return (
@@ -13,245 +29,220 @@ const LegalRouteCard = ({ routes, jurisdiction, caseType, traceId, loading, erro
         traceId={traceId}
         onRetry={onRetry}
       />
-    )
+    );
   }
 
-  const getSuitabilityColor = (suitability) => {
-    if (suitability >= 0.8) return '#28a745'; // High - green
-    if (suitability >= 0.6) return '#ffc107'; // Medium - yellow
-    return '#dc3545'; // Low - red
-  };
-
-  const getSuitabilityLabel = (suitability) => {
-    if (suitability >= 0.8) return 'High';
-    if (suitability >= 0.6) return 'Medium';
-    return 'Low';
+  const getSuitabilityVariant = (score) => {
+    if (score >= 0.8) return 'success';
+    if (score >= 0.6) return 'warning';
+    return 'neutral';
   };
 
   return (
-    <div className="consultation-card">
+    <GlassCard padding="spacious" style={{ marginBottom: '24px' }}>
       {/* Header */}
-      <h2 style={{
-        fontSize: '1.5rem',
-        color: '#2c3e50',
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '12px',
         marginBottom: '20px',
-        fontWeight: '600'
+        paddingBottom: '16px',
+        borderBottom: '1px solid var(--bhiv-border-subtle, rgba(255, 255, 255, 0.08))'
       }}>
-        Legal Pathways - {caseType}
-      </h2>
+        <div>
+          <div style={{
+            fontFamily: 'var(--bhiv-font-body)',
+            fontSize: 'var(--bhiv-text-xs, 0.75rem)',
+            fontWeight: 'var(--bhiv-weight-semibold, 600)',
+            color: 'var(--bhiv-primary-hover, #818cf8)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em',
+            marginBottom: '4px'
+          }}>
+            Procedural Pathways {caseType ? `· ${caseType}` : ''}
+          </div>
+          <h2 style={{
+            fontFamily: 'var(--bhiv-font-heading)',
+            fontSize: 'var(--bhiv-text-xl, 1.25rem)',
+            fontWeight: 'var(--bhiv-weight-bold, 700)',
+            color: 'var(--bhiv-text-primary, #f9fafb)',
+            margin: 0
+          }}>
+            Available Legal Routes
+          </h2>
+        </div>
 
-      {/* Jurisdiction */}
-      <div style={{ marginBottom: '20px' }}>
-        <div className="section-label">Jurisdiction</div>
-        <p style={{
-          color: '#495057',
-          fontSize: '14px',
-          fontWeight: '500'
-        }}>
+        <StatusBadge variant="info" size="md">
           {jurisdiction}
-        </p>
+        </StatusBadge>
       </div>
 
-      {/* Routes */}
-      <div style={{ marginBottom: '20px' }}>
-        <div className="section-label">Available Routes</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {routes.map((route, index) => (
-            <div key={index} style={{
-              border: '1px solid #e9ecef',
-              borderRadius: '8px',
-              padding: '20px',
-              backgroundColor: '#f8f9fa'
-            }}>
-              {/* Route Name */}
-              <h3 style={{
-                fontSize: '1.2rem',
-                color: '#2c3e50',
-                marginBottom: '15px',
-                fontWeight: '600'
-              }}>
-                {route.name}
-              </h3>
+      {/* Routes List */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {routes.map((route, index) => {
+          const stepNum = String(index + 1).padStart(2, '0');
+          const variant = getSuitabilityVariant(route.suitability);
 
-              {/* Description */}
-              <div style={{ marginBottom: '15px' }}>
-                <p style={{
-                  color: '#495057',
-                  lineHeight: '1.6',
-                  fontSize: '14px'
-                }}>
-                  {route.description}
-                </p>
+          return (
+            <div
+              key={index}
+              style={{
+                background: 'rgba(0, 0, 0, 0.25)',
+                border: '1px solid var(--bhiv-border-subtle, rgba(255, 255, 255, 0.06))',
+                borderRadius: 'var(--bhiv-radius-md, 12px)',
+                padding: '20px',
+                display: 'flex',
+                gap: '16px',
+                alignItems: 'flex-start'
+              }}
+            >
+              {/* Sequential Number */}
+              <div
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: 'var(--bhiv-radius-sm, 8px)',
+                  background: 'var(--bhiv-primary-muted, rgba(99, 102, 241, 0.15))',
+                  border: '1px solid rgba(99, 102, 241, 0.3)',
+                  color: 'var(--bhiv-primary-hover, #818cf8)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontFamily: 'var(--bhiv-font-mono, monospace)',
+                  fontSize: 'var(--bhiv-text-sm, 0.875rem)',
+                  fontWeight: 'var(--bhiv-weight-bold, 700)',
+                  flexShrink: 0
+                }}
+              >
+                {stepNum}
               </div>
 
-              {/* Recommendation */}
-              <div style={{ marginBottom: '15px' }}>
-                <div style={{
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#495057',
-                  marginBottom: '5px'
-                }}>
-                  Recommendation:
-                </div>
-                <p style={{
-                  color: '#495057',
-                  lineHeight: '1.6',
-                  fontSize: '14px'
-                }}>
-                  {route.recommendation}
-                </p>
-              </div>
-
-              {/* Suitability Score */}
-              <div style={{ marginBottom: '15px' }}>
-                <div style={{
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#495057',
-                  marginBottom: '8px'
-                }}>
-                  Suitability Score:
-                </div>
+              {/* Route Body */}
+              <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '10px'
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '8px',
+                  marginBottom: '8px'
                 }}>
+                  <h3 style={{
+                    fontFamily: 'var(--bhiv-font-heading)',
+                    fontSize: 'var(--bhiv-text-md, 1rem)',
+                    fontWeight: 'var(--bhiv-weight-semibold, 600)',
+                    color: 'var(--bhiv-text-primary, #f9fafb)',
+                    margin: 0
+                  }}>
+                    {route.name}
+                  </h3>
+
+                  {typeof route.suitability === 'number' && (
+                    <StatusBadge variant={variant} size="sm">
+                      Suitability: {Math.round(route.suitability * 100)}%
+                    </StatusBadge>
+                  )}
+                </div>
+
+                <p style={{
+                  fontFamily: 'var(--bhiv-font-body)',
+                  fontSize: 'var(--bhiv-text-sm, 0.875rem)',
+                  lineHeight: 'var(--bhiv-leading-relaxed, 1.625)',
+                  color: 'var(--bhiv-text-secondary, #9ca3af)',
+                  margin: '0 0 12px 0'
+                }}>
+                  {route.description}
+                </p>
+
+                {route.recommendation && (
                   <div style={{
-                    flex: 1,
-                    height: '8px',
-                    backgroundColor: '#e9ecef',
-                    borderRadius: '4px',
-                    overflow: 'hidden'
+                    padding: '10px 12px',
+                    background: 'rgba(99, 102, 241, 0.08)',
+                    borderRadius: 'var(--bhiv-radius-sm, 8px)',
+                    border: '1px solid rgba(99, 102, 241, 0.2)',
+                    fontSize: 'var(--bhiv-text-xs, 0.75rem)',
+                    color: 'var(--bhiv-text-primary, #f9fafb)',
+                    marginBottom: '12px'
                   }}>
-                    <div style={{
-                      width: `${route.suitability * 100}%`,
-                      height: '100%',
-                      backgroundColor: getSuitabilityColor(route.suitability),
-                      transition: 'width 0.3s ease'
-                    }} />
+                    <strong>Recommendation: </strong>
+                    <span>{route.recommendation}</span>
                   </div>
-                  <span style={{
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    color: '#495057'
+                )}
+
+                {/* Duration & Cost */}
+                {(route.estimatedDuration || route.estimatedCost) && (
+                  <div style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '16px',
+                    fontSize: 'var(--bhiv-text-xs, 0.75rem)',
+                    color: 'var(--bhiv-text-muted, #6b7280)',
+                    marginBottom: '12px'
                   }}>
-                    {getSuitabilityLabel(route.suitability)} ({(route.suitability * 100).toFixed(1)}%)
-                  </span>
-                </div>
+                    {route.estimatedDuration && (
+                      <div>
+                        <span>Est. Duration: </span>
+                        <strong style={{ color: 'var(--bhiv-text-primary, #f9fafb)' }}>{route.estimatedDuration}</strong>
+                      </div>
+                    )}
+                    {route.estimatedCost && (
+                      <div>
+                        <span>Est. Cost: </span>
+                        <strong style={{ color: 'var(--bhiv-text-primary, #f9fafb)' }}>{route.estimatedCost}</strong>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Pros & Cons */}
+                {(route.pros || route.cons) && (
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: route.pros && route.cons ? 'repeat(auto-fit, minmax(200px, 1fr))' : '1fr',
+                    gap: '12px',
+                    fontSize: 'var(--bhiv-text-xs, 0.75rem)'
+                  }}>
+                    {route.pros && route.pros.length > 0 && (
+                      <div style={{ color: 'var(--bhiv-success, #10b981)' }}>
+                        <div style={{ fontWeight: 600, marginBottom: '4px' }}>Advantages:</div>
+                        <ul style={{ margin: 0, paddingLeft: '16px', color: 'var(--bhiv-text-secondary, #9ca3af)' }}>
+                          {route.pros.map((pro, pIdx) => (
+                            <li key={pIdx}>{pro}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {route.cons && route.cons.length > 0 && (
+                      <div style={{ color: 'var(--bhiv-warning, #f59e0b)' }}>
+                        <div style={{ fontWeight: 600, marginBottom: '4px' }}>Considerations:</div>
+                        <ul style={{ margin: 0, paddingLeft: '16px', color: 'var(--bhiv-text-secondary, #9ca3af)' }}>
+                          {route.cons.map((con, cIdx) => (
+                            <li key={cIdx}>{con}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-
-              {/* Estimates */}
-              {(route.estimatedDuration || route.estimatedCost) && (
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '20px',
-                  marginBottom: '15px'
-                }}>
-                  {route.estimatedDuration && (
-                    <div>
-                      <div style={{
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: '#495057',
-                        marginBottom: '5px'
-                      }}>
-                        Estimated Duration:
-                      </div>
-                      <p style={{
-                        color: '#495057',
-                        fontSize: '14px'
-                      }}>
-                        {route.estimatedDuration}
-                      </p>
-                    </div>
-                  )}
-                  {route.estimatedCost && (
-                    <div>
-                      <div style={{
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: '#495057',
-                        marginBottom: '5px'
-                      }}>
-                        Estimated Cost:
-                      </div>
-                      <p style={{
-                        color: '#495057',
-                        fontSize: '14px'
-                      }}>
-                        {route.estimatedCost}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Pros and Cons */}
-              {(route.pros || route.cons) && (
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: route.pros && route.cons ? '1fr 1fr' : '1fr',
-                  gap: '20px'
-                }}>
-                  {route.pros && route.pros.length > 0 && (
-                    <div>
-                      <div style={{
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: '#28a745',
-                        marginBottom: '8px'
-                      }}>
-                        Pros:
-                      </div>
-                      <ul style={{
-                        color: '#495057',
-                        paddingLeft: '20px',
-                        lineHeight: '1.6',
-                        fontSize: '14px'
-                      }}>
-                        {route.pros.map((pro, proIndex) => (
-                          <li key={proIndex} style={{ marginBottom: '4px' }}>
-                            {pro}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {route.cons && route.cons.length > 0 && (
-                    <div>
-                      <div style={{
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: '#dc3545',
-                        marginBottom: '8px'
-                      }}>
-                        Cons:
-                      </div>
-                      <ul style={{
-                        color: '#495057',
-                        paddingLeft: '20px',
-                        lineHeight: '1.6',
-                        fontSize: '14px'
-                      }}>
-                        {route.cons.map((con, conIndex) => (
-                          <li key={conIndex} style={{ marginBottom: '4px' }}>
-                            {con}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
-    </div>
+    </GlassCard>
   );
+};
+
+LegalRouteCard.propTypes = {
+  routes: PropTypes.array,
+  jurisdiction: PropTypes.string,
+  caseType: PropTypes.string,
+  traceId: PropTypes.string,
+  loading: PropTypes.bool,
+  error: PropTypes.string,
+  onRetry: PropTypes.func
 };
 
 export default LegalRouteCard;

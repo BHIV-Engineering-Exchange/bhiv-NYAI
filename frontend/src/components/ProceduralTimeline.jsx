@@ -1,200 +1,186 @@
 import React from 'react'
+import { FileText, Search, Scale, Phone, ClipboardList } from 'lucide-react'
+import GlassCard from './ui/GlassCard.jsx'
+import StatusBadge from './ui/StatusBadge.jsx'
 
 const ProceduralTimeline = ({ jurisdiction }) => {
   const timelineData = {
     India: [
       {
         step: 'Filing',
-        description: 'File FIR at Police Station or submit complaint',
+        description: 'File FIR at Police Station or submit formal complaint',
         duration: '1-3 days',
-        icon: '📝',
+        icon: FileText,
         status: 'current'
       },
       {
         step: 'Investigation',
-        description: 'Police investigation and evidence collection',
+        description: 'Police investigation and evidentiary collection',
         duration: '15-90 days',
-        icon: '🔍',
+        icon: Search,
         status: 'pending'
       },
       {
         step: 'Court Process',
-        description: 'Chargesheet filing, trial, and judgment',
+        description: 'Chargesheet filing, formal trial, and judicial determination',
         duration: '6-24 months',
-        icon: '⚖️',
+        icon: Scale,
         status: 'pending'
       }
     ],
     UK: [
       {
         step: 'Filing',
-        description: 'Report to Police or contact CPS',
+        description: 'Report to Police or initiate formal proceedings through CPS',
         duration: '1-7 days',
-        icon: '📞'
+        icon: Phone
       },
       {
         step: 'Investigation',
-        description: 'Police investigation and CPS review',
+        description: 'Police investigation and Crown Prosecution Service review',
         duration: '14-60 days',
-        icon: '🔍'
+        icon: Search
       },
       {
         step: 'Court Process',
-        description: 'Magistrates Court, Crown Court trial',
+        description: 'Magistrates Court proceedings, Crown Court trial',
         duration: '3-12 months',
-        icon: '⚖️'
+        icon: Scale
       }
     ],
     UAE: [
       {
         step: 'Filing',
-        description: 'Submit complaint to Public Prosecution',
+        description: 'Submit complaint to Public Prosecution or civil registrar',
         duration: '1-5 days',
-        icon: '📋'
+        icon: ClipboardList
       },
       {
         step: 'Investigation',
-        description: 'Public Prosecution investigation',
+        description: 'Public Prosecution examination and evidence intake',
         duration: '7-30 days',
-        icon: '🔍'
+        icon: Search
       },
       {
         step: 'Court Process',
-        description: 'Federal Court proceedings and judgment',
+        description: 'First Instance Federal Court proceedings and ruling',
         duration: '2-8 months',
-        icon: '⚖️'
+        icon: Scale
       }
     ]
   }
 
   const steps = timelineData[jurisdiction] || []
 
-  // Handle missing or empty steps
   if (!jurisdiction || steps.length === 0) {
     return (
-      <div className="procedural-timeline">
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-          <h3 style={{ color: '#dc3545', marginBottom: '10px' }}>Information will appear here once available</h3>
-          <p style={{ color: '#6c757d' }}>
-            Procedural timeline data is currently unavailable for the selected jurisdiction.
-          </p>
-        </div>
-      </div>
+      <GlassCard variant="secondary" style={{ padding: 'var(--space-6)', textAlign: 'center' }}>
+        <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--text-sm)', margin: 0 }}>
+          Procedural timeline data is currently unavailable for {jurisdiction || 'the selected jurisdiction'}.
+        </p>
+      </GlassCard>
     )
   }
 
   return (
-    <div className="procedural-timeline">
-      <h4 style={{
-        fontSize: '1.1rem',
-        color: '#2c3e50',
-        marginBottom: '20px',
-        textAlign: 'center'
-      }}>
-        Procedural Timeline in {jurisdiction}
-      </h4>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h4 style={{
+          fontFamily: 'var(--font-family-heading)',
+          fontSize: 'var(--text-base)',
+          fontWeight: 'var(--font-semibold)',
+          color: 'var(--color-text)',
+          margin: 0
+        }}>
+          Procedural Timeline in {jurisdiction}
+        </h4>
+        <StatusBadge variant="info" size="sm">
+          {jurisdiction}
+        </StatusBadge>
+      </div>
 
       <div style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '20px',
+        gap: 'var(--space-3)',
         position: 'relative'
       }}>
-        {/* Timeline line */}
-        <div style={{
-          position: 'absolute',
-          left: '30px',
-          top: '40px',
-          bottom: '40px',
-          width: '2px',
-          backgroundColor: '#007bff',
-          zIndex: 1
-        }} />
-
-        {steps.map((step, index) => (
-          <div
-            key={index}
-            style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: '15px',
-              position: 'relative'
-            }}
-          >
-            {/* Step icon */}
-            <div style={{
-              width: '60px',
-              height: '60px',
-              borderRadius: '50%',
-              backgroundColor: '#007bff',
-              color: 'white',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '24px',
-              flexShrink: 0,
-              zIndex: 2,
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-            }}>
-              {step.icon}
-            </div>
+        {steps.map((step, index) => {
+          const IconComp = step.icon;
+          return (
+            <div
+              key={index}
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: 'var(--space-3)',
+                background: 'var(--color-surface-subtle)',
+                border: '1px solid var(--color-border)',
+                borderRadius: 'var(--radius-md)',
+                padding: 'var(--space-3) var(--space-4)'
+              }}
+            >
+              {/* Step icon */}
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: 'var(--radius-md)',
+                backgroundColor: 'var(--color-primary-transparent)',
+                border: '1px solid var(--color-primary)',
+                color: 'var(--color-primary-light)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}>
+                {IconComp && <IconComp size={18} />}
+              </div>
 
             {/* Step content */}
-            <div style={{
-              backgroundColor: '#f8f9fa',
-              padding: '15px',
-              borderRadius: '8px',
-              border: '1px solid #e9ecef',
-              flex: 1
-            }}>
+            <div style={{ flex: 1 }}>
               <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                marginBottom: '8px'
+                marginBottom: 'var(--space-1)',
+                flexWrap: 'wrap',
+                gap: 'var(--space-2)'
               }}>
-                <h5 style={{
-                  fontSize: '1rem',
-                  color: '#2c3e50',
-                  margin: 0,
-                  fontWeight: '600'
+                <span style={{
+                  fontSize: 'var(--text-sm)',
+                  color: 'var(--color-text)',
+                  fontWeight: 'var(--font-semibold)'
                 }}>
                   {step.step}
-                </h5>
-                <span style={{
-                  backgroundColor: '#007bff',
-                  color: 'white',
-                  padding: '4px 8px',
-                  borderRadius: '4px',
-                  fontSize: '12px',
-                  fontWeight: '500'
-                }}>
-                  {step.duration}
                 </span>
+                <StatusBadge variant="neutral" size="sm">
+                  {step.duration}
+                </StatusBadge>
               </div>
               <p style={{
                 margin: 0,
-                color: '#6c757d',
-                fontSize: '14px',
-                lineHeight: '1.5'
+                color: 'var(--color-text-secondary)',
+                fontSize: 'var(--text-xs)',
+                lineHeight: 'var(--line-height-normal)'
               }}>
                 {step.description}
               </p>
             </div>
           </div>
-        ))}
-      </div>
+        )
+      })}
+    </div>
 
       <div style={{
-        marginTop: '20px',
-        padding: '15px',
-        backgroundColor: '#fff3cd',
-        border: '1px solid #ffeaa7',
-        borderRadius: '8px',
-        fontSize: '14px',
-        color: '#856404'
+        padding: 'var(--space-3) var(--space-4)',
+        background: 'var(--color-surface-subtle)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        fontSize: 'var(--text-xs)',
+        color: 'var(--color-text-secondary)',
+        lineHeight: 'var(--line-height-normal)'
       }}>
-        <strong>Note:</strong> These are typical duration ranges and may vary based on case complexity, jurisdiction specifics, and other factors. Always consult with local legal professionals for accurate timelines.
+        <strong style={{ color: 'var(--color-warning)' }}>Notice:</strong> These are typical duration ranges across court registries and may vary based on complexity and jurisdiction-specific calendar rules.
       </div>
     </div>
   )

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { legalQueryService } from '../services/nyayaApi.js'
+import WorkspaceHeader from './layout/WorkspaceHeader.jsx'
 import './DecisionPage.css'
 
 /**
@@ -10,7 +11,7 @@ import './DecisionPage.css'
  * 
  * Debug Mode: Press 'Ctrl+Shift+D' to toggle debug information
  */
-function DecisionPage() {
+function DecisionPage({ onNavigateHome }) {
   const [query, setQuery] = useState('')
   const [decision, setDecision] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -91,15 +92,15 @@ function DecisionPage() {
   const getRecommendationLabel = (type) => {
     switch (type) {
       case 'INFORM':
-        return 'ℹ️ INFORMATIONAL'
+        return 'INFORMATIONAL'
       case 'REVIEW':
-        return '⚠️ REVIEW RECOMMENDED'
+        return 'REVIEW RECOMMENDED'
       case 'ESCALATE':
-        return '📈 ESCALATION ADVISED'
+        return 'ESCALATION ADVISED'
       case 'INSUFFICIENT_DATA':
-        return '❓ INSUFFICIENT DATA'
+        return 'INSUFFICIENT DATA'
       default:
-        return '⚠️ PENDING'
+        return 'PENDING'
     }
   }
 
@@ -111,11 +112,18 @@ function DecisionPage() {
 
   return (
     <div className="decision-page">
-      {/* Header */}
-      <div className="decision-header">
-        <h1>NYAI Legal Agent</h1>
-        <p>Real-time structured legal advisory with TANTRA-canonical recommendations</p>
-      </div>
+      {/* Contextual Workspace Header */}
+      <WorkspaceHeader
+        breadcrumbs={[
+          { label: 'NYAI', onClick: onNavigateHome },
+          { label: 'Legal Operations' },
+          { label: 'Decisions' }
+        ]}
+        title="Legal Determinations & Decisions"
+        description="Real-time structured legal advisory with TANTRA-canonical recommendations."
+        badge="DETERMINATION OS"
+        onBack={onNavigateHome}
+      />
 
       {/* Query Section */}
       <div className="decision-query-section">
@@ -145,7 +153,7 @@ function DecisionPage() {
 
           {error && (
             <div className="error-message" data-testid="error-message">
-              <span>⚠️</span>
+              <span>!</span>
               <p>{error}</p>
               <button onClick={() => setError(null)}>×</button>
             </div>
@@ -413,7 +421,7 @@ function DecisionPage() {
                 link.click()
               }}
             >
-              📥 Export Decision
+              Export Decision
             </button>
             <button 
               className="action-button secondary"
@@ -423,7 +431,7 @@ function DecisionPage() {
                 setError(null)
               }}
             >
-              🔄 New Query
+              New Query
             </button>
           </div>
 

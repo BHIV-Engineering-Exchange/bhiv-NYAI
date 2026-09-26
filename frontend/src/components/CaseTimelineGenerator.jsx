@@ -1,4 +1,8 @@
 import { useState } from 'react'
+import GlassCard from './ui/GlassCard.jsx'
+import BHIVButton from './ui/BHIVButton.jsx'
+import StatusBadge from './ui/StatusBadge.jsx'
+import WorkspaceHeader from './layout/WorkspaceHeader.jsx'
 
 const eventTypes = ['Notice', 'Filing', 'Agreement', 'Hearing', 'Incident']
 const countries = ['India', 'United Kingdom', 'United Arab Emirates']
@@ -8,7 +12,7 @@ const states = {
   'United Arab Emirates': ['Abu Dhabi', 'Dubai', 'Sharjah', 'Ajman', 'Fujairah', 'Ras Al Khaimah', 'Umm Al Quwain']
 }
 
-export default function CaseTimelineGenerator({ onBack }) {
+export default function CaseTimelineGenerator({ onBack, onNavigateHome }) {
   const [events, setEvents] = useState([])
   const [currentEvent, setCurrentEvent] = useState({
     title: '',
@@ -48,102 +52,121 @@ export default function CaseTimelineGenerator({ onBack }) {
           status: new Date(e.date) < new Date() ? 'completed' : 'pending'
         })),
         nextSteps: [
-          'File response within 30 days',
-          'Prepare evidence documentation',
-          'Schedule mediation hearing'
+          'File formal response within statutory 30 days',
+          'Prepare evidentiary documentation bundle',
+          'Schedule preliminary mediation session'
         ],
         missedDeadlines: [],
-        statutoryGaps: '15 days between filing and hearing (compliant)'
+        statutoryGaps: '15 days between filing and hearing (compliant with jurisdictional rules)'
       })
       setLoading(false)
-    }, 2000)
+    }, 1200)
   }
 
+  const handleHomeClick = onNavigateHome || onBack;
+
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', animation: 'fadeIn 0.5s ease-in' }}>
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
+    <div style={{ maxWidth: '1000px', margin: '0 auto', width: '100%', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+      {/* Contextual Workspace Header */}
+      <WorkspaceHeader
+        breadcrumbs={[
+          { label: 'NYAI', onClick: handleHomeClick },
+          { label: 'Procedural' },
+          { label: 'Case Timeline' }
+        ]}
+        title="Case Timeline Generator"
+        description="Construct chronological case progression, map statutory deadlines, and verify procedural compliance."
+        badge="TIMELINE BUILDER"
+        onBack={handleHomeClick}
+      />
 
-      <button onClick={onBack} style={{
-        background: 'rgba(255, 255, 255, 0.1)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
-        borderRadius: '8px',
-        padding: '10px 20px',
-        color: '#fff',
-        cursor: 'pointer',
-        marginBottom: '20px',
-        fontSize: '14px'
-      }}>
-        ← Back to Dashboard
-      </button>
-
-      <h1 style={{ color: '#fff', fontSize: '32px', marginBottom: '32px', fontFamily: 'Merriweather, serif' }}>
-        Case Timeline Generator
-      </h1>
+      {/* Case Intake Form */}
+      <GlassCard variant="primary" style={{ padding: 'var(--space-6)' }}>
+        <div style={{
+          fontSize: 'var(--text-xs)',
+          fontWeight: 'var(--font-semibold)',
+          color: 'var(--color-primary-light)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.08em'
+        }}>
+          Procedural Analysis Tool
+        </div>
+        <h2 style={{
+          fontFamily: 'var(--font-family-heading)',
+          fontSize: 'var(--text-2xl)',
+          fontWeight: 'var(--font-semibold)',
+          color: 'var(--color-text)',
+          margin: 'var(--space-1) 0 0 0'
+        }}>
+          Case Timeline Generator
+        </h2>
+        <p style={{ margin: 'var(--space-2) 0 0 0', fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)' }}>
+          Sequence key dispute milestones, track statutory compliance, and generate an AI-aligned procedural timeline.
+        </p>
+      </GlassCard>
 
       {!generatedTimeline ? (
         <>
           {/* Section 1: Event Input */}
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.05)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '16px',
-            padding: '32px',
-            marginBottom: '24px'
-          }}>
-            <h2 style={{ color: '#fff', fontSize: '20px', marginBottom: '24px', fontFamily: 'Merriweather, serif' }}>
-              Add Legal Events
-            </h2>
+          <GlassCard variant="secondary" style={{ padding: 'var(--space-6)' }}>
+            <h3 style={{
+              fontSize: 'var(--text-sm)',
+              fontWeight: 'var(--font-semibold)',
+              color: 'var(--color-text)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              marginBottom: 'var(--space-4)'
+            }}>
+              1. Add Legal Milestones
+            </h3>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
               <input
                 type="text"
-                placeholder="Event Title"
+                placeholder="Milestone / Event Title (e.g. Demand Notice Served)"
                 value={currentEvent.title}
                 onChange={(e) => setCurrentEvent({ ...currentEvent, title: e.target.value })}
                 style={{
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '8px',
-                  padding: '12px',
-                  color: '#fff',
-                  fontSize: '14px'
+                  background: 'var(--color-bg-base)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: 'var(--space-3)',
+                  color: 'var(--color-text)',
+                  fontSize: 'var(--text-sm)',
+                  boxSizing: 'border-box'
                 }}
               />
 
               <textarea
-                placeholder="Event Description"
+                placeholder="Event Description (facts, context, recipients)..."
                 value={currentEvent.description}
                 onChange={(e) => setCurrentEvent({ ...currentEvent, description: e.target.value })}
+                rows={3}
                 style={{
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '8px',
-                  padding: '12px',
-                  color: '#fff',
-                  fontSize: '14px',
-                  minHeight: '80px',
-                  resize: 'vertical'
+                  background: 'var(--color-bg-base)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: 'var(--space-3)',
+                  color: 'var(--color-text)',
+                  fontSize: 'var(--text-sm)',
+                  resize: 'vertical',
+                  boxSizing: 'border-box'
                 }}
               />
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-3)' }}>
                 <input
                   type="date"
                   value={currentEvent.date}
                   onChange={(e) => setCurrentEvent({ ...currentEvent, date: e.target.value })}
                   style={{
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '8px',
-                    padding: '12px',
-                    color: '#fff',
-                    fontSize: '14px'
+                    background: 'var(--color-bg-base)',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: 'var(--space-2) var(--space-3)',
+                    color: 'var(--color-text)',
+                    fontSize: 'var(--text-sm)',
+                    boxSizing: 'border-box'
                   }}
                 />
 
@@ -151,327 +174,264 @@ export default function CaseTimelineGenerator({ onBack }) {
                   value={currentEvent.type}
                   onChange={(e) => setCurrentEvent({ ...currentEvent, type: e.target.value })}
                   style={{
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '8px',
-                    padding: '12px',
-                    color: '#fff',
-                    fontSize: '14px',
-                    cursor: 'pointer'
+                    background: 'var(--color-bg-base)',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: 'var(--space-2) var(--space-3)',
+                    color: 'var(--color-text)',
+                    fontSize: 'var(--text-sm)',
+                    boxSizing: 'border-box'
                   }}
                 >
-                  <option value="" style={{ background: '#1a1a1a' }}>Select Event Type</option>
-                  {eventTypes.map(t => <option key={t} value={t} style={{ background: '#1a1a1a' }}>{t}</option>)}
+                  <option value="">Select Event Type</option>
+                  {eventTypes.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
               </div>
 
-              <label style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px dashed rgba(255, 255, 255, 0.2)',
-                borderRadius: '8px',
-                padding: '16px',
-                textAlign: 'center',
-                cursor: 'pointer',
-                color: 'rgba(255, 255, 255, 0.6)',
-                fontSize: '14px'
-              }}>
-                <input type="file" multiple accept=".pdf,.docx,.doc,.jpg,.jpeg,.png" onChange={handleFileUpload} style={{ display: 'none' }} />
-                {currentEvent.documents.length > 0 ? `${currentEvent.documents.length} file(s) selected` : 'Upload Supporting Documents (Optional)'}
-              </label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+                <label style={{
+                  padding: 'var(--space-2) var(--space-3)',
+                  background: 'var(--color-surface-subtle)',
+                  border: '1px dashed var(--color-border)',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: 'var(--text-xs)',
+                  color: 'var(--color-text-secondary)',
+                  cursor: 'pointer'
+                }}>
+                  <input type="file" multiple accept=".pdf,.docx,.doc,.jpg,.jpeg,.png" onChange={handleFileUpload} style={{ display: 'none' }} />
+                  {currentEvent.documents.length > 0 ? `${currentEvent.documents.length} document(s) selected` : 'Attach Documents (Optional)'}
+                </label>
 
-              <button
-                onClick={addEvent}
-                disabled={!currentEvent.title || !currentEvent.date || !currentEvent.type}
-                style={{
-                  background: (currentEvent.title && currentEvent.date && currentEvent.type) ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'rgba(255, 255, 255, 0.1)',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '12px',
-                  color: '#fff',
-                  cursor: (currentEvent.title && currentEvent.date && currentEvent.type) ? 'pointer' : 'not-allowed',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  opacity: (currentEvent.title && currentEvent.date && currentEvent.type) ? 1 : 0.5
-                }}
-              >
-                Add Event
-              </button>
+                <BHIVButton
+                  variant="primary"
+                  size="sm"
+                  onClick={addEvent}
+                  disabled={!currentEvent.title || !currentEvent.date || !currentEvent.type}
+                >
+                  + Add Event
+                </BHIVButton>
+              </div>
             </div>
 
             {/* Event List */}
             {events.length > 0 && (
-              <div style={{ marginTop: '24px' }}>
-                <h3 style={{ color: '#fff', fontSize: '16px', marginBottom: '16px' }}>Added Events ({events.length})</h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ marginTop: 'var(--space-5)' }}>
+                <h4 style={{ fontSize: 'var(--text-xs)', fontWeight: 'var(--font-bold)', color: 'var(--color-text-secondary)', textTransform: 'uppercase', marginBottom: 'var(--space-3)' }}>
+                  Queued Events ({events.length})
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
                   {events.map(event => (
                     <div key={event.id} style={{
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      borderRadius: '8px',
-                      padding: '16px',
+                      background: 'var(--color-surface-subtle)',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: 'var(--radius-md)',
+                      padding: 'var(--space-3) var(--space-4)',
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center'
                     }}>
                       <div>
-                        <div style={{ color: '#fff', fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>{event.title}</div>
-                        <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px' }}>
-                          {event.type} • {new Date(event.date).toLocaleDateString()}
+                        <div style={{ color: 'var(--color-text)', fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)' }}>{event.title}</div>
+                        <div style={{ color: 'var(--color-text-muted)', fontSize: 'var(--text-xs)' }}>
+                          {event.type} • {event.date}
                         </div>
                       </div>
-                      <button
+                      <BHIVButton
+                        variant="ghost"
+                        size="sm"
                         onClick={() => removeEvent(event.id)}
-                        style={{
-                          background: 'rgba(239, 68, 68, 0.2)',
-                          border: '1px solid rgba(239, 68, 68, 0.3)',
-                          borderRadius: '6px',
-                          padding: '6px 12px',
-                          color: '#ef4444',
-                          cursor: 'pointer',
-                          fontSize: '12px'
-                        }}
+                        style={{ color: 'var(--color-error)' }}
                       >
                         Remove
-                      </button>
+                      </BHIVButton>
                     </div>
                   ))}
                 </div>
               </div>
             )}
-          </div>
+          </GlassCard>
 
           {/* Section 2: Jurisdiction */}
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.05)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '16px',
-            padding: '32px',
-            marginBottom: '24px'
-          }}>
-            <h2 style={{ color: '#fff', fontSize: '20px', marginBottom: '24px', fontFamily: 'Merriweather, serif' }}>
-              Select Jurisdiction
-            </h2>
+          <GlassCard variant="secondary" style={{ padding: 'var(--space-6)' }}>
+            <h3 style={{
+              fontSize: 'var(--text-sm)',
+              fontWeight: 'var(--font-semibold)',
+              color: 'var(--color-text)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              marginBottom: 'var(--space-4)'
+            }}>
+              2. Jurisdiction Context
+            </h3>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-3)' }}>
               <div>
-                <label style={{ color: '#fff', fontSize: '14px', marginBottom: '8px', display: 'block' }}>Country</label>
+                <label style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-xs)', marginBottom: 'var(--space-1)', display: 'block', textTransform: 'uppercase' }}>Country</label>
                 <select
                   value={jurisdiction.country}
                   onChange={(e) => setJurisdiction({ country: e.target.value, state: '' })}
                   style={{
                     width: '100%',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '8px',
-                    padding: '12px',
-                    color: '#fff',
-                    fontSize: '14px',
-                    cursor: 'pointer'
+                    background: 'var(--color-bg-base)',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: 'var(--space-2) var(--space-3)',
+                    color: 'var(--color-text)',
+                    fontSize: 'var(--text-sm)',
+                    boxSizing: 'border-box'
                   }}
                 >
-                  <option value="" style={{ background: '#1a1a1a' }}>Select Country</option>
-                  {countries.map(c => <option key={c} value={c} style={{ background: '#1a1a1a' }}>{c}</option>)}
+                  <option value="">Select Country</option>
+                  {countries.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
 
               {jurisdiction.country && (
                 <div>
-                  <label style={{ color: '#fff', fontSize: '14px', marginBottom: '8px', display: 'block' }}>State / Region</label>
+                  <label style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-xs)', marginBottom: 'var(--space-1)', display: 'block', textTransform: 'uppercase' }}>State / Region</label>
                   <select
                     value={jurisdiction.state}
                     onChange={(e) => setJurisdiction({ ...jurisdiction, state: e.target.value })}
                     style={{
                       width: '100%',
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      borderRadius: '8px',
-                      padding: '12px',
-                      color: '#fff',
-                      fontSize: '14px',
-                      cursor: 'pointer'
+                      background: 'var(--color-bg-base)',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: 'var(--radius-md)',
+                      padding: 'var(--space-2) var(--space-3)',
+                      color: 'var(--color-text)',
+                      fontSize: 'var(--text-sm)',
+                      boxSizing: 'border-box'
                     }}
                   >
-                    <option value="" style={{ background: '#1a1a1a' }}>Select State</option>
-                    {states[jurisdiction.country]?.map(s => <option key={s} value={s} style={{ background: '#1a1a1a' }}>{s}</option>)}
+                    <option value="">Select State / Region</option>
+                    {states[jurisdiction.country]?.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
               )}
             </div>
-          </div>
+          </GlassCard>
 
-          {/* Generate Button */}
-          <button
+          {/* Submit Button */}
+          <BHIVButton
+            variant="primary"
+            size="lg"
             onClick={generateTimeline}
-            disabled={events.length === 0 || !jurisdiction.country || !jurisdiction.state || loading}
-            style={{
-              width: '100%',
-              background: (events.length > 0 && jurisdiction.country && jurisdiction.state && !loading) ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'rgba(255, 255, 255, 0.1)',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px',
-              color: '#fff',
-              cursor: (events.length > 0 && jurisdiction.country && jurisdiction.state && !loading) ? 'pointer' : 'not-allowed',
-              fontSize: '16px',
-              fontWeight: '600',
-              opacity: (events.length > 0 && jurisdiction.country && jurisdiction.state && !loading) ? 1 : 0.5
-            }}
+            disabled={events.length === 0 || !jurisdiction.country || loading}
+            loading={loading}
           >
-            {loading ? 'Generating Timeline...' : 'Generate Timeline'}
-          </button>
+            {loading ? 'Synthesizing Timeline...' : 'Generate Case Timeline →'}
+          </BHIVButton>
         </>
       ) : (
         <>
           {/* Section 3: Generated Timeline */}
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.05)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '16px',
-            padding: '32px',
-            marginBottom: '24px'
-          }}>
-            <h2 style={{ color: '#fff', fontSize: '20px', marginBottom: '24px', fontFamily: 'Merriweather, serif' }}>
-              AI Generated Timeline
-            </h2>
+          <GlassCard variant="primary" style={{ padding: 'var(--space-6)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-5)' }}>
+              <h3 style={{
+                fontFamily: 'var(--font-family-heading)',
+                fontSize: 'var(--text-lg)',
+                fontWeight: 'var(--font-semibold)',
+                color: 'var(--color-text)',
+                margin: 0
+              }}>
+                Structured Case Timeline
+              </h3>
+              <StatusBadge variant="success" size="sm">
+                Generated
+              </StatusBadge>
+            </div>
 
             {/* Vertical Timeline */}
-            <div style={{ position: 'relative', paddingLeft: '40px' }}>
-              {generatedTimeline.events.map((event, idx) => (
-                <div key={event.id} style={{ position: 'relative', marginBottom: '32px' }}>
-                  {/* Timeline Line */}
-                  {idx < generatedTimeline.events.length - 1 && (
-                    <div style={{
-                      position: 'absolute',
-                      left: '-28px',
-                      top: '24px',
-                      width: '2px',
-                      height: 'calc(100% + 32px)',
-                      background: 'rgba(255, 255, 255, 0.2)'
-                    }} />
-                  )}
+            <div style={{ position: 'relative', paddingLeft: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+              {/* Vertical connector line */}
+              <div style={{
+                position: 'absolute',
+                left: '7px',
+                top: '12px',
+                bottom: '12px',
+                width: '2px',
+                background: 'var(--color-border)'
+              }} />
 
-                  {/* Timeline Node */}
+              {generatedTimeline.events.map((event, _idx) => (
+                <div key={event.id} style={{ position: 'relative' }}>
+                  {/* Node */}
                   <div style={{
                     position: 'absolute',
-                    left: '-32px',
-                    top: '8px',
+                    left: `calc(-1 * var(--space-6) + 3px)`,
+                    top: '10px',
                     width: '10px',
                     height: '10px',
                     borderRadius: '50%',
-                    background: event.status === 'completed' ? '#10b981' : '#f59e0b',
-                    border: '2px solid rgba(255, 255, 255, 0.2)'
+                    background: event.status === 'completed' ? 'var(--color-success)' : 'var(--color-warning)',
+                    border: '2px solid var(--color-bg-base)'
                   }} />
 
-                  {/* Event Card */}
                   <div style={{
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '12px',
-                    padding: '20px'
+                    background: 'var(--color-surface-subtle)',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: 'var(--space-4)'
                   }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--space-2)' }}>
                       <div>
-                        <h3 style={{ color: '#fff', fontSize: '16px', fontWeight: '600', marginBottom: '4px' }}>{event.title}</h3>
-                        <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px' }}>
-                          {new Date(event.date).toLocaleDateString()} • {event.type}
-                        </div>
+                        <h4 style={{ color: 'var(--color-text)', fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', margin: 0 }}>
+                          {event.title}
+                        </h4>
+                        <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--text-xs)' }}>
+                          {event.date} • {event.type}
+                        </span>
                       </div>
-                      <span style={{
-                        background: event.status === 'completed' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)',
-                        border: `1px solid ${event.status === 'completed' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(245, 158, 11, 0.3)'}`,
-                        borderRadius: '6px',
-                        padding: '4px 12px',
-                        color: event.status === 'completed' ? '#10b981' : '#f59e0b',
-                        fontSize: '12px'
-                      }}>
+                      <StatusBadge variant={event.status === 'completed' ? 'success' : 'warning'} size="sm">
                         {event.proceduralStage}
-                      </span>
+                      </StatusBadge>
                     </div>
+
                     {event.description && (
-                      <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', marginBottom: '12px', lineHeight: '1.6' }}>
+                      <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-sm)', margin: 'var(--space-2) 0', lineHeight: 'var(--line-height-normal)' }}>
                         {event.description}
                       </p>
                     )}
-                    <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px' }}>
-                      Legal Relevance: {event.legalRelevance}
+
+                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>
+                      Relevance: {event.legalRelevance}
                     </div>
-                    {event.documents.length > 0 && (
-                      <div style={{ marginTop: '8px', color: '#3b82f6', fontSize: '12px' }}>
-                        📎 {event.documents.length} supporting document(s)
-                      </div>
-                    )}
                   </div>
                 </div>
               ))}
             </div>
-          </div>
+          </GlassCard>
 
-          {/* Next Steps */}
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.05)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '16px',
-            padding: '32px',
-            marginBottom: '24px'
-          }}>
-            <h3 style={{ color: '#fff', fontSize: '18px', marginBottom: '16px', fontFamily: 'Merriweather, serif' }}>
+          {/* Next Steps Card */}
+          <GlassCard variant="secondary" style={{ padding: 'var(--space-5)' }}>
+            <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text)', textTransform: 'uppercase', marginBottom: 'var(--space-3)' }}>
               Suggested Next Legal Steps
-            </h3>
-            <ul style={{ margin: 0, paddingLeft: '20px', color: 'rgba(255, 255, 255, 0.8)', fontSize: '14px', lineHeight: '2' }}>
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
               {generatedTimeline.nextSteps.map((step, idx) => (
-                <li key={idx}>{step}</li>
+                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', padding: 'var(--space-2) var(--space-3)', background: 'var(--color-surface-subtle)', borderRadius: 'var(--radius-sm)' }}>
+                  <span style={{ color: 'var(--color-primary-light)', fontSize: 'var(--text-xs)', fontWeight: 'var(--font-bold)' }}>{idx + 1}.</span>
+                  <span style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text)' }}>{step}</span>
+                </div>
               ))}
-            </ul>
-          </div>
+            </div>
+          </GlassCard>
 
-          {/* Statutory Gaps */}
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.05)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '16px',
-            padding: '32px',
-            marginBottom: '24px'
-          }}>
-            <h3 style={{ color: '#fff', fontSize: '18px', marginBottom: '12px', fontFamily: 'Merriweather, serif' }}>
-              Statutory Time Gaps
-            </h3>
-            <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '14px', margin: 0 }}>
+          {/* Statutory Gap Info */}
+          <GlassCard variant="secondary" style={{ padding: 'var(--space-5)' }}>
+            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
+              Statutory Time Gap Assessment
+            </span>
+            <p style={{ margin: 'var(--space-1) 0 0 0', fontSize: 'var(--text-sm)', color: 'var(--color-text)' }}>
               {generatedTimeline.statutoryGaps}
             </p>
-          </div>
+          </GlassCard>
 
-          {/* Disclaimer */}
-          <div style={{
-            background: 'rgba(239, 68, 68, 0.1)',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
-            borderRadius: '12px',
-            padding: '20px',
-            marginBottom: '24px'
-          }}>
-            <p style={{ color: '#ef4444', fontSize: '12px', lineHeight: '1.6', margin: 0 }}>
-              <strong>Disclaimer:</strong> This AI-assisted timeline is for informational purposes only and should not replace advice from a licensed attorney.
-            </p>
+          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+            <BHIVButton variant="outline" onClick={() => setGeneratedTimeline(null)}>
+              Create New Timeline
+            </BHIVButton>
           </div>
-
-          <button
-            onClick={() => setGeneratedTimeline(null)}
-            style={{
-              width: '100%',
-              background: 'linear-gradient(135deg, #667eea, #764ba2)',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px',
-              color: '#fff',
-              cursor: 'pointer',
-              fontSize: '16px',
-              fontWeight: '600'
-            }}
-          >
-            Create New Timeline
-          </button>
         </>
       )}
     </div>

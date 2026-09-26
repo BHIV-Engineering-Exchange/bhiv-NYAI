@@ -1,292 +1,278 @@
-import React, { useState, Suspense } from 'react'
-import Galaxy from './Galaxy.jsx'
+import React, { useState, Suspense } from 'react';
+import PropTypes from 'prop-types';
+import Galaxy from './Galaxy.jsx';
+import BHIVButton from './ui/BHIVButton.jsx';
+import StatusBadge from './ui/StatusBadge.jsx';
+import { getMitraApiBaseUrl } from '../services/mitraApi.js';
+import './AuthPage.css';
 
+/**
+ * Redesigned AuthPage
+ * Clean BHIV design language, preserving all login/signup and guest mode state.
+ */
 const AuthPage = ({ onAuthSuccess, onSkipAuth }) => {
-  const [isLogin, setIsLogin] = useState(true)
+  const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     name: ''
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState('')
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError('')
-    setIsSubmitting(true)
+    e.preventDefault();
+    setError('');
+    setIsSubmitting(true);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 500))
+      await new Promise(resolve => setTimeout(resolve, 400));
       
       if (isLogin) {
         if (formData.email && formData.password) {
-          const userName = formData.email.split('@')[0]
-          const userData = { email: formData.email, name: userName }
-          localStorage.setItem('nyaya_user', JSON.stringify(userData))
-          onAuthSuccess(userData)
+          const userName = formData.email.split('@')[0];
+          const userData = { email: formData.email, name: userName };
+
+          // Seamless MITRA JWT exchange if credentials match backend
+          try {
+            const baseUrl = getMitraApiBaseUrl();
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 3500);
+            const authRes = await fetch(`${baseUrl}/api/auth/login`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: formData.email, password: formData.password }),
+              signal: controller.signal
+            });
+            clearTimeout(timer);
+            if (authRes.ok) {
+              const authData = await authRes.json();
+              if (authData.token) {
+                userData.token = authData.token;
+                userData.id = authData.user?.id || userData.email;
+                localStorage.setItem('authToken', authData.token);
+              }
+            }
+          } catch {
+            // Standalone / offline fallback preserved
+          }
+
+          localStorage.setItem('nyaya_user', JSON.stringify(userData));
+          onAuthSuccess(userData);
         } else {
-          setError('Please enter email and password')
-          setIsSubmitting(false)
+          setError('Please enter both email and password');
+          setIsSubmitting(false);
         }
       } else {
         if (formData.email && formData.password && formData.name) {
-          const userData = { email: formData.email, name: formData.name }
-          localStorage.setItem('nyaya_user', JSON.stringify(userData))
-          onAuthSuccess(userData)
+          const userData = { email: formData.email, name: formData.name };
+
+          // Seamless MITRA signup exchange
+          try {
+            const baseUrl = getMitraApiBaseUrl();
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 3500);
+            const signupRes = await fetch(`${baseUrl}/api/auth/signup`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name: formData.name, email: formData.email, password: formData.password }),
+              signal: controller.signal
+            });
+            clearTimeout(timer);
+            if (signupRes.ok) {
+              const sData = await signupRes.json();
+              if (sData.token) {
+                userData.token = sData.token;
+                userData.id = sData.user?.id || userData.email;
+                localStorage.setItem('authToken', sData.token);
+              }
+            }
+          } catch {
+            // Standalone / offline fallback preserved
+          }
+
+          localStorage.setItem('nyaya_user', JSON.stringify(userData));
+          onAuthSuccess(userData);
         } else {
-          setError('Please fill all fields')
-          setIsSubmitting(false)
+          setError('Please complete all required fields');
+          setIsSubmitting(false);
         }
       }
     } catch (err) {
-      setError('Authentication failed')
-      setIsSubmitting(false)
+      setError('Authentication failed. Please try again.');
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'relative',
-      padding: '20px',
-      background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-      overflow: 'hidden'
-    }}>
-      {/* Galaxy Background */}
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        zIndex: -1,
-        pointerEvents: 'none'
-      }}>
-        <Suspense fallback={
-          <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }} />
-        }>
+    <div className="bhiv-auth-page">
+      {/* Background Galaxy */}
+      <div className="bhiv-auth-page__galaxy-layer" aria-hidden="true">
+        <Suspense fallback={<div style={{ width: '100%', height: '100%', background: '#0b0f19' }} />}>
           <Galaxy 
             mouseInteraction={false}
             density={0.5}
-            glowIntensity={0.1}
+            glowIntensity={0.15}
             saturation={0}
             hueShift={200}
-            twinkleIntensity={0.1}
-            rotationSpeed={0.01}
-            starSpeed={0.1}
-            speed={0.3}
+            twinkleIntensity={0.2}
+            rotationSpeed={0.02}
+            starSpeed={0.15}
+            speed={0.4}
           />
         </Suspense>
       </div>
 
-      {/* Auth Card */}
-      <div style={{
-        position: 'relative',
-        zIndex: 10,
-        width: '100%',
-        maxWidth: '400px',
-        background: 'rgba(255, 255, 255, 0.1)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
-        borderRadius: '20px',
-        padding: '40px',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
-      }}>
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '8px' }}>
-            <img src="/03.svg" alt="NYAI Logo" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
-            <h1 style={{ color: '#fff', fontSize: '32px', fontWeight: '700', margin: 0 }}>
-              NYAI
-            </h1>
+      {/* BHIV Auth Card */}
+      <div className="bhiv-auth-card" role="region" aria-labelledby="auth-title">
+        <div className="bhiv-auth-card__header">
+          <div className="bhiv-auth-card__logo-group">
+            <img src="/03.svg" alt="NYAI Logo" className="bhiv-auth-card__logo" />
+            <div className="bhiv-auth-card__brand-text">
+              <span className="bhiv-auth-card__brand-ecosystem">BHIV</span>
+              <span className="bhiv-auth-card__brand-separator">/</span>
+              <span id="auth-title">NYAI</span>
+            </div>
           </div>
-          <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '14px' }}>
-            Sovereign Legal Intelligence Platform
+          <StatusBadge variant="info" size="sm">
+            LEGAL INTELLIGENCE PLATFORM
+          </StatusBadge>
+          <p className="bhiv-auth-card__subtitle">
+            Enterprise legal research & statutory reasoning OS
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
+        {/* Tab Switcher */}
+        <div className="bhiv-auth-card__tabs" role="tablist">
           <button
             type="button"
-            onClick={() => setIsLogin(true)}
-            style={{
-              flex: 1,
-              padding: '12px',
-              background: isLogin ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
-              border: isLogin ? '2px solid rgba(255, 255, 255, 0.4)' : '2px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '8px',
-              color: '#fff',
-              fontSize: '14px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
+            role="tab"
+            aria-selected={isLogin}
+            className={`bhiv-auth-card__tab-btn ${isLogin ? 'bhiv-auth-card__tab-btn--active' : ''}`}
+            onClick={() => { setIsLogin(true); setError(''); }}
           >
             Login
           </button>
           <button
             type="button"
-            onClick={() => setIsLogin(false)}
-            style={{
-              flex: 1,
-              padding: '12px',
-              background: !isLogin ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
-              border: !isLogin ? '2px solid rgba(255, 255, 255, 0.4)' : '2px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '8px',
-              color: '#fff',
-              fontSize: '14px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
+            role="tab"
+            aria-selected={!isLogin}
+            className={`bhiv-auth-card__tab-btn ${!isLogin ? 'bhiv-auth-card__tab-btn--active' : ''}`}
+            onClick={() => { setIsLogin(false); setError(''); }}
           >
             Sign Up
           </button>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        {/* Auth Form */}
+        <form onSubmit={handleSubmit} noValidate>
           {!isLogin && (
-            <div style={{ marginBottom: '16px' }}>
-              <label style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '13px', marginBottom: '6px', display: 'block' }}>
+            <div className="bhiv-auth-card__form-group">
+              <label className="bhiv-auth-card__label" htmlFor="auth-name">
                 Full Name
               </label>
               <input
+                id="auth-name"
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Enter your name"
-                autoComplete="off"
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: '8px',
-                  color: '#fff',
-                  fontSize: '14px',
-                  outline: 'none'
-                }}
+                placeholder="e.g. Adv. Rajesh Sharma"
+                autoComplete="name"
+                className="bhiv-auth-card__input"
               />
             </div>
           )}
 
-          <div style={{ marginBottom: '16px' }}>
-            <label style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '13px', marginBottom: '6px', display: 'block' }}>
-              Email
+          <div className="bhiv-auth-card__form-group">
+            <label className="bhiv-auth-card__label" htmlFor="auth-email">
+              Email Address
             </label>
             <input
+              id="auth-email"
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="Enter your email"
-              autoComplete="off"
-              style={{
-                width: '100%',
-                padding: '12px',
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '8px',
-                color: '#fff',
-                fontSize: '14px',
-                outline: 'none'
-              }}
+              placeholder="name@organization.com"
+              autoComplete="email"
+              required
+              className="bhiv-auth-card__input"
             />
           </div>
 
-          <div style={{ marginBottom: '24px' }}>
-            <label style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '13px', marginBottom: '6px', display: 'block' }}>
+          <div className="bhiv-auth-card__form-group">
+            <label className="bhiv-auth-card__label" htmlFor="auth-password">
               Password
             </label>
             <input
+              id="auth-password"
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Enter your password"
-              autoComplete="off"
-              style={{
-                width: '100%',
-                padding: '12px',
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '8px',
-                color: '#fff',
-                fontSize: '14px',
-                outline: 'none'
-              }}
+              placeholder="••••••••••••"
+              autoComplete={isLogin ? 'current-password' : 'new-password'}
+              required
+              className="bhiv-auth-card__input"
             />
           </div>
 
           {error && (
-            <div style={{
-              padding: '12px',
-              background: 'rgba(239, 68, 68, 0.2)',
-              border: '1px solid rgba(239, 68, 68, 0.4)',
-              borderRadius: '8px',
-              color: '#fff',
-              fontSize: '13px',
-              marginBottom: '16px'
-            }}>
+            <div className="bhiv-auth-card__error" role="alert">
               {error}
             </div>
           )}
 
-          <button
+          <BHIVButton
             type="submit"
-            disabled={isSubmitting}
-            style={{
-              width: '100%',
-              padding: '14px',
-              background: isSubmitting ? 'rgba(255, 255, 255, 0.2)' : '#fff',
-              border: 'none',
-              borderRadius: '8px',
-              color: isSubmitting ? '#fff' : '#667eea',
-              fontSize: '15px',
-              fontWeight: '700',
-              cursor: isSubmitting ? 'not-allowed' : 'pointer'
-            }}
+            variant="primary"
+            size="lg"
+            fullWidth
+            loading={isSubmitting}
           >
-            {isSubmitting ? 'Processing...' : isLogin ? 'Login' : 'Sign Up'}
-          </button>
+            {isLogin ? 'Sign In to NYAI' : 'Create NYAI Account'}
+          </BHIVButton>
         </form>
 
-        <div style={{ marginTop: '24px', textAlign: 'center' }}>
-          <p style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px' }}>
-            {isLogin ? "Don't have an account? " : "Already have an account? "}
-            <span
-              onClick={() => setIsLogin(!isLogin)}
-              style={{ color: '#fff', fontWeight: '600', cursor: 'pointer', textDecoration: 'underline' }}
+        <div className="bhiv-auth-card__footer">
+          <div className="bhiv-auth-card__toggle-text">
+            {isLogin ? "Don't have an account yet?" : "Already registered?"}
+            <button
+              type="button"
+              className="bhiv-auth-card__toggle-link"
+              onClick={() => { setIsLogin(!isLogin); setError(''); }}
             >
               {isLogin ? 'Sign Up' : 'Login'}
-            </span>
-          </p>
-          <button
+            </button>
+          </div>
+
+          <div className="bhiv-auth-card__guest-divider">
+            <span>or evaluate platform</span>
+          </div>
+
+          <BHIVButton
             type="button"
+            variant="ghost"
+            size="md"
+            fullWidth
             onClick={onSkipAuth}
-            style={{
-              marginTop: '12px',
-              padding: '8px 16px',
-              background: 'transparent',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: '8px',
-              color: 'rgba(255, 255, 255, 0.7)',
-              fontSize: '12px',
-              cursor: 'pointer'
-            }}
           >
             Continue as Guest
-          </button>
+          </BHIVButton>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AuthPage
+AuthPage.propTypes = {
+  onAuthSuccess: PropTypes.func.isRequired,
+  onSkipAuth: PropTypes.func.isRequired
+};
+
+export default AuthPage;

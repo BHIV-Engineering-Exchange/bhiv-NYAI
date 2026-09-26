@@ -5,6 +5,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
+    watch: {
+      ignored: ['**/playwright-report/**', '**/test-results/**', '**/.tempmediaStorage/**']
+    },
     proxy: {
       '/nyaya': {
         target: 'http://localhost:8000',

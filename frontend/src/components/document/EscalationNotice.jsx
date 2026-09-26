@@ -6,6 +6,7 @@
  * Overlays a sticky banner indicating professional consultation is advised.
  */
 import React from 'react'
+import { Scale, TrendingUp } from 'lucide-react'
 import DecisionHeader from './DecisionHeader.jsx'
 import CaseContext from './CaseContext.jsx'
 import ProceduralSteps from './ProceduralSteps.jsx'
@@ -41,7 +42,7 @@ const EscalationNotice = ({
       alignItems: 'flex-start',
       gap: '14px'
     }}>
-      <span style={{ fontSize: '22px', flexShrink: 0, marginTop: '2px' }}>⚖️</span>
+      <Scale size={22} color="#c2410c" style={{ flexShrink: 0, marginTop: '2px' }} />
       <div style={{ flex: 1 }}>
         <div style={{
           fontSize: '11px', fontWeight: '700', letterSpacing: '2px',
@@ -77,7 +78,9 @@ const EscalationNotice = ({
         borderRadius: '8px',
         textAlign: 'center'
       }}>
-        <span style={{ fontSize: '28px', display: 'block', marginBottom: '12px' }}>📈</span>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+          <TrendingUp size={28} color="#c2410c" />
+        </div>
         <p style={{
           margin: 0, fontSize: '14px', color: '#6b7280',
           fontStyle: 'italic', lineHeight: '1.6'

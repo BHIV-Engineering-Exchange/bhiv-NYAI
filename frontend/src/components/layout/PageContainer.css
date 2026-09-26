@@ -1,0 +1,55 @@
+/**
+ * BHIV Design System - PageContainer Styles
+ */
+
+.bhiv-page-container {
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: var(--bhiv-space-8, 32px) var(--bhiv-space-6, 24px) var(--bhiv-space-16, 64px) var(--bhiv-space-6, 24px);
+  position: relative;
+  box-sizing: border-box;
+}
+
+.bhiv-page-container--narrow {
+  max-width: 900px;
+}
+
+.bhiv-page-container--full {
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .bhiv-page-container {
+    padding: var(--bhiv-space-5, 20px) var(--bhiv-space-4, 16px) var(--bhiv-space-10, 40px) var(--bhiv-space-4, 16px);
+  }
+}
+
+@media (max-width: 480px) {
+  .bhiv-page-container {
+    padding: var(--bhiv-space-4, 16px) var(--bhiv-space-3, 12px) var(--bhiv-space-8, 32px) var(--bhiv-space-3, 12px);
+  }
+}
+
+/* Subtle enterprise page transitions (180ms) */
+.bhiv-page-transition {
+  animation: bhivPageViewIn 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+}
+
+@keyframes bhivPageViewIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bhiv-page-transition {
+    animation: none !important;
+  }
+}

@@ -1,9 +1,24 @@
 import React from 'react';
-import ApiErrorState from './ApiErrorState.jsx';
+import PropTypes from 'prop-types';
+import GlassCard from './ui/GlassCard.jsx';
+import StatusBadge from './ui/StatusBadge.jsx';
 import SkeletonLoader from './SkeletonLoader.jsx';
+import ApiErrorState from './ApiErrorState.jsx';
 
-const TimelineCard = ({ events, jurisdiction, caseId, traceId, loading, error, onRetry }) => {
-  if (loading) return <SkeletonLoader type="card" count={4} />
+/**
+ * BHIV Timeline Card
+ * Clean vertical procedural timeline with status badges and accessible semantics.
+ */
+const TimelineCard = ({
+  events,
+  jurisdiction,
+  caseId,
+  traceId,
+  loading,
+  error,
+  onRetry
+}) => {
+  if (loading) return <SkeletonLoader type="card" count={4} />;
 
   if (error || !events || !Array.isArray(events) || events.length === 0 || !jurisdiction) {
     return (
@@ -13,228 +28,222 @@ const TimelineCard = ({ events, jurisdiction, caseId, traceId, loading, error, o
         traceId={traceId}
         onRetry={onRetry}
       />
-    )
+    );
   }
 
-  // Sort events by date
   const sortedEvents = [...events].sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  // Helper functions for styling
-  const getEventTypeConfig = (type) => {
-    switch (type) {
-      case 'event':
-        return { color: '#007bff', icon: '📅', label: 'Event' };
-      case 'deadline':
-        return { color: '#dc3545', icon: '⏰', label: 'Deadline' };
-      case 'milestone':
-        return { color: '#28a745', icon: '🏆', label: 'Milestone' };
-      case 'step':
-        return { color: '#6f42c1', icon: '📋', label: 'Step' };
-      default:
-        return { color: '#6c757d', icon: '📝', label: 'Unknown' };
-    }
-  };
-
-  const getStatusConfig = (status) => {
+  const getStatusVariant = (status) => {
     switch (status) {
       case 'completed':
-        return { color: '#28a745', icon: '✅', label: 'Completed' };
+        return 'success';
       case 'pending':
-        return { color: '#ffc107', icon: '⏳', label: 'Pending' };
+        return 'warning';
       case 'overdue':
-        return { color: '#dc3545', icon: '⚠️', label: 'Overdue' };
+        return 'error';
       default:
-        return { color: '#6c757d', icon: '❓', label: 'Unknown' };
+        return 'neutral';
     }
   };
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    } catch {
+      return dateString;
+    }
   };
 
   return (
-    <div className="consultation-card">
+    <GlassCard padding="spacious" style={{ marginBottom: '24px' }}>
       {/* Header */}
-      <h2 style={{
-        fontSize: '1.5rem',
-        color: '#2c3e50',
-        marginBottom: '20px',
-        fontWeight: '600'
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '12px',
+        marginBottom: '24px',
+        paddingBottom: '16px',
+        borderBottom: '1px solid var(--bhiv-border-subtle, rgba(255, 255, 255, 0.08))'
       }}>
-        Case Timeline - {caseId}
-      </h2>
+        <div>
+          <div style={{
+            fontFamily: 'var(--bhiv-font-body)',
+            fontSize: 'var(--bhiv-text-xs, 0.75rem)',
+            fontWeight: 'var(--bhiv-weight-semibold, 600)',
+            color: 'var(--bhiv-primary-hover, #818cf8)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em',
+            marginBottom: '4px'
+          }}>
+            Case Timeline {caseId ? `· ${caseId}` : ''}
+          </div>
+          <h2 style={{
+            fontFamily: 'var(--bhiv-font-heading)',
+            fontSize: 'var(--bhiv-text-xl, 1.25rem)',
+            fontWeight: 'var(--bhiv-weight-bold, 700)',
+            color: 'var(--bhiv-text-primary, #f9fafb)',
+            margin: 0
+          }}>
+            Procedural Milestones
+          </h2>
+        </div>
 
-      {/* Jurisdiction */}
-      <div style={{ marginBottom: '20px' }}>
-        <div className="section-label">Jurisdiction</div>
-        <p style={{
-          color: '#495057',
-          fontSize: '14px',
-          fontWeight: '500'
-        }}>
+        <StatusBadge variant="info" size="md">
           {jurisdiction}
-        </p>
+        </StatusBadge>
       </div>
 
-      {/* Timeline */}
-      <div style={{ marginBottom: '20px' }}>
-        <div className="section-label">Timeline Events</div>
+      {/* Vertical Timeline */}
+      <div style={{
+        position: 'relative',
+        paddingLeft: '32px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px'
+      }}>
+        {/* Timeline Connecting Line */}
         <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '20px',
-          position: 'relative'
-        }}>
-          {/* Timeline line */}
-          <div style={{
-            position: 'absolute',
-            left: '30px',
-            top: '40px',
-            bottom: '40px',
-            width: '2px',
-            backgroundColor: '#007bff',
-            zIndex: 1
-          }} />
+          position: 'absolute',
+          left: '11px',
+          top: '16px',
+          bottom: '16px',
+          width: '2px',
+          backgroundColor: 'var(--bhiv-border, rgba(255, 255, 255, 0.12))'
+        }} aria-hidden="true" />
 
-          {sortedEvents.map((event, index) => {
-            const typeConfig = getEventTypeConfig(event.type);
-            const statusConfig = event.status ? getStatusConfig(event.status) : null;
+        {sortedEvents.map((event, index) => {
+          const statusVariant = getStatusVariant(event.status);
 
-            return (
+          return (
+            <div
+              key={event.id || index}
+              style={{
+                position: 'relative',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              }}
+            >
+              {/* Timeline Bullet Node */}
               <div
-                key={event.id}
                 style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '15px',
-                  position: 'relative'
-                }}
-              >
-                {/* Event icon */}
-                <div style={{
-                  width: '60px',
-                  height: '60px',
+                  position: 'absolute',
+                  left: '-32px',
+                  top: '2px',
+                  width: '24px',
+                  height: '24px',
                   borderRadius: '50%',
-                  backgroundColor: typeConfig.color,
-                  color: 'white',
+                  backgroundColor: 'var(--bhiv-surface, #111827)',
+                  border: '2px solid var(--bhiv-primary, #6366f1)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '24px',
-                  flexShrink: 0,
-                  zIndex: 2,
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                }}>
-                  {typeConfig.icon}
-                </div>
+                  fontSize: '0.6875rem',
+                  fontWeight: 700,
+                  color: 'var(--bhiv-primary-hover, #818cf8)',
+                  zIndex: 1
+                }}
+                aria-hidden="true"
+              >
+                {index + 1}
+              </div>
 
-                {/* Event content */}
+              {/* Event Content Container */}
+              <div
+                style={{
+                  background: 'rgba(0, 0, 0, 0.25)',
+                  border: '1px solid var(--bhiv-border-subtle, rgba(255, 255, 255, 0.06))',
+                  borderRadius: 'var(--bhiv-radius-md, 12px)',
+                  padding: '16px'
+                }}
+              >
                 <div style={{
-                  backgroundColor: '#f8f9fa',
-                  padding: '15px',
-                  borderRadius: '8px',
-                  border: '1px solid #e9ecef',
-                  flex: 1
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '8px',
+                  marginBottom: '8px'
                 }}>
-                  {/* Header with title, date, and status */}
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-start',
-                    marginBottom: '10px',
-                    flexWrap: 'wrap',
-                    gap: '10px'
-                  }}>
-                    <div style={{ flex: 1 }}>
-                      <h4 style={{
-                        fontSize: '1.1rem',
-                        color: '#2c3e50',
-                        margin: '0 0 5px 0',
-                        fontWeight: '600'
-                      }}>
-                        {event.title}
-                      </h4>
-                      <div style={{
-                        fontSize: '14px',
-                        color: '#6c757d',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '10px'
-                      }}>
-                        <span>{formatDate(event.date)}</span>
-                        <span style={{
-                          backgroundColor: typeConfig.color,
-                          color: 'white',
-                          padding: '2px 6px',
-                          borderRadius: '4px',
-                          fontSize: '12px',
-                          fontWeight: '500'
-                        }}>
-                          {typeConfig.label}
-                        </span>
-                        {statusConfig && (
-                          <span style={{
-                            backgroundColor: statusConfig.color,
-                            color: 'white',
-                            padding: '2px 6px',
-                            borderRadius: '4px',
-                            fontSize: '12px',
-                            fontWeight: '500',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '2px'
-                          }}>
-                            {statusConfig.icon} {statusConfig.label}
-                          </span>
-                        )}
-                      </div>
+                  <div>
+                    <h3 style={{
+                      fontFamily: 'var(--bhiv-font-heading)',
+                      fontSize: 'var(--bhiv-text-md, 1rem)',
+                      fontWeight: 'var(--bhiv-weight-semibold, 600)',
+                      color: 'var(--bhiv-text-primary, #f9fafb)',
+                      margin: '0 0 4px 0'
+                    }}>
+                      {event.title}
+                    </h3>
+                    <div style={{
+                      fontFamily: 'var(--bhiv-font-body)',
+                      fontSize: 'var(--bhiv-text-xs, 0.75rem)',
+                      color: 'var(--bhiv-text-muted, #6b7280)'
+                    }}>
+                      {formatDate(event.date)}
                     </div>
                   </div>
 
-                  {/* Description */}
-                  <p style={{
-                    margin: '0 0 10px 0',
-                    color: '#495057',
-                    fontSize: '14px',
-                    lineHeight: '1.5'
-                  }}>
-                    {event.description}
-                  </p>
-
-                  {/* Additional details */}
-                  {(event.documents && event.documents.length > 0) || (event.parties && event.parties.length > 0) ? (
-                    <div style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '8px',
-                      fontSize: '13px',
-                      color: '#6c757d'
-                    }}>
-                      {event.documents && event.documents.length > 0 && (
-                        <div>
-                          <strong>Documents:</strong> {event.documents.join(', ')}
-                        </div>
-                      )}
-                      {event.parties && event.parties.length > 0 && (
-                        <div>
-                          <strong>Parties:</strong> {event.parties.join(', ')}
-                        </div>
-                      )}
-                    </div>
-                  ) : null}
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    {event.type && (
+                      <StatusBadge variant="neutral" size="sm">
+                        {event.type}
+                      </StatusBadge>
+                    )}
+                    {event.status && (
+                      <StatusBadge variant={statusVariant} size="sm">
+                        {event.status}
+                      </StatusBadge>
+                    )}
+                  </div>
                 </div>
+
+                <p style={{
+                  fontFamily: 'var(--bhiv-font-body)',
+                  fontSize: 'var(--bhiv-text-sm, 0.875rem)',
+                  lineHeight: 'var(--bhiv-leading-normal, 1.5)',
+                  color: 'var(--bhiv-text-secondary, #9ca3af)',
+                  margin: 0
+                }}>
+                  {event.description}
+                </p>
+
+                {(event.documents && event.documents.length > 0) && (
+                  <div style={{
+                    marginTop: '10px',
+                    fontSize: 'var(--bhiv-text-xs, 0.75rem)',
+                    color: 'var(--bhiv-text-muted, #6b7280)'
+                  }}>
+                    <strong>Documents: </strong>
+                    <span style={{ color: 'var(--bhiv-text-secondary, #9ca3af)' }}>
+                      {event.documents.join(', ')}
+                    </span>
+                  </div>
+                )}
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
       </div>
-    </div>
+    </GlassCard>
   );
+};
+
+TimelineCard.propTypes = {
+  events: PropTypes.array,
+  jurisdiction: PropTypes.string,
+  caseId: PropTypes.string,
+  traceId: PropTypes.string,
+  loading: PropTypes.bool,
+  error: PropTypes.string,
+  onRetry: PropTypes.func
 };
 
 export default TimelineCard;

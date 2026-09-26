@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Paperclip, CheckCircle } from 'lucide-react'
 import { legalQueryService } from '../services/nyayaApi'
 
 const legalIssueTypes = [
@@ -223,14 +224,19 @@ export default function LegalConsultation({ onBack }) {
               <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '14px' }}>
                 {formData.files.length > 0 ? (
                   <div>
-                    <div style={{ color: '#10b981', marginBottom: '8px' }}>✓ {formData.files.length} file(s) selected</div>
+                    <div style={{ color: '#10b981', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                      <CheckCircle size={16} />
+                      <span>{formData.files.length} file(s) selected</span>
+                    </div>
                     {formData.files.map((f, i) => (
                       <div key={i} style={{ fontSize: '12px', marginTop: '4px' }}>{f.name}</div>
                     ))}
                   </div>
                 ) : (
                   <>
-                    <div style={{ fontSize: '32px', marginBottom: '12px' }}>📎</div>
+                    <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'center' }}>
+                      <Paperclip size={32} color="var(--bhiv-primary-hover, #818cf8)" />
+                    </div>
                     <div>Click to upload or drag and drop</div>
                     <div style={{ fontSize: '12px', marginTop: '8px' }}>PDF, DOCX, or Images</div>
                   </>

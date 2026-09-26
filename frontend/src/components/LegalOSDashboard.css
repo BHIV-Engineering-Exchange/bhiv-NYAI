@@ -1,0 +1,236 @@
+/**
+ * BHIV Design System - LegalOSDashboard Styles
+ */
+
+.bhiv-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bhiv-space-10, 40px);
+}
+
+/* ==========================================================================
+   Hero Section - Left Aligned Enterprise Command Console
+   ========================================================================== */
+.bhiv-dashboard__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding: var(--bhiv-space-6, 24px) 0 var(--bhiv-space-4, 16px) 0;
+  max-width: 900px;
+}
+
+.bhiv-dashboard__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bhiv-space-2, 8px);
+  font-family: var(--bhiv-font-body);
+  font-size: var(--bhiv-text-xs, 0.75rem);
+  font-weight: var(--bhiv-weight-semibold, 600);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--bhiv-primary-hover, #818cf8);
+  margin-bottom: var(--bhiv-space-3, 12px);
+  background: var(--bhiv-primary-muted, rgba(99, 102, 241, 0.15));
+  padding: 4px 12px;
+  border-radius: var(--bhiv-radius-pill, 9999px);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+.bhiv-dashboard__heading {
+  font-family: var(--bhiv-font-heading);
+  font-size: 2.25rem; /* 36px */
+  font-weight: var(--bhiv-weight-bold, 700);
+  line-height: 1.2;
+  color: var(--bhiv-text-primary, #f9fafb);
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--bhiv-space-3, 12px) 0;
+}
+
+.bhiv-dashboard__subtitle {
+  font-family: var(--bhiv-font-body);
+  font-size: var(--bhiv-text-base, 1rem);
+  line-height: var(--bhiv-leading-relaxed, 1.625);
+  color: var(--bhiv-text-secondary, #9ca3af);
+  max-width: 760px;
+  margin: 0 0 var(--bhiv-space-5, 20px) 0;
+}
+
+.bhiv-dashboard__cta-group {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--bhiv-space-3, 12px);
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   Capabilities Bar
+   ========================================================================== */
+.bhiv-dashboard__capabilities {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--bhiv-space-6, 24px);
+  flex-wrap: wrap;
+  padding: var(--bhiv-space-3, 12px) var(--bhiv-space-5, 20px);
+  background: rgba(17, 24, 39, 0.5);
+  border: 1px solid var(--bhiv-border-subtle, rgba(255, 255, 255, 0.06));
+  border-radius: var(--bhiv-radius-lg, 16px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.bhiv-dashboard__cap-item {
+  display: flex;
+  align-items: center;
+  gap: var(--bhiv-space-2, 8px);
+  font-family: var(--bhiv-font-body);
+  font-size: var(--bhiv-text-xs, 0.75rem);
+  font-weight: var(--bhiv-weight-medium, 500);
+  color: var(--bhiv-text-secondary, #9ca3af);
+}
+
+.bhiv-dashboard__cap-icon {
+  display: flex;
+  align-items: center;
+  color: var(--bhiv-primary-hover, #818cf8);
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Core Modules Section
+   ========================================================================== */
+.bhiv-dashboard__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bhiv-space-4, 16px);
+}
+
+.bhiv-dashboard__section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--bhiv-border-subtle, rgba(255, 255, 255, 0.06));
+  padding-bottom: var(--bhiv-space-3, 12px);
+}
+
+.bhiv-dashboard__section-title {
+  font-family: var(--bhiv-font-heading);
+  font-size: var(--bhiv-text-xl, 1.25rem);
+  font-weight: var(--bhiv-weight-semibold, 600);
+  color: var(--bhiv-text-primary, #f9fafb);
+  margin: 0;
+}
+
+.bhiv-dashboard__section-desc {
+  font-family: var(--bhiv-font-body);
+  font-size: var(--bhiv-text-xs, 0.75rem);
+  color: var(--bhiv-text-muted, #6b7280);
+}
+
+.bhiv-dashboard__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--bhiv-space-4, 16px);
+}
+
+.bhiv-dashboard__module-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  min-height: 180px;
+}
+
+.bhiv-dashboard__card-top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bhiv-space-2, 8px);
+}
+
+.bhiv-dashboard__card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--bhiv-space-2, 8px);
+}
+
+.bhiv-dashboard__card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--bhiv-radius-md, 12px);
+  background: var(--bhiv-primary-muted, rgba(99, 102, 241, 0.12));
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bhiv-primary-hover, #818cf8);
+  flex-shrink: 0;
+}
+
+.bhiv-dashboard__card-title {
+  font-family: var(--bhiv-font-heading);
+  font-size: var(--bhiv-text-md, 1rem);
+  font-weight: var(--bhiv-weight-semibold, 600);
+  color: var(--bhiv-text-primary, #f9fafb);
+  margin: 0;
+}
+
+.bhiv-dashboard__card-desc {
+  font-family: var(--bhiv-font-body);
+  font-size: var(--bhiv-text-xs, 0.75rem);
+  line-height: var(--bhiv-leading-normal, 1.5);
+  color: var(--bhiv-text-secondary, #9ca3af);
+  margin: 0;
+}
+
+.bhiv-dashboard__card-action {
+  display: flex;
+  align-items: center;
+  gap: var(--bhiv-space-1, 4px);
+  font-family: var(--bhiv-font-body);
+  font-size: var(--bhiv-text-xs, 0.75rem);
+  font-weight: var(--bhiv-weight-semibold, 600);
+  color: var(--bhiv-primary-hover, #818cf8);
+  margin-top: var(--bhiv-space-4, 16px);
+  transition: gap var(--bhiv-transition-fast);
+}
+
+.bhiv-dashboard__module-card:hover .bhiv-dashboard__card-action {
+  gap: var(--bhiv-space-2, 8px);
+  color: #fff;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .bhiv-dashboard__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .bhiv-dashboard__heading {
+    font-size: 2rem;
+  }
+
+  .bhiv-dashboard__subtitle {
+    font-size: var(--bhiv-text-md, 1rem);
+  }
+
+  .bhiv-dashboard__capabilities {
+    gap: var(--bhiv-space-4, 16px);
+  }
+
+  .bhiv-dashboard__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bhiv-dashboard__section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}

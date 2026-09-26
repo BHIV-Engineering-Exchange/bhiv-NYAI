@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import ApiErrorState from './ApiErrorState.jsx';
-import SkeletonLoader from './SkeletonLoader.jsx';
+import React, { useState } from 'react'
+import ApiErrorState from './ApiErrorState.jsx'
+import SkeletonLoader from './SkeletonLoader.jsx'
+import GlassCard from './ui/GlassCard.jsx'
+import StatusBadge from './ui/StatusBadge.jsx'
 
 const GlossaryCard = ({ terms, jurisdiction, caseType, traceId, loading, error, onRetry }) => {
   const [expandedTerms, setExpandedTerms] = useState(new Set())
@@ -19,122 +21,110 @@ const GlossaryCard = ({ terms, jurisdiction, caseType, traceId, loading, error, 
   }
 
   const toggleTerm = (term) => {
-    const newExpanded = new Set(expandedTerms);
+    const newExpanded = new Set(expandedTerms)
     if (newExpanded.has(term)) {
-      newExpanded.delete(term);
+      newExpanded.delete(term)
     } else {
-      newExpanded.add(term);
+      newExpanded.add(term)
     }
-    setExpandedTerms(newExpanded);
-  };
+    setExpandedTerms(newExpanded)
+  }
 
   return (
-    <div className="consultation-card">
+    <GlassCard variant="primary" style={{ padding: 'var(--space-6)' }}>
       {/* Header */}
-      <h2 style={{
-        fontSize: '1.5rem',
-        color: '#2c3e50',
-        marginBottom: '20px',
-        fontWeight: '600'
-      }}>
-        Legal Glossary
-        {caseType && (
-          <span style={{
-            fontSize: '0.9rem',
-            color: '#6c757d',
-            fontWeight: '400',
-            marginLeft: '10px'
-          }}>
-            ({caseType})
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+        <div>
+          <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'var(--font-semibold)', color: 'var(--color-primary-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Reference Intelligence
           </span>
-        )}
-      </h2>
-
-      {/* Jurisdiction */}
-      <div style={{ marginBottom: '20px' }}>
-        <div className="section-label">Jurisdiction</div>
-        <p style={{
-          color: '#495057',
-          fontSize: '14px',
-          fontWeight: '500'
-        }}>
+          <h3 style={{
+            fontFamily: 'var(--font-family-heading)',
+            fontSize: 'var(--text-lg)',
+            fontWeight: 'var(--font-semibold)',
+            color: 'var(--color-text)',
+            margin: 'var(--space-1) 0 0 0'
+          }}>
+            Legal Glossary
+            {caseType && (
+              <span style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', fontWeight: 'normal', marginLeft: 'var(--space-2)' }}>
+                ({caseType})
+              </span>
+            )}
+          </h3>
+        </div>
+        <StatusBadge variant="info" size="sm">
           {jurisdiction}
-        </p>
+        </StatusBadge>
       </div>
 
       {/* Terms List */}
-      <div>
-        <div className="section-label">Terms & Definitions</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
         {terms?.map((termData, index) => {
-          const isExpanded = expandedTerms.has(termData?.term);
-          const hasConfidence = termData?.confidence !== undefined;
+          const isExpanded = expandedTerms.has(termData?.term)
+          const hasConfidence = termData?.confidence !== undefined
 
           return (
-            <div key={index} style={{
-              border: '1px solid #e9ecef',
-              borderRadius: '8px',
-              marginBottom: '10px',
-              overflow: 'hidden'
-            }}>
+            <div
+              key={index}
+              style={{
+                background: 'var(--color-surface-subtle)',
+                border: '1px solid var(--color-border)',
+                borderRadius: 'var(--radius-md)',
+                overflow: 'hidden'
+              }}
+            >
               {/* Term Header */}
               <div
                 style={{
-                  padding: '15px',
-                  backgroundColor: '#f8f9fa',
+                  padding: 'var(--space-3) var(--space-4)',
                   cursor: 'pointer',
                   display: 'flex',
                   justifyContent: 'space-between',
-                  alignItems: 'center'
+                  alignItems: 'center',
+                  background: isExpanded ? 'var(--color-surface-muted)' : 'transparent'
                 }}
                 onClick={() => toggleTerm(termData?.term)}
               >
-                <h3 style={{
-                  fontSize: '1.1rem',
-                  color: '#2c3e50',
-                  margin: 0,
-                  fontWeight: '600'
-                }}>
-                  {termData?.term}
-                </h3>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                  <span style={{ color: 'var(--color-primary-light)', fontSize: 'var(--text-xs)' }}>
+                    {isExpanded ? '▼' : '▶'}
+                  </span>
+                  <span style={{
+                    fontSize: 'var(--text-sm)',
+                    color: 'var(--color-text)',
+                    fontWeight: 'var(--font-semibold)'
+                  }}>
+                    {termData?.term}
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
                   {hasConfidence && (
                     <span style={{
-                      fontSize: '12px',
-                      color: '#6c757d',
-                      fontWeight: '500'
+                      fontSize: 'var(--text-xs)',
+                      color: 'var(--color-text-muted)',
+                      fontFamily: 'var(--font-family-mono)'
                     }}>
-                      Confidence: {(termData.confidence * 100).toFixed(1)}%
+                      {(termData.confidence * 100).toFixed(0)}% conf
                     </span>
                   )}
-                  <span style={{
-                    fontSize: '18px',
-                    color: '#6c757d',
-                    transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                    transition: 'transform 0.2s ease'
-                  }}>
-                    ▼
-                  </span>
                 </div>
               </div>
 
               {/* Expandable Content */}
               {isExpanded && (
-                <div style={{ padding: '15px' }}>
+                <div style={{ padding: 'var(--space-4)', borderTop: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                   {/* Definition */}
-                  <div style={{ marginBottom: '15px' }}>
-                    <div style={{
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      color: '#2c3e50',
-                      marginBottom: '5px'
-                    }}>
+                  <div>
+                    <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'var(--font-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
                       Definition
-                    </div>
+                    </span>
                     <p style={{
-                      color: '#495057',
-                      lineHeight: '1.6',
-                      fontSize: '14px',
-                      margin: 0
+                      color: 'var(--color-text)',
+                      lineHeight: 'var(--line-height-normal)',
+                      fontSize: 'var(--text-sm)',
+                      margin: 'var(--space-1) 0 0 0'
                     }}>
                       {termData.definition}
                     </p>
@@ -142,20 +132,15 @@ const GlossaryCard = ({ terms, jurisdiction, caseType, traceId, loading, error, 
 
                   {/* Context */}
                   {termData.context && (
-                    <div style={{ marginBottom: '15px' }}>
-                      <div style={{
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: '#2c3e50',
-                        marginBottom: '5px'
-                      }}>
-                        Context in This Case
-                      </div>
+                    <div>
+                      <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'var(--font-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
+                        Context in Current Scenario
+                      </span>
                       <p style={{
-                        color: '#495057',
-                        lineHeight: '1.6',
-                        fontSize: '14px',
-                        margin: 0
+                        color: 'var(--color-text-secondary)',
+                        lineHeight: 'var(--line-height-normal)',
+                        fontSize: 'var(--text-sm)',
+                        margin: 'var(--space-1) 0 0 0'
                       }}>
                         {termData.context}
                       </p>
@@ -164,106 +149,36 @@ const GlossaryCard = ({ terms, jurisdiction, caseType, traceId, loading, error, 
 
                   {/* Related Terms */}
                   {termData.relatedTerms && termData.relatedTerms.length > 0 && (
-                    <div style={{ marginBottom: '15px' }}>
-                      <div style={{
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: '#2c3e50',
-                        marginBottom: '5px'
-                      }}>
+                    <div>
+                      <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'var(--font-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
                         Related Terms
-                      </div>
-                      <div style={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: '8px'
-                      }}>
+                      </span>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-1)', marginTop: 'var(--space-1)' }}>
                         {termData.relatedTerms.map((related, idx) => (
-                          <span key={idx} style={{
-                            backgroundColor: '#e9ecef',
-                            color: '#495057',
-                            padding: '4px 8px',
-                            borderRadius: '4px',
-                            fontSize: '12px',
-                            fontWeight: '500'
-                          }}>
+                          <span
+                            key={idx}
+                            style={{
+                              backgroundColor: 'var(--color-surface-muted)',
+                              color: 'var(--color-text-secondary)',
+                              padding: '2px 8px',
+                              borderRadius: 'var(--radius-xs)',
+                              fontSize: 'var(--text-xs)'
+                            }}
+                          >
                             {related}
                           </span>
                         ))}
                       </div>
                     </div>
                   )}
-
-                  {/* Jurisdiction Note */}
-                  {termData.jurisdiction && termData.jurisdiction !== jurisdiction && (
-                    <div style={{ marginBottom: '15px' }}>
-                      <div style={{
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: '#2c3e50',
-                        marginBottom: '5px'
-                      }}>
-                        Jurisdiction Note
-                      </div>
-                      <p style={{
-                        color: '#6c757d',
-                        fontSize: '14px',
-                        margin: 0,
-                        fontStyle: 'italic'
-                      }}>
-                        This definition is specific to {termData.jurisdiction} law.
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Confidence Score */}
-                  {hasConfidence && (
-                    <div>
-                      <div style={{
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: '#2c3e50',
-                        marginBottom: '5px'
-                      }}>
-                        Confidence Score
-                      </div>
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '10px'
-                      }}>
-                        <div style={{
-                          flex: 1,
-                          height: '8px',
-                          backgroundColor: '#e9ecef',
-                          borderRadius: '4px',
-                          overflow: 'hidden'
-                        }}>
-                          <div style={{
-                            width: `${termData.confidence * 100}%`,
-                            height: '100%',
-                            backgroundColor: termData.confidence > 0.8 ? '#28a745' : termData.confidence > 0.6 ? '#ffc107' : '#dc3545',
-                            transition: 'width 0.3s ease'
-                          }} />
-                        </div>
-                        <span style={{
-                          fontSize: '14px',
-                          fontWeight: '600',
-                          color: '#495057'
-                        }}>
-                          {(termData.confidence * 100).toFixed(1)}%
-                        </span>
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
             </div>
-          );
+          )
         })}
       </div>
-    </div>
-  );
-};
+    </GlassCard>
+  )
+}
 
-export default GlossaryCard;
+export default GlossaryCard

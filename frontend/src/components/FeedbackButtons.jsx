@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
+import { ThumbsUp, ThumbsDown } from 'lucide-react'
 import { legalQueryService } from '../services/nyayaApi.js'
+import GlassCard from './ui/GlassCard.jsx'
+import BHIVButton from './ui/BHIVButton.jsx'
+import StatusBadge from './ui/StatusBadge.jsx'
 
 // Validate that traceId is a valid non-empty string
 const isValidTraceId = (traceId) => {
@@ -11,12 +15,6 @@ const isValidFeedbackValue = (value) => {
   return typeof value === 'boolean'
 }
 
-// Validate feedback type is one of the allowed types
-const isValidFeedbackType = (type) => {
-  const allowedTypes = ['helpful', 'clear', 'matches_situation', 'clarity', 'correctness', 'usefulness']
-  return allowedTypes.includes(type)
-}
-
 const FeedbackButtons = ({ traceId, context = '' }) => {
   const [feedback, setFeedback] = useState({
     helpful: null,
@@ -24,10 +22,10 @@ const FeedbackButtons = ({ traceId, context = '' }) => {
     matchesSituation: null
   })
   const [submitting, setSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState(null)
 
   const submitFeedback = async (type, value) => {
-    // Validate traceId before sending signal
     if (!isValidTraceId(traceId)) {
       console.log('Skipping feedback submission - no valid trace ID')
       return
@@ -47,18 +45,18 @@ const FeedbackButtons = ({ traceId, context = '' }) => {
         trace_id: traceId,
         rating: rating,
         feedback_type: 'correctness',
-        comment: `${type}: ${value ? 'positive' : 'negative'}`
+        comment: `${type}: ${value ? 'positive' : 'negative'}${context ? ` | Context: ${context}` : ''}`
       }
 
       const result = await legalQueryService.submitFeedback(feedbackData)
       
       if (result.success) {
-        console.log(`Feedback submitted: ${type} = ${value}`)
+        setSubmitted(true)
       } else {
-        console.error('Feedback error:', result.error)
+        setError(result.error || 'Failed to submit feedback')
       }
-    } catch (error) {
-      console.error('Failed to submit feedback:', error)
+    } catch (err) {
+      setError(err?.message || 'Failed to submit feedback')
     } finally {
       setSubmitting(false)
     }
@@ -70,200 +68,116 @@ const FeedbackButtons = ({ traceId, context = '' }) => {
   }
 
   return (
-    <div style={{
-      marginTop: '20px',
-      padding: '20px',
-      background: 'rgba(255, 255, 255, 0.05)',
-      backdropFilter: 'blur(10px)',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      borderRadius: '12px'
-    }}>
-      <h5 style={{
-        fontSize: '14px',
-        color: '#fff',
-        marginBottom: '15px',
-        fontWeight: '600'
-      }}>
-        Help us improve our responses
-      </h5>
-
-      {/* Helpful/Not Helpful */}
-      <div style={{ marginBottom: '15px' }}>
-        <div style={{
-          fontSize: '13px',
-          color: 'rgba(255, 255, 255, 0.7)',
-          marginBottom: '8px',
-          fontWeight: '500'
-        }}>
-          Was this response helpful?
+    <GlassCard variant="secondary" className="feedback-card" style={{ padding: 'var(--space-5)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-3)' }}>
+        <div>
+          <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Verification & Feedback
+          </span>
+          <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-medium)', color: 'var(--color-text)', marginTop: '2px' }}>
+            Response Accuracy & Clarity
+          </h4>
         </div>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button
-            onClick={() => handleFeedback('helpful', true)}
-            disabled={submitting}
-            style={{
-              padding: '8px 12px',
-              border: feedback.helpful === true ? '2px solid #28a745' : '2px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: '6px',
-              background: feedback.helpful === true ? '#28a745' : 'rgba(255, 255, 255, 0.05)',
-              color: feedback.helpful === true ? 'white' : 'rgba(255, 255, 255, 0.8)',
-              cursor: 'pointer',
-              fontSize: '13px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '5px'
-            }}
-          >
-            👍 Helpful
-          </button>
-          <button
-            onClick={() => handleFeedback('helpful', false)}
-            disabled={submitting}
-            style={{
-              padding: '8px 12px',
-              border: feedback.helpful === false ? '2px solid #dc3545' : '2px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: '6px',
-              background: feedback.helpful === false ? '#dc3545' : 'rgba(255, 255, 255, 0.05)',
-              color: feedback.helpful === false ? 'white' : 'rgba(255, 255, 255, 0.8)',
-              cursor: 'pointer',
-              fontSize: '13px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '5px'
-            }}
-          >
-            👎 Not Helpful
-          </button>
+        {submitted && (
+          <StatusBadge variant="success" size="sm" pulse>
+            Feedback Recorded
+          </StatusBadge>
+        )}
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-4)', marginTop: 'var(--space-3)' }}>
+        {/* Was this helpful? */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+          <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', fontWeight: 'var(--font-medium)' }}>
+            Was this response helpful?
+          </span>
+          <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+            <BHIVButton
+              size="sm"
+              variant={feedback.helpful === true ? 'primary' : 'outline'}
+              onClick={() => handleFeedback('helpful', true)}
+              disabled={submitting}
+            >
+              <ThumbsUp size={13} style={{ marginRight: '6px' }} />
+              Helpful
+            </BHIVButton>
+            <BHIVButton
+              size="sm"
+              variant={feedback.helpful === false ? 'danger' : 'outline'}
+              onClick={() => handleFeedback('helpful', false)}
+              disabled={submitting}
+            >
+              <ThumbsDown size={13} style={{ marginRight: '6px' }} />
+              Not Helpful
+            </BHIVButton>
+          </div>
+        </div>
+
+        {/* Was this clear? */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+          <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', fontWeight: 'var(--font-medium)' }}>
+            Was the analysis clear?
+          </span>
+          <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+            <BHIVButton
+              size="sm"
+              variant={feedback.clear === true ? 'primary' : 'outline'}
+              onClick={() => handleFeedback('clear', true)}
+              disabled={submitting}
+            >
+              Clear
+            </BHIVButton>
+            <BHIVButton
+              size="sm"
+              variant={feedback.clear === false ? 'danger' : 'outline'}
+              onClick={() => handleFeedback('clear', false)}
+              disabled={submitting}
+            >
+              Unclear
+            </BHIVButton>
+          </div>
+        </div>
+
+        {/* Matched situation */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+          <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', fontWeight: 'var(--font-medium)' }}>
+            Matched situation accurately?
+          </span>
+          <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+            <BHIVButton
+              size="sm"
+              variant={feedback.matchesSituation === true ? 'primary' : 'outline'}
+              onClick={() => handleFeedback('matchesSituation', true)}
+              disabled={submitting}
+            >
+              Matched
+            </BHIVButton>
+            <BHIVButton
+              size="sm"
+              variant={feedback.matchesSituation === false ? 'danger' : 'outline'}
+              onClick={() => handleFeedback('matchesSituation', false)}
+              disabled={submitting}
+            >
+              Mismatched
+            </BHIVButton>
+          </div>
         </div>
       </div>
 
-      {/* Was this clear? */}
-      <div style={{ marginBottom: '15px' }}>
-        <div style={{
-          fontSize: '13px',
-          color: 'rgba(255, 255, 255, 0.7)',
-          marginBottom: '8px',
-          fontWeight: '500'
-        }}>
-          Was this clear?
-        </div>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button
-            onClick={() => handleFeedback('clear', true)}
-            disabled={submitting}
-            style={{
-              padding: '6px 12px',
-              border: feedback.clear === true ? '2px solid #28a745' : '2px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: '6px',
-              background: feedback.clear === true ? '#28a745' : 'rgba(255, 255, 255, 0.05)',
-              color: feedback.clear === true ? 'white' : 'rgba(255, 255, 255, 0.8)',
-              cursor: 'pointer',
-              fontSize: '13px'
-            }}
-          >
-            Yes
-          </button>
-          <button
-            onClick={() => handleFeedback('clear', false)}
-            disabled={submitting}
-            style={{
-              padding: '6px 12px',
-              border: feedback.clear === false ? '2px solid #dc3545' : '2px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: '6px',
-              background: feedback.clear === false ? '#dc3545' : 'rgba(255, 255, 255, 0.05)',
-              color: feedback.clear === false ? 'white' : 'rgba(255, 255, 255, 0.8)',
-              cursor: 'pointer',
-              fontSize: '13px'
-            }}
-          >
-            No
-          </button>
-        </div>
-      </div>
-
-      {/* Did this match your situation? */}
-      <div style={{ marginBottom: '15px' }}>
-        <div style={{
-          fontSize: '13px',
-          color: 'rgba(255, 255, 255, 0.7)',
-          marginBottom: '8px',
-          fontWeight: '500'
-        }}>
-          Did this match your situation?
-        </div>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button
-            onClick={() => handleFeedback('matchesSituation', true)}
-            disabled={submitting}
-            style={{
-              padding: '6px 12px',
-              border: feedback.matchesSituation === true ? '2px solid #28a745' : '2px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: '6px',
-              background: feedback.matchesSituation === true ? '#28a745' : 'rgba(255, 255, 255, 0.05)',
-              color: feedback.matchesSituation === true ? 'white' : 'rgba(255, 255, 255, 0.8)',
-              cursor: 'pointer',
-              fontSize: '13px'
-            }}
-          >
-            Yes
-          </button>
-          <button
-            onClick={() => handleFeedback('matchesSituation', false)}
-            disabled={submitting}
-            style={{
-              padding: '6px 12px',
-              border: feedback.matchesSituation === false ? '2px solid #dc3545' : '2px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: '6px',
-              background: feedback.matchesSituation === false ? '#dc3545' : 'rgba(255, 255, 255, 0.05)',
-              color: feedback.matchesSituation === false ? 'white' : 'rgba(255, 255, 255, 0.8)',
-              cursor: 'pointer',
-              fontSize: '13px'
-            }}
-          >
-            No
-          </button>
-        </div>
-      </div>
-
-      {/* Submit Feedback Button */}
-      <button
-        onClick={() => {
-          if (feedback.helpful !== null || feedback.clear !== null || feedback.matchesSituation !== null) {
-            alert('Feedback submitted successfully!');
-          }
-        }}
-        disabled={submitting || (feedback.helpful === null && feedback.clear === null && feedback.matchesSituation === null)}
-        style={{
-          width: '100%',
-          padding: '12px',
-          marginTop: '15px',
-          border: 'none',
-          borderRadius: '8px',
-          background: (feedback.helpful !== null || feedback.clear !== null || feedback.matchesSituation !== null) ? '#3b82f6' : 'rgba(255, 255, 255, 0.1)',
-          color: '#fff',
-          cursor: (feedback.helpful !== null || feedback.clear !== null || feedback.matchesSituation !== null) ? 'pointer' : 'not-allowed',
-          fontSize: '14px',
-          fontWeight: '600'
-        }}
-      >
-        {submitting ? 'Submitting...' : 'Submit Feedback'}
-      </button>
-
-      {/* Error display */}
       {error && (
         <div style={{
-          marginTop: '15px',
-          padding: '10px',
-          background: 'rgba(220, 53, 69, 0.2)',
-          border: '1px solid rgba(220, 53, 69, 0.4)',
-          borderRadius: '6px',
-          color: '#ff6b6b',
-          fontSize: '13px'
+          marginTop: 'var(--space-3)',
+          padding: 'var(--space-2) var(--space-3)',
+          background: 'rgba(239, 68, 68, 0.1)',
+          border: '1px solid rgba(239, 68, 68, 0.25)',
+          borderRadius: 'var(--radius-md)',
+          color: 'var(--color-error)',
+          fontSize: 'var(--text-xs)'
         }}>
           {error}
         </div>
       )}
-    </div>
+    </GlassCard>
   )
 }
 

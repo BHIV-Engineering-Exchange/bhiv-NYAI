@@ -1,0 +1,141 @@
+/**
+ * BHIV Design System Tokens
+ * NYAI Frontend - Phase 1 Foundation
+ */
+
+:root {
+  /* ==========================================================================
+     Colors
+     ========================================================================== */
+  /* Surfaces & Backgrounds */
+  --bhiv-bg: #0b0f19;
+  --bhiv-surface: #111827;
+  --bhiv-surface-elevated: #1e293b;
+
+  /* Primary Brand */
+  --bhiv-primary: #6366f1;
+  --bhiv-primary-hover: #818cf8;
+  --bhiv-primary-active: #4f46e5;
+  --bhiv-primary-muted: rgba(99, 102, 241, 0.15);
+
+  /* Secondary Brand */
+  --bhiv-secondary: #8b5cf6;
+  --bhiv-secondary-hover: #a78bfa;
+  --bhiv-secondary-muted: rgba(139, 92, 246, 0.15);
+
+  /* Typography / Text */
+  --bhiv-text-primary: #f9fafb;
+  --bhiv-text-secondary: #9ca3af;
+  --bhiv-text-muted: #6b7280;
+  --bhiv-text-inverse: #0b0f19;
+
+  /* Borders */
+  --bhiv-border: rgba(255, 255, 255, 0.10);
+  --bhiv-border-subtle: rgba(255, 255, 255, 0.06);
+  --bhiv-border-focus: rgba(99, 102, 241, 0.5);
+
+  /* Glass Surface Tokens */
+  --bhiv-glass-bg: rgba(255, 255, 255, 0.05);
+  --bhiv-glass-bg-hover: rgba(255, 255, 255, 0.08);
+  --bhiv-glass-border: rgba(255, 255, 255, 0.10);
+  --bhiv-glass-border-hover: rgba(255, 255, 255, 0.14);
+  --bhiv-glass-blur: 16px;
+
+  /* Semantic States */
+  --bhiv-success: #10b981;
+  --bhiv-success-bg: rgba(16, 185, 129, 0.12);
+  --bhiv-success-border: rgba(16, 185, 129, 0.25);
+
+  --bhiv-warning: #f59e0b;
+  --bhiv-warning-bg: rgba(245, 158, 11, 0.12);
+  --bhiv-warning-border: rgba(245, 158, 11, 0.25);
+
+  --bhiv-error: #ef4444;
+  --bhiv-error-bg: rgba(239, 68, 68, 0.12);
+  --bhiv-error-border: rgba(239, 68, 68, 0.25);
+
+  --bhiv-info: #3b82f6;
+  --bhiv-info-bg: rgba(59, 130, 246, 0.12);
+  --bhiv-info-border: rgba(59, 130, 246, 0.25);
+
+  --bhiv-neutral: #6b7280;
+  --bhiv-neutral-bg: rgba(107, 114, 128, 0.12);
+  --bhiv-neutral-border: rgba(107, 114, 128, 0.25);
+
+  /* ==========================================================================
+     Typography
+     ========================================================================== */
+  --bhiv-font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --bhiv-font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --bhiv-font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Font Sizes */
+  --bhiv-text-xs: 0.75rem;    /* 12px */
+  --bhiv-text-sm: 0.875rem;   /* 14px */
+  --bhiv-text-md: 1rem;       /* 16px */
+  --bhiv-text-lg: 1.125rem;   /* 18px */
+  --bhiv-text-xl: 1.25rem;    /* 20px */
+  --bhiv-text-2xl: 1.5rem;    /* 24px */
+  --bhiv-text-3xl: 1.875rem;  /* 30px */
+
+  /* Line Heights */
+  --bhiv-leading-tight: 1.25;
+  --bhiv-leading-normal: 1.5;
+  --bhiv-leading-relaxed: 1.625;
+
+  /* Font Weights */
+  --bhiv-weight-regular: 400;
+  --bhiv-weight-medium: 500;
+  --bhiv-weight-semibold: 600;
+  --bhiv-weight-bold: 700;
+
+  /* ==========================================================================
+     Spacing
+     ========================================================================== */
+  --bhiv-space-1: 4px;
+  --bhiv-space-2: 8px;
+  --bhiv-space-3: 12px;
+  --bhiv-space-4: 16px;
+  --bhiv-space-5: 20px;
+  --bhiv-space-6: 24px;
+  --bhiv-space-8: 32px;
+  --bhiv-space-10: 40px;
+  --bhiv-space-12: 48px;
+  --bhiv-space-16: 64px;
+
+  /* ==========================================================================
+     Border Radius
+     ========================================================================== */
+  --bhiv-radius-sm: 8px;
+  --bhiv-radius-md: 12px;
+  --bhiv-radius-lg: 16px;
+  --bhiv-radius-xl: 20px;
+  --bhiv-radius-pill: 9999px;
+
+  /* ==========================================================================
+     Shadows
+     ========================================================================== */
+  --bhiv-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --bhiv-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.25);
+  --bhiv-shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.35);
+  --bhiv-shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.1);
+  --bhiv-shadow-primary: 0 4px 14px rgba(99, 102, 241, 0.35);
+
+  /* ==========================================================================
+     Transitions
+     ========================================================================== */
+  --bhiv-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --bhiv-transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --bhiv-transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ==========================================================================
+     Z-Index Scale
+     ========================================================================== */
+  --bhiv-z-background: 0;
+  --bhiv-z-content: 1;
+  --bhiv-z-dropdown: 50;
+  --bhiv-z-sticky: 100;
+  --bhiv-z-modal-backdrop: 900;
+  --bhiv-z-modal: 1000;
+  --bhiv-z-toast: 1100;
+}

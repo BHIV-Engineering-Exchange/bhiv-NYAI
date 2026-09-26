@@ -44,7 +44,7 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     
     // Video on failure
-    video: 'retain-on-failure',
+    video: 'off',
     
     // Action timeout
     actionTimeout: 15 * 1000,
@@ -60,7 +60,7 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
+      use: { ...devices['Desktop Chrome'], channel: 'msedge' }
     }
   ],
   

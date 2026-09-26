@@ -1,6 +1,7 @@
 // ServiceOutage.jsx — UI displayed when backend is down (5xx / ECONNREFUSED)
 // Routes users here via global interceptor when backend is unreachable.
 import React from 'react'
+import { ShieldAlert } from 'lucide-react'
 
 const ServiceOutage = ({ traceId, onReturnToDashboard }) => {
   const handleReturn = () => {
@@ -31,10 +32,11 @@ const ServiceOutage = ({ traceId, onReturnToDashboard }) => {
       }}>
         {/* Service Icon */}
         <div style={{
-          fontSize: '48px',
+          display: 'flex',
+          justifyContent: 'center',
           marginBottom: '20px'
         }}>
-          🛑
+          <ShieldAlert size={48} color="#ef4444" />
         </div>
 
         {/* Title */}

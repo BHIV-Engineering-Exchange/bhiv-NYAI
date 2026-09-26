@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from 'react'
+import { BookOpen, Shield, Scale, ListOrdered, Sparkles, Send } from 'lucide-react'
 import FeedbackButtons from './FeedbackButtons.jsx'
 import { legalQueryService } from '../services/nyayaApi.js'
+import GlassCard from './ui/GlassCard.jsx'
+import BHIVButton from './ui/BHIVButton.jsx'
+import StatusBadge from './ui/StatusBadge.jsx'
+import DeveloperDetails from './ui/DeveloperDetails.jsx'
+import WorkspaceHeader from './layout/WorkspaceHeader.jsx'
+import './LegalQueryCard.css'
 
-const LegalQueryCard = ({ onResponseReceived, isOffline: _isOffline }) => {
+const LegalQueryCard = ({ onResponseReceived, isOffline: _isOffline, onNavigateHome }) => {
   const [query, setQuery] = useState('')
   const [selectedJurisdiction, setSelectedJurisdiction] = useState('India')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [response, setResponse] = useState(null)
+  const [submittedQuery, setSubmittedQuery] = useState('')
   const [traceId, setTraceId] = useState(null)
-  const [backendStatus, setBackendStatus] = useState('checking') // 'checking', 'ready', 'waking', 'processing'
-  const [isFirstRequest, setIsFirstRequest] = useState(true)
-  const [showTechDetails, setShowTechDetails] = useState(false)
-
-  useEffect(() => {
-    setBackendStatus('ready')
-  }, [])
+  const [backendStatus, setBackendStatus] = useState('ready') // 'ready', 'checking', 'processing'
+  const [errorMsg, setErrorMsg] = useState(null)
 
   const jurisdictionMap = {
     'India': 'India',
@@ -22,512 +25,396 @@ const LegalQueryCard = ({ onResponseReceived, isOffline: _isOffline }) => {
     'UAE': 'UAE'
   }
 
+  const jurisdictionOptions = ['India', 'UK', 'UAE']
+
+  const getRecommendationBadgeVariant = (recType) => {
+    switch (recType) {
+      case 'INFORM':
+        return 'success'
+      case 'REVIEW':
+        return 'warning'
+      case 'ESCALATE':
+        return 'error'
+      case 'INSUFFICIENT_DATA':
+      default:
+        return 'neutral'
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!query.trim()) return
+    if (!query.trim() || isSubmitting) return
 
-    if (isFirstRequest) {
-      setBackendStatus('processing')
-      setIsFirstRequest(false)
-    }
-    
     setIsSubmitting(true)
+    setBackendStatus('processing')
+    setErrorMsg(null)
     setResponse(null)
-    
+    setSubmittedQuery(query)
+
     try {
       const result = await legalQueryService.submitQuery({
-        query: query,
+        query: query.trim(),
         jurisdiction_hint: jurisdictionMap[selectedJurisdiction]
       })
+
       if (result.success) {
         setBackendStatus('ready')
         setTraceId(result.trace_id)
-        
         const backendData = result.data
-        console.log('=== FRONTEND DEBUG ===')
-        console.log('Requested Jurisdiction:', jurisdictionMap[selectedJurisdiction])
-        console.log('Backend Response:', backendData)
-        console.log('Returned Jurisdiction:', backendData.jurisdiction_detected || backendData.jurisdiction)
-        console.log('Recommendation (root):', backendData.recommendation)
-        console.log('======================')
-        
+
         setResponse(backendData)
         if (onResponseReceived) {
           onResponseReceived(backendData)
         }
       } else {
-        alert(`Error: ${result.error || 'Failed to get response from backend'}`)
+        setBackendStatus('ready')
+        setErrorMsg(result.error || 'Failed to obtain legal intelligence response.')
       }
-    } catch (error) {
-      console.error('Error:', error)
-      alert(`Error: ${error.message || 'Failed to connect to backend'}`)
+    } catch (err) {
+      setBackendStatus('ready')
+      setErrorMsg(err.message || 'Connection failure encountered while communicating with the engine.')
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <>
-      {(backendStatus === 'checking' || backendStatus === 'processing') && (
-        <div style={{
-          background: 'rgba(255, 255, 255, 0.05)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderRadius: '16px',
-          padding: '60px 32px',
-          textAlign: 'center'
-        }}>
-          <div style={{ fontSize: '48px', marginBottom: '20px' }}>🌅</div>
-          <h2 style={{ color: '#fff', fontSize: '24px', marginBottom: '12px' }}>Backend is Waking up</h2>
-          <p style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '16px' }}>Wait for sometime...</p>
+    <div className="legal-query-container">
+      {/* Contextual Workspace Header */}
+      <WorkspaceHeader
+        breadcrumbs={[
+          { label: 'NYAI', onClick: onNavigateHome },
+          { label: 'Legal Operations' },
+          { label: 'Ask Legal' }
+        ]}
+        title="Ask NYAI"
+        description="Structured legal consultation across supported jurisdictions."
+        badge="SOVEREIGN ANALYSIS"
+        badgeVariant="info"
+        onBack={onNavigateHome}
+      />
+
+      {/* Case Intake Workspace Card */}
+      <GlassCard variant="primary" className="query-intake-card">
+        <div className="query-intake-header">
+          <span className="query-eyebrow">NEW LEGAL CONSULTATION</span>
+          <p className="query-description">
+            Provide the facts, relevant dates, and legal questions for multi-statutory jurisdictional analysis.
+          </p>
         </div>
-      )}
 
-
-      {backendStatus === 'ready' && (
-        <>
-          <div style={{
-        background: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        borderRadius: '16px',
-        padding: '32px'
-      }}>
-        <h2 style={{ color: '#fff', fontSize: '24px', marginBottom: '24px' }}>Case Intake</h2>
-        
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '14px', marginBottom: '8px', display: 'block' }}>Jurisdiction</label>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            {['India', 'UK', 'UAE'].map(jurisdiction => (
+        {/* Jurisdiction Selector */}
+        <div className="jurisdiction-control">
+          <label className="jurisdiction-label" id="jurisdiction-selector-label">
+            Select Jurisdiction
+          </label>
+          <div className="jurisdiction-pills" role="group" aria-labelledby="jurisdiction-selector-label">
+            {jurisdictionOptions.map((jur) => (
               <button
-                key={jurisdiction}
+                key={jur}
                 type="button"
-                onClick={() => setSelectedJurisdiction(jurisdiction)}
-                style={{
-                  padding: '10px 20px',
-                  border: selectedJurisdiction === jurisdiction ? '2px solid #3b82f6' : '2px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: '8px',
-                  background: selectedJurisdiction === jurisdiction ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                  color: '#fff',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: '600'
-                }}
+                className={`jurisdiction-pill ${selectedJurisdiction === jur ? 'active' : ''}`}
+                onClick={() => setSelectedJurisdiction(jur)}
+                disabled={isSubmitting}
+                aria-pressed={selectedJurisdiction === jur}
               >
-                {jurisdiction}
+                {jur}
               </button>
             ))}
           </div>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <textarea
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Enter case facts, circumstances, and relief sought..."
-            style={{
-              width: '100%',
-              minHeight: '150px',
-              padding: '16px',
-              background: 'rgba(255, 255, 255, 0.1)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: '8px',
-              color: '#fff',
-              fontSize: '14px',
-              resize: 'vertical',
-              marginBottom: '16px'
-            }}
-          />
-          <button
-            type="submit"
-            disabled={isSubmitting || !query.trim()}
-            style={{
-              padding: '12px 32px',
-              background: isSubmitting || !query.trim() ? 'rgba(59, 130, 246, 0.5)' : '#3b82f6',
-              border: 'none',
-              borderRadius: '8px',
-              color: '#fff',
-              fontSize: '14px',
-              fontWeight: '600',
-              cursor: isSubmitting || !query.trim() ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {isSubmitting ? 'Processing Decision...' : 'Generate Legal Decision'}
-          </button>
+        {/* Query Input Form */}
+        <form onSubmit={handleSubmit} className="query-form">
+          <div className="query-input-wrapper">
+            <label htmlFor="legal-query-input" className="query-input-label">
+              Legal Question & Statement of Facts
+            </label>
+            <textarea
+              id="legal-query-input"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Describe the legal matter, contract provisions, parties involved, or factual scenario in detail..."
+              disabled={isSubmitting}
+              className="query-textarea"
+              rows={6}
+            />
+          </div>
+
+          <div className="query-actions">
+            <BHIVButton
+              type="submit"
+              variant="primary"
+              size="md"
+              disabled={isSubmitting || !query.trim()}
+              loading={isSubmitting}
+            >
+              <Send size={14} style={{ marginRight: '8px' }} />
+              {isSubmitting ? 'Analyzing Scenario...' : 'Analyze with NYAI →'}
+            </BHIVButton>
+          </div>
         </form>
-      </div>
+      </GlassCard>
 
-      {response && (
-        <div style={{ 
-          marginTop: '25px', 
-          padding: '32px',
-          background: 'rgba(255, 255, 255, 0.05)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderRadius: '16px'
-        }}>
-          <h3 style={{
-            fontSize: '24px',
-            color: '#fff',
-            marginBottom: '24px',
-            borderBottom: '2px solid rgba(59, 130, 246, 0.5)',
-            paddingBottom: '12px'
-          }}>
-            📋 Legal Decision Document
-          </h3>
-
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '16px',
-            marginBottom: '24px'
-          }}>
-            <div style={{
-              padding: '16px',
-              background: 'rgba(59, 130, 246, 0.1)',
-              border: '1px solid rgba(59, 130, 246, 0.3)',
-              borderRadius: '12px'
-            }}>
-              <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px', marginBottom: '4px' }}>Jurisdiction</div>
-              <div style={{ color: '#fff', fontSize: '18px', fontWeight: '600' }}>
-                {response.jurisdiction_detected || response.jurisdiction}
-              </div>
+      {/* Operational Processing State */}
+      {isSubmitting && (
+        <GlassCard variant="secondary" className="processing-card">
+          <div className="processing-spinner" aria-hidden="true" />
+          <div>
+            <h3 className="processing-title">NYAI is analyzing your query</h3>
+            <p className="processing-subtitle">
+              Evaluating applicable statutes, procedural routes, and precedents.
+            </p>
+          </div>
+          <div className="processing-stages">
+            <div className="processing-stage-item active">
+              <span>●</span>
+              <span>Retrieving relevant legal information</span>
             </div>
-            <div style={{
-              padding: '16px',
-              background: 'rgba(139, 92, 246, 0.1)',
-              border: '1px solid rgba(139, 92, 246, 0.3)',
-              borderRadius: '12px'
-            }}>
-              <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px', marginBottom: '4px' }}>Domain</div>
-              <div style={{ color: '#fff', fontSize: '18px', fontWeight: '600', textTransform: 'capitalize' }}>
-                {response.domain}
-              </div>
+            <div className="processing-stage-item">
+              <span>○</span>
+              <span>Analyzing jurisdictional criteria</span>
             </div>
-            <div style={{
-              padding: '16px',
-              background: 'rgba(16, 185, 129, 0.1)',
-              border: '1px solid rgba(16, 185, 129, 0.3)',
-              borderRadius: '12px'
-            }}>
-              <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px', marginBottom: '4px' }}>Overall Confidence</div>
-              <div style={{ color: '#fff', fontSize: '18px', fontWeight: '600' }}>
-                {Math.round((response.confidence?.overall || 0) * 100)}%
-              </div>
+            <div className="processing-stage-item">
+              <span>○</span>
+              <span>Formulating advisory recommendation</span>
             </div>
           </div>
 
-          {response.recommendation?.type && (
-            <div style={{ marginBottom: '24px' }} data-testid="recommendation-status">
-              <h5 style={{
-                color: response.recommendation.type === 'INFORM' ? '#10b981' :
-                      response.recommendation.type === 'REVIEW' ? '#f59e0b' :
-                      response.recommendation.type === 'ESCALATE' ? '#f97316' : '#6c757d',
-                fontSize: '16px',
-                marginBottom: '12px',
-                fontWeight: '600'
-              }}>
-                ℹ️ Advisory Recommendation
-              </h5>
+          {/* Structured Legal Analysis Skeleton */}
+          <div className="skeleton-container" aria-hidden="true">
+            <div className="skeleton-section">
+              <span className="skeleton-label">LEGAL ANALYSIS</span>
+              <div className="skeleton-bar skeleton-bar--full" />
+              <div className="skeleton-bar skeleton-bar--three-quarters" />
+            </div>
+            <div className="skeleton-section">
+              <span className="skeleton-label">RECOMMENDATION</span>
+              <div className="skeleton-bar skeleton-bar--half" />
+            </div>
+            <div className="skeleton-section">
+              <span className="skeleton-label">STATUTES & PROCEDURAL ROUTE</span>
+              <div className="skeleton-bar skeleton-bar--full" />
+              <div className="skeleton-bar skeleton-bar--two-thirds" />
+            </div>
+          </div>
+        </GlassCard>
+      )}
+
+      {/* Error Presentation */}
+      {errorMsg && (
+        <GlassCard
+          variant="secondary"
+          style={{
+            borderColor: 'var(--color-error)',
+            background: 'rgba(239, 68, 68, 0.08)',
+            padding: 'var(--space-5)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+            <StatusBadge variant="error">ERROR</StatusBadge>
+            <span style={{ color: 'var(--color-text)', fontSize: 'var(--text-sm)' }}>
+              {errorMsg}
+            </span>
+          </div>
+        </GlassCard>
+      )}
+
+      {/* Answer Experience */}
+      {response && !isSubmitting && (
+        <div className="response-container">
+          {/* Header & Overview Card */}
+          <GlassCard variant="primary" className="response-header-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
+              <div>
+                <span className="query-eyebrow">NYAI RESPONSE</span>
+                <h3 style={{ margin: 'var(--space-1) 0 0 0', fontSize: 'var(--text-xl)', color: 'var(--color-text)' }}>
+                  Legal Intelligence Evaluation
+                </h3>
+              </div>
+              {response.recommendation?.type && (
+                <div data-testid="recommendation-status">
+                  <StatusBadge
+                    variant={getRecommendationBadgeVariant(response.recommendation.type)}
+                    size="md"
+                  >
+                    <span data-testid="recommendation-type">
+                      {response.recommendation.type}
+                    </span>
+                  </StatusBadge>
+                </div>
+              )}
+            </div>
+
+            {submittedQuery && (
               <div style={{
-                padding: '20px',
-                background: 'rgba(16, 185, 129, 0.1)',
-                border: '2px solid rgba(16, 185, 129, 0.4)',
-                borderRadius: '8px'
+                marginTop: 'var(--space-4)',
+                padding: 'var(--space-3) var(--space-4)',
+                background: 'var(--color-surface-subtle)',
+                borderRadius: 'var(--radius-md)',
+                borderLeft: '3px solid var(--color-primary)'
               }}>
-                <div
-                  data-testid="recommendation-type"
-                  style={{
-                  color: '#fff',
-                  fontSize: '16px',
-                  fontWeight: '700',
-                  marginBottom: '4px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px'
-                }}>
-                  {response.recommendation.type}
-                </div>
-                <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '12px' }}>
-                  {response.recommendation.rationale || 'Advisory recommendation — not a binding decision'}
-                </div>
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Submitted Query
+                </span>
+                <p style={{ margin: 'var(--space-1) 0 0 0', fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)' }}>
+                  {submittedQuery}
+                </p>
+              </div>
+            )}
+
+            <div className="response-meta-bar">
+              <div className="response-meta-item">
+                <span className="response-meta-label">Jurisdiction</span>
+                <span className="response-meta-value">
+                  {response.jurisdiction_detected || response.jurisdiction || selectedJurisdiction}
+                </span>
+              </div>
+              <div className="response-meta-item">
+                <span className="response-meta-label">Domain</span>
+                <span className="response-meta-value" style={{ textTransform: 'capitalize' }}>
+                  {response.domain || 'General Legal'}
+                </span>
+              </div>
+              <div className="response-meta-item">
+                <span className="response-meta-label">Engine Confidence</span>
+                <span className="response-meta-value">
+                  {Math.round((response.confidence?.overall || 0) * 100)}%
+                </span>
               </div>
             </div>
+          </GlassCard>
+
+          {/* Primary Legal Analysis */}
+          {response.reasoning_trace?.legal_analysis && (
+            <GlassCard variant="secondary" className="analysis-section">
+              <div className="section-title-wrap">
+                <h4 className="section-title">
+                  <BookOpen size={16} color="var(--bhiv-primary-hover, #818cf8)" />
+                  <span>Legal Analysis</span>
+                </h4>
+                <StatusBadge variant="neutral" size="sm">Primary Opinion</StatusBadge>
+              </div>
+              <pre className="analysis-content">
+                {response.reasoning_trace.legal_analysis}
+              </pre>
+            </GlassCard>
           )}
 
-          {response.reasoning_trace?.legal_analysis && (
-            <div style={{ marginBottom: '24px' }}>
-              <h4 style={{ 
-                color: '#fff', 
-                fontSize: '18px', 
-                marginBottom: '12px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}>
-                📋 Legal Analysis
+          {/* Available Remedies */}
+          {response.reasoning_trace?.remedies && response.reasoning_trace.remedies.length > 0 && (
+            <GlassCard variant="secondary" className="analysis-section">
+              <h4 className="section-title">
+                <Shield size={16} color="var(--bhiv-primary-hover, #818cf8)" />
+                <span>Available Remedies</span>
               </h4>
-              <div style={{
-                padding: '20px',
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px'
-              }}>
-                <pre style={{
-                  color: 'rgba(255, 255, 255, 0.9)',
-                  fontSize: '14px',
-                  lineHeight: '1.8',
-                  margin: 0,
-                  whiteSpace: 'pre-wrap',
-                  wordWrap: 'break-word',
-                  fontFamily: 'inherit'
-                }}>
-                  {response.reasoning_trace.legal_analysis}
-                </pre>
+              <div className="remedies-list">
+                {response.reasoning_trace.remedies.map((remedy, idx) => (
+                  <div key={idx} className="remedy-item">
+                    <div className="remedy-badge">{idx + 1}</div>
+                    <p className="remedy-text">{remedy}</p>
+                  </div>
+                ))}
+              </div>
+            </GlassCard>
+          )}
+
+          {/* Applicable Statutes */}
+          {response.statutes && response.statutes.length > 0 && (
+            <GlassCard variant="secondary" className="analysis-section">
+              <div className="section-title-wrap">
+                <h4 className="section-title">
+                  <Scale size={16} color="var(--bhiv-primary-hover, #818cf8)" />
+                  <span>Applicable Statutes ({response.statutes.length})</span>
+                </h4>
+              </div>
+              <div className="statutes-grid">
+                {response.statutes.map((statute, idx) => (
+                  <div key={idx} className="statute-card">
+                    <span className="statute-section">
+                      Section {statute.section} — {statute.act} {statute.year > 0 ? `(${statute.year})` : ''}
+                    </span>
+                    <span className="statute-title">
+                      {statute.title}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </GlassCard>
+          )}
+
+          {/* Procedural Steps */}
+          {response.reasoning_trace?.procedural_steps && response.reasoning_trace.procedural_steps.length > 0 && (
+            <GlassCard variant="secondary" className="analysis-section">
+              <h4 className="section-title">
+                <ListOrdered size={16} color="var(--bhiv-primary-hover, #818cf8)" />
+                <span>Procedural Steps</span>
+              </h4>
+              <div className="procedural-steps-list">
+                {response.reasoning_trace.procedural_steps.map((step, idx) => (
+                  <div key={idx} className="procedural-step-item">
+                    <span className="procedural-step-num">{String(idx + 1).padStart(2, '0')}</span>
+                    <span className="procedural-step-text">{step}</span>
+                  </div>
+                ))}
+              </div>
+            </GlassCard>
+          )}
+
+          {/* Collapsible Technical / Pipeline Details via DeveloperDetails */}
+          <DeveloperDetails title="Developer & Pipeline Details" defaultOpen={false}>
+            <div className="dev-details-grid">
+              {/* Trace ID */}
+              <div className="dev-meta-row">
+                <span className="dev-meta-label">Trace Identifier:</span>
+                <span className="dev-meta-val" data-testid="trace-id">
+                  {traceId || response.trace_id || 'N/A'}
+                </span>
               </div>
 
-              {response.reasoning_trace?.remedies && response.reasoning_trace.remedies.length > 0 && (
-                <div style={{ marginTop: '20px' }}>
-                  <h5 style={{ 
-                    color: '#10b981', 
-                    fontSize: '16px', 
-                    marginBottom: '12px',
-                    fontWeight: '600'
-                  }}>
-                    💊 Available Remedies
-                  </h5>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    {response.reasoning_trace.remedies.map((remedy, idx) => (
-                      <div key={idx} style={{
-                        padding: '16px',
-                        background: 'rgba(16, 185, 129, 0.1)',
-                        border: '1px solid rgba(16, 185, 129, 0.3)',
-                        borderRadius: '8px',
-                        display: 'flex',
-                        gap: '12px'
-                      }}>
-                        <div style={{
-                          width: '28px',
-                          height: '28px',
-                          borderRadius: '50%',
-                          background: '#10b981',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '13px',
-                          fontWeight: '700',
-                          color: '#fff',
-                          flexShrink: 0
-                        }}>
-                          {idx + 1}
-                        </div>
-                        <div style={{ 
-                          color: 'rgba(255, 255, 255, 0.9)', 
-                          fontSize: '14px', 
-                          lineHeight: '1.6',
-                          flex: 1
-                        }}>
-                          {remedy}
-                        </div>
+              {/* Processing Route */}
+              {response.legal_route && response.legal_route.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                  <span className="dev-meta-label">Agent Execution Route:</span>
+                  <div className="route-badges">
+                    {response.legal_route.map((agent, idx) => (
+                      <React.Fragment key={idx}>
+                        <span className="route-badge">
+                          {agent.replace(/_/g, ' ')}
+                        </span>
+                        {idx < response.legal_route.length - 1 && (
+                          <span className="route-arrow">→</span>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Confidence Breakdown */}
+              {response.confidence && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                  <span className="dev-meta-label">Confidence Breakdown:</span>
+                  <div className="confidence-grid">
+                    {Object.entries(response.confidence).map(([k, val]) => (
+                      <div key={k} className="confidence-cell">
+                        <span className="confidence-cell-label">{k.replace(/_/g, ' ')}</span>
+                        <span className="confidence-cell-value">
+                          {typeof val === 'number' ? `${Math.round(val * 100)}%` : val}
+                        </span>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
             </div>
-          )}
+          </DeveloperDetails>
 
-          {response.statutes && response.statutes.length > 0 && (
-            <div style={{ marginBottom: '24px' }}>
-              <h4 style={{ 
-                color: '#fff', 
-                fontSize: '18px', 
-                marginBottom: '12px'
-              }}>
-                ⚖️ Applicable Statutes ({response.statutes.length})
-              </h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {response.statutes.map((statute, idx) => (
-                  <div key={idx} style={{
-                    padding: '16px',
-                    background: 'rgba(245, 158, 11, 0.1)',
-                    border: '1px solid rgba(245, 158, 11, 0.3)',
-                    borderRadius: '8px'
-                  }}>
-                    <div style={{ color: '#f59e0b', fontSize: '13px', fontWeight: '600', marginBottom: '8px' }}>
-                      Section {statute.section} - {statute.act} {statute.year > 0 ? `(${statute.year})` : ''}
-                    </div>
-                    <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '14px', lineHeight: '1.6' }}>
-                      {statute.title}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {response.reasoning_trace?.procedural_steps && response.reasoning_trace.procedural_steps.length > 0 && (
-            <div style={{ marginBottom: '24px' }}>
-              <h4 style={{ 
-                color: '#fff', 
-                fontSize: '18px', 
-                marginBottom: '12px'
-              }}>
-                📝 Procedural Steps
-              </h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {response.reasoning_trace.procedural_steps.map((step, idx) => (
-                  <div key={idx} style={{
-                    padding: '16px',
-                    background: 'rgba(59, 130, 246, 0.1)',
-                    border: '1px solid rgba(59, 130, 246, 0.3)',
-                    borderRadius: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px'
-                  }}>
-                    <div style={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '50%',
-                      background: '#3b82f6',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '14px',
-                      fontWeight: '700',
-                      color: '#fff',
-                      flexShrink: 0
-                    }}>
-                      {idx + 1}
-                    </div>
-                    <div style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '14px', textTransform: 'capitalize' }}>
-                      {step}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-
-          {/* User-Friendly Toggle for Developer/Technical Details */}
-          <div style={{ marginTop: '20px', marginBottom: '20px', textAlign: 'center' }}>
-            <button 
-              onClick={() => setShowTechDetails(!showTechDetails)}
-              style={{
-                padding: '8px 18px',
-                background: showTechDetails ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255, 255, 255, 0.08)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '20px',
-                color: '#fff',
-                fontSize: '13px',
-                fontWeight: '500',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease-in-out'
-              }}
-            >
-              {showTechDetails ? '🙈 Hide Developer Details' : '🛠️ Show Developer / Pipeline Details'}
-            </button>
-          </div>
-
-          {showTechDetails && (
-            <div style={{
-              padding: '20px',
-              background: 'rgba(0, 0, 0, 0.25)',
-              border: '1px dashed rgba(255, 255, 255, 0.2)',
-              borderRadius: '12px',
-              marginBottom: '24px'
-            }}>
-          {response.legal_route && response.legal_route.length > 0 && (
-            <div style={{ marginBottom: '24px' }}>
-              <h4 style={{ 
-                color: '#fff', 
-                fontSize: '18px', 
-                marginBottom: '12px'
-              }}>
-                🔄 Processing Route
-              </h4>
-              <div style={{
-                padding: '16px',
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '8px',
-                alignItems: 'center'
-              }}>
-                {response.legal_route.map((agent, idx) => (
-                  <React.Fragment key={idx}>
-                    <span style={{
-                      padding: '6px 12px',
-                      background: 'rgba(139, 92, 246, 0.2)',
-                      border: '1px solid rgba(139, 92, 246, 0.4)',
-                      borderRadius: '6px',
-                      color: '#a78bfa',
-                      fontSize: '12px',
-                      fontWeight: '600'
-                    }}>
-                      {agent.replace(/_/g, ' ')}
-                    </span>
-                    {idx < response.legal_route.length - 1 && (
-                      <span style={{ color: 'rgba(255, 255, 255, 0.4)' }}>→</span>
-                    )}
-                  </React.Fragment>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {response.confidence && (
-            <div style={{ marginBottom: '24px' }}>
-              <h4 style={{ 
-                color: '#fff', 
-                fontSize: '18px', 
-                marginBottom: '12px'
-              }}>
-                📊 Confidence Breakdown
-              </h4>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '12px' }}>
-                {Object.entries(response.confidence).map(([key, value]) => (
-                  <div key={key} style={{
-                    padding: '12px',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '8px'
-                  }}>
-                    <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '11px', marginBottom: '4px', textTransform: 'capitalize' }}>
-                      {key.replace(/_/g, ' ')}
-                    </div>
-                    <div style={{ color: '#fff', fontSize: '16px', fontWeight: '600' }}>
-                      {Math.round(value * 100)}%
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div style={{
-            padding: '12px 16px',
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '8px',
-            marginBottom: '24px'
-          }}>
-            <span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '12px' }}>Trace ID: </span>
-            <span data-testid="trace-id" style={{ color: '#fff', fontSize: '13px', fontFamily: 'monospace' }}>{traceId}</span>
-          </div>
-
-          </div>
-          )}
-
-          <FeedbackButtons traceId={traceId} context="Legal Query Response" />
+          {/* Verification & Feedback */}
+          <FeedbackButtons traceId={traceId || response.trace_id} context="Legal Query Response" />
         </div>
       )}
-        </>
-      )}
-    </>
+    </div>
   )
 }
 

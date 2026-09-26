@@ -1,4 +1,8 @@
 import React, { useState } from 'react'
+import GlassCard from './ui/GlassCard.jsx'
+import BHIVButton from './ui/BHIVButton.jsx'
+import StatusBadge from './ui/StatusBadge.jsx'
+import WorkspaceHeader from './layout/WorkspaceHeader.jsx'
 
 const glossaryTerms = [
   { term: 'Breach of Contract', definition: 'Violation of any term or condition of a contract without lawful excuse', jurisdiction: 'India' },
@@ -11,7 +15,7 @@ const glossaryTerms = [
   { term: 'Damages', definition: 'Monetary compensation awarded for loss or injury', jurisdiction: 'UAE' }
 ]
 
-const LegalGlossary = ({ onBack }) => {
+const LegalGlossary = ({ onBack, onNavigateHome }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedJurisdiction, setSelectedJurisdiction] = useState('All')
 
@@ -22,111 +26,99 @@ const LegalGlossary = ({ onBack }) => {
     return matchesSearch && matchesJurisdiction
   })
 
+  const handleHomeClick = onNavigateHome || onBack;
+
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-      <button
-        onClick={onBack}
-        style={{
-          background: 'rgba(255, 255, 255, 0.1)',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-          borderRadius: '8px',
-          padding: '10px 20px',
-          color: '#fff',
-          cursor: 'pointer',
-          marginBottom: '20px',
-          fontSize: '14px'
-        }}
-      >
-        ← Back to Dashboard
-      </button>
+    <div style={{ maxWidth: '1000px', margin: '0 auto', width: '100%', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+      {/* Contextual Workspace Header */}
+      <WorkspaceHeader
+        breadcrumbs={[
+          { label: 'NYAI', onClick: handleHomeClick },
+          { label: 'Reference' },
+          { label: 'Legal Glossary' }
+        ]}
+        title="Legal Glossary & Statutory Lexicon"
+        description="Comprehensive cross-jurisdictional legal definitions and statutory provisions."
+        badge="LEXICON"
+        onBack={handleHomeClick}
+      />
 
-      <div style={{
-        background: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        borderRadius: '16px',
-        padding: '32px'
-      }}>
-        <h2 style={{ color: '#fff', fontSize: '24px', marginBottom: '24px' }}>Legal Glossary</h2>
+      {/* Search & Filter Card */}
+      <GlassCard variant="primary" style={{ padding: 'var(--space-6)' }}>
+        <p style={{ margin: '0 0 var(--space-4) 0', fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)' }}>
+          Comprehensive canonical legal definitions across India, UK, and UAE jurisdictions.
+        </p>
 
-        {/* Search and Filter */}
-        <div style={{ marginBottom: '24px' }}>
+        {/* Search and Filters */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', marginTop: 'var(--space-5)' }}>
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search legal terms..."
+            placeholder="Search legal terms or definitions..."
             style={{
               width: '100%',
-              padding: '12px 16px',
-              background: 'rgba(255, 255, 255, 0.1)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: '8px',
-              color: '#fff',
-              fontSize: '14px',
-              marginBottom: '12px'
+              padding: 'var(--space-3) var(--space-4)',
+              background: 'var(--color-bg-base)',
+              border: '1px solid var(--color-border)',
+              borderRadius: 'var(--radius-md)',
+              color: 'var(--color-text)',
+              fontSize: 'var(--text-sm)',
+              boxSizing: 'border-box'
             }}
           />
-          <div style={{ display: 'flex', gap: '12px' }}>
-            {['All', 'India', 'UK', 'UAE'].map(jurisdiction => (
-              <button
-                key={jurisdiction}
-                onClick={() => setSelectedJurisdiction(jurisdiction)}
-                style={{
-                  padding: '8px 16px',
-                  border: selectedJurisdiction === jurisdiction ? '2px solid #f59e0b' : '2px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: '8px',
-                  background: selectedJurisdiction === jurisdiction ? 'rgba(245, 158, 11, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                  color: '#fff',
-                  cursor: 'pointer',
-                  fontSize: '13px',
-                  fontWeight: '600'
-                }}
+
+          <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
+            {['All', 'India', 'UK', 'UAE'].map(jur => (
+              <BHIVButton
+                key={jur}
+                variant={selectedJurisdiction === jur ? 'primary' : 'outline'}
+                size="sm"
+                onClick={() => setSelectedJurisdiction(jur)}
               >
-                {jurisdiction}
-              </button>
+                {jur === 'All' ? 'All Jurisdictions' : jur}
+              </BHIVButton>
             ))}
           </div>
         </div>
+      </GlassCard>
 
-        {/* Terms List */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {filteredTerms.length > 0 ? (
-            filteredTerms.map((item, idx) => (
-              <div
-                key={idx}
-                style={{
-                  padding: '20px',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '12px'
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '8px' }}>
-                  <h3 style={{ color: '#fff', fontSize: '18px', margin: 0 }}>{item.term}</h3>
-                  <span style={{
-                    padding: '4px 12px',
-                    background: 'rgba(245, 158, 11, 0.2)',
-                    border: '1px solid rgba(245, 158, 11, 0.4)',
-                    borderRadius: '12px',
-                    color: '#f59e0b',
-                    fontSize: '12px',
-                    fontWeight: '600'
-                  }}>
-                    {item.jurisdiction}
-                  </span>
-                </div>
-                <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '14px', lineHeight: '1.6', margin: 0 }}>
-                  {item.definition}
-                </p>
+      {/* Terms List */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+        {filteredTerms.length > 0 ? (
+          filteredTerms.map((item, idx) => (
+            <GlassCard key={idx} variant="secondary" style={{ padding: 'var(--space-4)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-2)' }}>
+                <h3 style={{
+                  fontFamily: 'var(--font-family-heading)',
+                  fontSize: 'var(--text-base)',
+                  fontWeight: 'var(--font-semibold)',
+                  color: 'var(--color-text)',
+                  margin: 0
+                }}>
+                  {item.term}
+                </h3>
+                <StatusBadge variant="info" size="sm">
+                  {item.jurisdiction}
+                </StatusBadge>
               </div>
-            ))
-          ) : (
-            <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(255, 255, 255, 0.5)' }}>
-              No terms found matching your search
-            </div>
-          )}
-        </div>
+              <p style={{
+                color: 'var(--color-text-secondary)',
+                fontSize: 'var(--text-sm)',
+                lineHeight: 'var(--line-height-normal)',
+                margin: 0
+              }}>
+                {item.definition}
+              </p>
+            </GlassCard>
+          ))
+        ) : (
+          <GlassCard variant="secondary" style={{ padding: 'var(--space-8)', textAlign: 'center' }}>
+            <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--text-sm)', margin: 0 }}>
+              No glossary terms matching "{searchTerm}".
+            </p>
+          </GlassCard>
+        )}
       </div>
     </div>
   )

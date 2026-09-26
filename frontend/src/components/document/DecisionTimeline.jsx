@@ -5,12 +5,13 @@
  * Empty array → formal "No timeline entries recorded" state (never blank space).
  */
 import React from 'react'
+import { Calendar, Clock, Flag, ListOrdered } from 'lucide-react'
 
 const TYPE_CONFIG = {
-  event:     { color: '#2563eb', icon: '📅' },
-  deadline:  { color: '#dc2626', icon: '⏰' },
-  milestone: { color: '#059669', icon: '🏁' },
-  step:      { color: '#7c3aed', icon: '📋' }
+  event:     { color: '#2563eb', Icon: Calendar },
+  deadline:  { color: '#dc2626', Icon: Clock },
+  milestone: { color: '#059669', Icon: Flag },
+  step:      { color: '#7c3aed', Icon: ListOrdered }
 }
 
 const STATUS_CONFIG = {
@@ -35,7 +36,7 @@ const DecisionTimeline = ({ timeline }) => (
         border: '1px solid #e5e7eb', borderRadius: '6px',
         display: 'flex', alignItems: 'center', gap: '12px'
       }}>
-        <span style={{ fontSize: '18px' }}>🗓️</span>
+        <Calendar size={18} color="#6b7280" />
         <p style={{ margin: 0, fontSize: '13px', color: '#6b7280', fontStyle: 'italic' }}>
           No timeline entries recorded for this determination.
         </p>
@@ -54,6 +55,7 @@ const DecisionTimeline = ({ timeline }) => (
             .map((event, i) => {
               const typeCfg = TYPE_CONFIG[event.type] ?? TYPE_CONFIG.event
               const statusCfg = STATUS_CONFIG[event.status] ?? STATUS_CONFIG.pending
+              const IconComp = typeCfg.Icon
               return (
                 <div key={event.id ?? i} style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', position: 'relative' }}>
                   {/* Icon dot */}
@@ -61,9 +63,9 @@ const DecisionTimeline = ({ timeline }) => (
                     flexShrink: 0, width: '32px', height: '32px', borderRadius: '50%',
                     backgroundColor: typeCfg.color, color: 'white',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '14px', zIndex: 1, boxShadow: '0 0 0 3px white'
+                    zIndex: 1, boxShadow: '0 0 0 3px white'
                   }}>
-                    {typeCfg.icon}
+                    {IconComp && <IconComp size={15} color="#fff" />}
                   </div>
 
                   <div style={{

@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { legalQueryService } from '../services/nyayaApi.js'
+import GlassCard from './ui/GlassCard.jsx'
+import BHIVButton from './ui/BHIVButton.jsx'
+import StatusBadge from './ui/StatusBadge.jsx'
+import DeveloperDetails from './ui/DeveloperDetails.jsx'
+import WorkspaceHeader from './layout/WorkspaceHeader.jsx'
 
 const EVIDENCE_REQUIREMENTS = {
   personal_injury: [
     { item: 'Medical records and treatment history', required: true },
     { item: 'Hospital bills and expense receipts', required: true },
     { item: 'Police incident report (FIR)', required: true },
-    { item: 'Doctor\'s fitness certificate', required: false },
+    { item: "Doctor's fitness certificate", required: false },
     { item: 'Witness statements', required: false },
     { item: 'Photographs of injuries', required: false },
     { item: 'Employment records for loss of income', required: false }
@@ -200,7 +205,7 @@ const calculateTimeline = (baseDate, timeline) => {
   })
 }
 
-const LegalDecisionDocument = ({ onResponseReceived }) => {
+const LegalDecisionDocument = ({ onResponseReceived, onNavigateHome }) => {
   const [intakeData, setIntakeData] = useState({
     caseDescription: '',
     jurisdiction: 'India',
@@ -278,103 +283,98 @@ const LegalDecisionDocument = ({ onResponseReceived }) => {
     setCurrentStep(1)
   }
 
-  const PendingIndicator = ({ label }) => (
-    <div style={{
-      padding: '8px 12px',
-      background: 'rgba(255, 193, 7, 0.1)',
-      border: '1px dashed rgba(255, 193, 7, 0.4)',
-      borderRadius: '4px',
-      color: '#ffc107',
-      fontSize: '12px',
-      fontStyle: 'italic'
-    }}>
-      [PENDING INTAKE: {label}]
-    </div>
-  )
-
-  const SectionHeader = ({ number, title }) => (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: '12px',
-      marginBottom: '16px',
-      paddingBottom: '8px',
-      borderBottom: '2px solid rgba(59, 130, 246, 0.5)'
-    }}>
-      <div style={{
-        width: '28px',
-        height: '28px',
-        borderRadius: '50%',
-        background: '#3b82f6',
-        color: '#fff',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '14px',
-        fontWeight: '700'
-      }}>
-        {number}
-      </div>
-      <h3 style={{
-        color: '#fff',
-        fontSize: '16px',
-        fontWeight: '600',
-        margin: 0,
-        textTransform: 'uppercase',
-        letterSpacing: '1px'
-      }}>
-        {title}
-      </h3>
-    </div>
-  )
-
-  const DocumentSection = ({ children, bgColor = 'rgba(255, 255, 255, 0.03)' }) => (
-    <div style={{
-      background: bgColor,
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      borderRadius: '8px',
-      padding: '20px',
-      marginBottom: '20px'
-    }}>
-      {children}
-    </div>
-  )
+  const getRecommendationBadgeVariant = (type) => {
+    switch (type) {
+      case 'INFORM':
+        return 'success'
+      case 'REVIEW':
+        return 'warning'
+      case 'ESCALATE':
+        return 'error'
+      case 'INSUFFICIENT_DATA':
+      default:
+        return 'neutral'
+    }
+  }
 
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '1000px', margin: '0 auto', width: '100%', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+      {/* Contextual Workspace Header */}
+      <WorkspaceHeader
+        breadcrumbs={[
+          { label: 'NYAI', onClick: onNavigateHome },
+          { label: 'Legal Operations' },
+          { label: 'Decision Draft' }
+        ]}
+        title="Legal Decision Document Drafter"
+        description="Generate formal, multi-statutory legal determination documents and evidence registers."
+        badge="DOCUMENT DRAFTER"
+        onBack={onNavigateHome}
+      />
+
       {/* Case Intake Form */}
-      <DocumentSection bgColor="rgba(59, 130, 246, 0.05)">
-        <SectionHeader number="0" title="Case Intake" />
-        
-        <div style={{ display: 'grid', gap: '16px' }}>
+      <GlassCard variant="primary" style={{ padding: 'var(--space-6)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-4)', paddingBottom: 'var(--space-3)', borderBottom: '1px solid var(--color-border)' }}>
+          <span style={{
+            width: '28px',
+            height: '28px',
+            borderRadius: '50%',
+            background: 'var(--color-primary)',
+            color: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 'var(--text-xs)',
+            fontWeight: 'var(--font-bold)'
+          }}>
+            0
+          </span>
+          <h3 style={{
+            fontFamily: 'var(--font-family-heading)',
+            fontSize: 'var(--text-base)',
+            fontWeight: 'var(--font-semibold)',
+            color: 'var(--color-text)',
+            margin: 0,
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em'
+          }}>
+            Formal Case Intake
+          </h3>
+        </div>
+
+        <div style={{ display: 'grid', gap: 'var(--space-4)' }}>
           <div>
-            <label style={{ color: 'rgba(255,255,255,0.7)', fontSize: '12px', display: 'block', marginBottom: '6px' }}>
-              JURISDICTION
+            <label style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-xs)', fontWeight: 'var(--font-medium)', display: 'block', marginBottom: 'var(--space-1)', textTransform: 'uppercase' }}>
+              Jurisdiction
             </label>
-            <select
-              value={intakeData.jurisdiction}
-              onChange={(e) => handleIntakeChange('jurisdiction', e.target.value)}
-              disabled={loading || currentStep > 1}
-              style={{
-                width: '100%',
-                padding: '10px 14px',
-                background: 'rgba(255,255,255,0.1)',
-                border: '1px solid rgba(255,255,255,0.2)',
-                borderRadius: '6px',
-                color: '#fff',
-                fontSize: '14px'
-              }}
-            >
-              <option value="India" style={{color:'#000'}}>India</option>
-              <option value="UK" style={{color:'#000'}}>United Kingdom</option>
-              <option value="UAE" style={{color:'#000'}}>United Arab Emirates</option>
-            </select>
+            <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+              {['India', 'UK', 'UAE'].map((jur) => (
+                <button
+                  key={jur}
+                  type="button"
+                  onClick={() => handleIntakeChange('jurisdiction', jur)}
+                  disabled={loading || currentStep > 1}
+                  style={{
+                    padding: 'var(--space-2) var(--space-4)',
+                    background: intakeData.jurisdiction === jur ? 'var(--color-primary-transparent)' : 'var(--color-surface-subtle)',
+                    border: `1px solid ${intakeData.jurisdiction === jur ? 'var(--color-primary)' : 'var(--color-border)'}`,
+                    borderRadius: 'var(--radius-md)',
+                    color: intakeData.jurisdiction === jur ? 'var(--color-text)' : 'var(--color-text-secondary)',
+                    fontWeight: 'var(--font-medium)',
+                    fontSize: 'var(--text-sm)',
+                    cursor: loading || currentStep > 1 ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  {jur}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-3)' }}>
             <div>
-              <label style={{ color: 'rgba(255,255,255,0.7)', fontSize: '12px', display: 'block', marginBottom: '6px' }}>
-                PLAINTIFF / APPLICANT
+              <label style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-xs)', fontWeight: 'var(--font-medium)', display: 'block', marginBottom: 'var(--space-1)', textTransform: 'uppercase' }}>
+                Plaintiff / Applicant
               </label>
               <input
                 type="text"
@@ -384,18 +384,19 @@ const LegalDecisionDocument = ({ onResponseReceived }) => {
                 disabled={loading || currentStep > 1}
                 style={{
                   width: '100%',
-                  padding: '10px 14px',
-                  background: 'rgba(255,255,255,0.1)',
-                  border: '1px solid rgba(255,255,255,0.2)',
-                  borderRadius: '6px',
-                  color: '#fff',
-                  fontSize: '14px'
+                  padding: 'var(--space-2) var(--space-3)',
+                  background: 'var(--color-bg-base)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: 'var(--radius-md)',
+                  color: 'var(--color-text)',
+                  fontSize: 'var(--text-sm)',
+                  boxSizing: 'border-box'
                 }}
               />
             </div>
             <div>
-              <label style={{ color: 'rgba(255,255,255,0.7)', fontSize: '12px', display: 'block', marginBottom: '6px' }}>
-                DEFENDANT / RESPONDENT
+              <label style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-xs)', fontWeight: 'var(--font-medium)', display: 'block', marginBottom: 'var(--space-1)', textTransform: 'uppercase' }}>
+                Defendant / Respondent
               </label>
               <input
                 type="text"
@@ -405,548 +406,261 @@ const LegalDecisionDocument = ({ onResponseReceived }) => {
                 disabled={loading || currentStep > 1}
                 style={{
                   width: '100%',
-                  padding: '10px 14px',
-                  background: 'rgba(255,255,255,0.1)',
-                  border: '1px solid rgba(255,255,255,0.2)',
-                  borderRadius: '6px',
-                  color: '#fff',
-                  fontSize: '14px'
+                  padding: 'var(--space-2) var(--space-3)',
+                  background: 'var(--color-bg-base)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: 'var(--radius-md)',
+                  color: 'var(--color-text)',
+                  fontSize: 'var(--text-sm)',
+                  boxSizing: 'border-box'
                 }}
               />
             </div>
           </div>
 
           <div>
-            <label style={{ color: 'rgba(255,255,255,0.7)', fontSize: '12px', display: 'block', marginBottom: '6px' }}>
-              CASE DESCRIPTION / FACTS
+            <label style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-xs)', fontWeight: 'var(--font-medium)', display: 'block', marginBottom: 'var(--space-1)', textTransform: 'uppercase' }}>
+              Case Facts & Circumstances
             </label>
             <textarea
               value={intakeData.caseDescription}
               onChange={(e) => handleIntakeChange('caseDescription', e.target.value)}
-              placeholder="Describe the case facts, circumstances, and relief sought..."
+              placeholder="Describe the full case facts, transaction, breach or incident, and relief sought..."
               disabled={loading || currentStep > 1}
               rows={5}
               style={{
                 width: '100%',
-                padding: '12px 14px',
-                background: 'rgba(255,255,255,0.1)',
-                border: '1px solid rgba(255,255,255,0.2)',
-                borderRadius: '6px',
-                color: '#fff',
-                fontSize: '14px',
-                resize: 'vertical'
+                padding: 'var(--space-3)',
+                background: 'var(--color-bg-base)',
+                border: '1px solid var(--color-border)',
+                borderRadius: 'var(--radius-md)',
+                color: 'var(--color-text)',
+                fontSize: 'var(--text-sm)',
+                lineHeight: 'var(--line-height-normal)',
+                resize: 'vertical',
+                boxSizing: 'border-box'
               }}
             />
           </div>
 
           {currentStep === 1 && (
-            <button
-              onClick={handleGenerateDecision}
-              disabled={loading || !intakeData.caseDescription.trim()}
-              style={{
-                padding: '14px 28px',
-                background: loading || !intakeData.caseDescription.trim() 
-                  ? 'rgba(59, 130, 246, 0.5)' 
-                  : '#3b82f6',
-                border: 'none',
-                borderRadius: '8px',
-                color: '#fff',
-                fontSize: '14px',
-                fontWeight: '600',
-                cursor: loading || !intakeData.caseDescription.trim() ? 'not-allowed' : 'pointer',
-                marginTop: '8px'
-              }}
-            >
-              {loading ? 'GENERATING DECISION...' : 'GENERATE LEGAL DECISION'}
-            </button>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 'var(--space-2)' }}>
+              <BHIVButton
+                variant="primary"
+                onClick={handleGenerateDecision}
+                disabled={loading || !intakeData.caseDescription.trim()}
+                loading={loading}
+              >
+                {loading ? 'Generating Decision...' : 'Generate Legal Decision'}
+              </BHIVButton>
+            </div>
           )}
         </div>
-      </DocumentSection>
+      </GlassCard>
 
-      {/* Error Display */}
+      {/* Error Presentation */}
       {error && (
-        <div style={{
-          padding: '16px',
-          background: 'rgba(220, 53, 69, 0.1)',
-          border: '1px solid rgba(220, 53, 69, 0.3)',
-          borderRadius: '8px',
-          color: '#f8d7da',
-          marginBottom: '20px'
-        }}>
-          <strong>ERROR:</strong> {error}
-        </div>
-      )}
-
-      {/* Loading State */}
-      {loading && (
-        <DocumentSection>
-          <div style={{ textAlign: 'center', padding: '40px' }}>
-            <div style={{ 
-              width: '40px', 
-              height: '40px', 
-              border: '3px solid rgba(59,130,246,0.3)',
-              borderTop: '3px solid #3b82f6',
-              borderRadius: '50%',
-              animation: 'spin 1s linear infinite',
-              margin: '0 auto 16px'
-            }} />
-            <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-            <p style={{ color: 'rgba(255,255,255,0.7)', margin: 0 }}>
-              Analyzing case data and generating decision...
-            </p>
+        <GlassCard
+          variant="secondary"
+          style={{
+            borderColor: 'var(--color-error)',
+            background: 'rgba(239, 68, 68, 0.08)',
+            padding: 'var(--space-4)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+            <StatusBadge variant="error">ERROR</StatusBadge>
+            <span style={{ color: 'var(--color-text)', fontSize: 'var(--text-sm)' }}>
+              {error}
+            </span>
           </div>
-        </DocumentSection>
+        </GlassCard>
       )}
 
-      {/* Structured Legal Decision Document */}
+      {/* Decision Document Results */}
       {decision && !loading && (
-        <div style={{ animation: 'fadeIn 0.5s ease' }}>
-          <style>{`@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }`}</style>
-
-          {/* Advisory Recommendation Banner */}
-          <div style={{
-            padding: '16px 20px',
-            background: 'rgba(40, 167, 69, 0.15)',
-            border: '2px solid #28a745',
-            borderRadius: '8px',
-            marginBottom: '20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}>
-            <div>
-              <div style={{
-                color: '#28a745',
-                fontSize: '14px',
-                fontWeight: '600',
-                letterSpacing: '1px'
-              }}>
-                ADVISORY RECOMMENDATION
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
+          {/* Header Banner */}
+          <GlassCard variant="primary" style={{ padding: 'var(--space-5)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
+              <div>
+                <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'var(--font-semibold)', color: 'var(--color-primary-light)', textTransform: 'uppercase' }}>
+                  Advisory Recommendation
+                </span>
+                <div style={{ fontSize: 'var(--text-xl)', fontWeight: 'var(--font-bold)', color: 'var(--color-text)', marginTop: '2px' }}>
+                  {decision.recommendation?.type || 'INFORM'}
+                </div>
               </div>
-              <div style={{
-                color: '#fff',
-                fontSize: '20px',
-                fontWeight: '700',
-                marginTop: '4px'
-              }}>
+              <StatusBadge variant={getRecommendationBadgeVariant(decision.recommendation?.type)} size="md">
                 {decision.recommendation?.type || 'INFORM'}
-              </div>
+              </StatusBadge>
             </div>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '11px' }}>TRACE ID</div>
-              <div style={{ color: '#fff', fontSize: '12px', fontFamily: 'monospace' }}>
-                {traceId}
-              </div>
-            </div>
-          </div>
+          </GlassCard>
 
-          {/* SECTION 1: Case Header */}
-          <DocumentSection>
-            <SectionHeader number="I" title="Case Header" />
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-              <div>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px' }}>
-                  CASE ID
-                </div>
-                <div style={{ color: '#fff', fontSize: '14px', fontFamily: 'monospace' }}>
-                  {decision.trace_id || <PendingIndicator label="CASE ID" />}
-                </div>
-              </div>
-              <div>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px' }}>
-                  DATE OF DECISION
-                </div>
-                <div style={{ color: '#fff', fontSize: '14px' }}>
-                  {new Date().toLocaleDateString('en-GB', { 
-                    day: '2-digit', month: 'long', year: 'numeric' 
-                  })}
+          {/* Section I: Case Header */}
+          <GlassCard variant="secondary" style={{ padding: 'var(--space-5)' }}>
+            <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text)', textTransform: 'uppercase', marginBottom: 'var(--space-3)' }}>
+              SECTION I — Case Header
+            </h4>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 'var(--space-3)' }}>
+              <div style={{ padding: 'var(--space-3)', background: 'var(--color-surface-subtle)', borderRadius: 'var(--radius-md)' }}>
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Jurisdiction</span>
+                <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text)', marginTop: '2px' }}>
+                  {decision.jurisdiction_detected || decision.jurisdiction || intakeData.jurisdiction}
                 </div>
               </div>
-              <div>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px' }}>
-                  JURISDICTION
-                </div>
-                <div style={{ color: '#fff', fontSize: '14px', fontWeight: '600' }}>
-                  {decision.jurisdiction_detected || decision.jurisdiction || <PendingIndicator label="JURISDICTION" />}
+              <div style={{ padding: 'var(--space-3)', background: 'var(--color-surface-subtle)', borderRadius: 'var(--radius-md)' }}>
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Domain</span>
+                <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text)', textTransform: 'capitalize', marginTop: '2px' }}>
+                  {decision.domain || 'Civil'}
                 </div>
               </div>
-              <div>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px' }}>
-                  DOMAIN
-                </div>
-                <div style={{ color: '#fff', fontSize: '14px', textTransform: 'capitalize' }}>
-                  {decision.domain || <PendingIndicator label="DOMAIN" />}
+              <div style={{ padding: 'var(--space-3)', background: 'var(--color-surface-subtle)', borderRadius: 'var(--radius-md)' }}>
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Date</span>
+                <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text)', marginTop: '2px' }}>
+                  {new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
                 </div>
               </div>
             </div>
-          </DocumentSection>
+          </GlassCard>
 
-          {/* SECTION 2: Findings of Fact */}
-          <DocumentSection>
-            <SectionHeader number="II" title="Findings of Fact" />
-            
-            <div style={{ marginBottom: '16px' }}>
-              <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px' }}>
-                PLAINTIFF / APPLICANT
-              </div>
-              <div style={{ color: '#fff', fontSize: '14px', fontWeight: '600' }}>
-                {intakeData.parties.plaintiff || <PendingIndicator label="PLAINTIFF NAME" />}
-              </div>
-            </div>
-            
-            <div style={{ marginBottom: '16px' }}>
-              <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '4px' }}>
-                DEFENDANT / RESPONDENT
-              </div>
-              <div style={{ color: '#fff', fontSize: '14px', fontWeight: '600' }}>
-                {intakeData.parties.defendant || <PendingIndicator label="DEFENDANT NAME" />}
-              </div>
-            </div>
-
-            <div>
-              <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '8px' }}>
-                CASE FACTS (AS PROVIDED)
-              </div>
-              <div style={{
-                padding: '14px',
-                background: 'rgba(0,0,0,0.2)',
-                borderRadius: '6px',
-                borderLeft: '3px solid #3b82f6'
-              }}>
-                <p style={{ color: '#fff', fontSize: '14px', lineHeight: '1.7', margin: 0 }}>
+          {/* Section II: Findings of Fact */}
+          <GlassCard variant="secondary" style={{ padding: 'var(--space-5)' }}>
+            <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text)', textTransform: 'uppercase', marginBottom: 'var(--space-3)' }}>
+              SECTION II — Findings of Fact
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+              {(intakeData.parties.plaintiff || intakeData.parties.defendant) && (
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
+                  <div>
+                    <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>Plaintiff:</span>
+                    <p style={{ margin: '2px 0 0 0', fontSize: 'var(--text-sm)', color: 'var(--color-text)' }}>{intakeData.parties.plaintiff || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>Defendant:</span>
+                    <p style={{ margin: '2px 0 0 0', fontSize: 'var(--text-sm)', color: 'var(--color-text)' }}>{intakeData.parties.defendant || 'Not specified'}</p>
+                  </div>
+                </div>
+              )}
+              <div style={{ padding: 'var(--space-3)', background: 'var(--color-surface-subtle)', borderRadius: 'var(--radius-md)', borderLeft: '3px solid var(--color-primary)' }}>
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>Facts Stated:</span>
+                <p style={{ margin: 'var(--space-1) 0 0 0', fontSize: 'var(--text-sm)', color: 'var(--color-text)', lineHeight: '1.6' }}>
                   {intakeData.caseDescription}
                 </p>
               </div>
             </div>
-          </DocumentSection>
+          </GlassCard>
 
-          {/* SECTION 3: Analysis / Reasoning */}
-          <DocumentSection>
-            <SectionHeader number="III" title="Analysis & Reasoning" />
-            
-            <div style={{ marginBottom: '20px' }}>
-              <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '8px' }}>
-                LEGAL ANALYSIS
-              </div>
-              <div style={{
-                padding: '14px',
-                background: 'rgba(0,0,0,0.2)',
-                borderRadius: '6px'
-              }}>
-                <pre style={{ 
-                  color: 'rgba(255,255,255,0.9)', 
-                  fontSize: '13px', 
-                  lineHeight: '1.7', 
-                  margin: 0,
-                  whiteSpace: 'pre-wrap',
-                  fontFamily: 'inherit'
-                }}>
-                  {decision.reasoning_trace?.legal_analysis || <PendingIndicator label="LEGAL ANALYSIS" />}
-                </pre>
-              </div>
-            </div>
-
-            {decision.reasoning_trace?.procedural_steps && decision.reasoning_trace.procedural_steps.length > 0 && (
-              <div style={{ marginBottom: '20px' }}>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '8px' }}>
-                  PROCEDURAL STEPS
-                </div>
-                <ol style={{ 
-                  margin: 0, 
-                  paddingLeft: '20px', 
-                  color: 'rgba(255,255,255,0.9)', 
-                  fontSize: '13px',
-                  lineHeight: '1.8' 
-                }}>
-                  {decision.reasoning_trace.procedural_steps.map((step, idx) => (
-                    <li key={idx} style={{ marginBottom: '8px' }}>{step}</li>
-                  ))}
-                </ol>
-              </div>
-            )}
-
-            {decision.confidence && (
-              <div>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '8px' }}>
-                  CONFIDENCE ASSESSMENT
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '12px' }}>
-                  {Object.entries(decision.confidence).map(([key, value]) => (
-                    <div key={key} style={{
-                      padding: '10px',
-                      background: 'rgba(59, 130, 246, 0.1)',
-                      border: '1px solid rgba(59, 130, 246, 0.3)',
-                      borderRadius: '6px',
-                      textAlign: 'center'
-                    }}>
-                      <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '10px', textTransform: 'capitalize' }}>
-                        {key.replace(/_/g, ' ')}
-                      </div>
-                      <div style={{ color: '#fff', fontSize: '16px', fontWeight: '700' }}>
-                        {Math.round(value * 100)}%
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </DocumentSection>
-
-          {/* SECTION 3B: Evidence Requirements */}
-          <DocumentSection>
-            <SectionHeader number="III-B" title="Evidence Requirements" />
-            
-            <div style={{ 
-              padding: '12px 16px', 
-              background: 'rgba(255, 193, 7, 0.08)', 
-              border: '1px solid rgba(255, 193, 7, 0.2)',
-              borderRadius: '6px',
-              marginBottom: '16px'
+          {/* Section III: Analysis & Reasoning */}
+          <GlassCard variant="secondary" style={{ padding: 'var(--space-5)' }}>
+            <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text)', textTransform: 'uppercase', marginBottom: 'var(--space-3)' }}>
+              SECTION III — Analysis & Reasoning
+            </h4>
+            <pre style={{
+              margin: 0,
+              padding: 'var(--space-4)',
+              background: 'var(--color-surface-subtle)',
+              borderRadius: 'var(--radius-md)',
+              color: 'var(--color-text)',
+              fontSize: 'var(--text-sm)',
+              lineHeight: '1.8',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              fontFamily: 'inherit'
             }}>
-              <div style={{ color: '#ffc107', fontSize: '12px', fontWeight: '600', marginBottom: '4px' }}>
-                BURDEN OF PROOF: {intakeData.caseType?.toUpperCase() || classifyCaseType(intakeData.caseDescription, intakeData.jurisdiction).toUpperCase()}
-              </div>
-              <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '11px' }}>
-                The party asserting a claim bears the burden of proving the essential elements by{' '}
-                {classifyCaseType(intakeData.caseDescription, intakeData.caseType) === 'criminal' ? 'beyond reasonable doubt' : 'preponderance of evidence'}.
-              </div>
-            </div>
+              {decision.reasoning_trace?.legal_analysis || 'No legal analysis generated.'}
+            </pre>
+          </GlassCard>
 
-            <div style={{ display: 'grid', gap: '10px' }}>
+          {/* Evidence Requirements */}
+          <GlassCard variant="secondary" style={{ padding: 'var(--space-5)' }}>
+            <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text)', textTransform: 'uppercase', marginBottom: 'var(--space-3)' }}>
+              SECTION III-B — Evidence Requirements
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
               {getEvidenceRequirements(classifyCaseType(intakeData.caseDescription, intakeData.caseType)).map((evidence, idx) => (
                 <div key={idx} style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '12px',
-                  padding: '10px 14px',
-                  background: evidence.required ? 'rgba(40, 167, 69, 0.08)' : 'rgba(255,255,255,0.03)',
-                  border: `1px solid ${evidence.required ? 'rgba(40, 167, 69, 0.3)' : 'rgba(255,255,255,0.1)'}`,
-                  borderRadius: '6px'
+                  justifyContent: 'space-between',
+                  padding: 'var(--space-2) var(--space-3)',
+                  background: 'var(--color-surface-subtle)',
+                  borderRadius: 'var(--radius-sm)',
+                  border: '1px solid var(--color-border)'
                 }}>
-                  <div style={{
-                    width: '18px',
-                    height: '18px',
-                    borderRadius: '50%',
-                    background: evidence.required ? '#28a745' : 'rgba(255,255,255,0.2)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0
-                  }}>
-                    {evidence.required && (
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="white">
-                        <path d="M10 3L4.5 8.5L2 6" stroke="white" strokeWidth="2" fill="none"/>
-                      </svg>
-                    )}
-                  </div>
-                  <span style={{ 
-                    color: '#fff', 
-                    fontSize: '13px',
-                    fontWeight: evidence.required ? '500' : '400'
-                  }}>
+                  <span style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text)' }}>
                     {evidence.item}
                   </span>
-                  {evidence.required && (
-                    <span style={{
-                      marginLeft: 'auto',
-                      padding: '2px 8px',
-                      background: 'rgba(220, 53, 69, 0.15)',
-                      border: '1px solid rgba(220, 53, 69, 0.3)',
-                      borderRadius: '4px',
-                      color: '#ffc107',
-                      fontSize: '10px',
-                      fontWeight: '600'
-                    }}>
-                      MANDATORY
-                    </span>
-                  )}
+                  <StatusBadge variant={evidence.required ? 'warning' : 'neutral'} size="sm">
+                    {evidence.required ? 'Mandatory' : 'Optional'}
+                  </StatusBadge>
                 </div>
               ))}
             </div>
-          </DocumentSection>
+          </GlassCard>
 
-          {/* SECTION 3C: Procedural Timeline */}
-          <DocumentSection>
-            <SectionHeader number="III-C" title="Procedural Timeline" />
-            
-            <div style={{ 
-              display: 'flex', 
-              gap: '20px', 
-              marginBottom: '16px',
-              flexWrap: 'wrap'
-            }}>
-              <div style={{ 
-                padding: '10px 14px', 
-                background: 'rgba(59, 130, 246, 0.1)', 
-                border: '1px solid rgba(59, 130, 246, 0.3)',
-                borderRadius: '6px'
-              }}>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '10px', marginBottom: '2px' }}>JURISDICTION</div>
-                <div style={{ color: '#fff', fontSize: '13px', fontWeight: '600' }}>{intakeData.jurisdiction}</div>
-              </div>
-              <div style={{ 
-                padding: '10px 14px', 
-                background: 'rgba(139, 92, 246, 0.1)', 
-                border: '1px solid rgba(139, 92, 246, 0.3)',
-                borderRadius: '6px'
-              }}>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '10px', marginBottom: '2px' }}>COMPLEXITY</div>
-                <div style={{ color: '#fff', fontSize: '13px', fontWeight: '600' }}>Standard</div>
-              </div>
-            </div>
-
-            <div style={{ position: 'relative', paddingLeft: '30px' }}>
+          {/* Procedural Timeline */}
+          <GlassCard variant="secondary" style={{ padding: 'var(--space-5)' }}>
+            <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text)', textTransform: 'uppercase', marginBottom: 'var(--space-3)' }}>
+              SECTION III-C — Procedural Timeline
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
               {calculateTimeline(new Date(), getProceduralTimeline(intakeData.jurisdiction, classifyCaseType(intakeData.caseDescription, intakeData.caseType))).map((item, idx) => (
-                <div key={idx} style={{
-                  position: 'relative',
-                  paddingBottom: idx < getProceduralTimeline(intakeData.jurisdiction, classifyCaseType(intakeData.caseDescription, intakeData.caseType)).length - 1 ? '20px' : '0'
-                }}>
-                  {/* Timeline connector */}
-                  {idx < getProceduralTimeline(intakeData.jurisdiction, classifyCaseType(intakeData.caseDescription, intakeData.caseType)).length - 1 && (
-                    <div style={{
-                      position: 'absolute',
-                      left: '-23px',
-                      top: '24px',
-                      width: '2px',
-                      height: 'calc(100% - 20px)',
-                      background: 'rgba(59, 130, 246, 0.3)'
-                    }} />
-                  )}
-                  
-                  {/* Timeline dot */}
-                  <div style={{
-                    position: 'absolute',
-                    left: '-30px',
-                    top: '0',
-                    width: '16px',
-                    height: '16px',
-                    borderRadius: '50%',
-                    background: idx === 0 ? '#28a745' : '#3b82f6',
-                    border: '3px solid rgba(255,255,255,0.1)',
-                    zIndex: 1
-                  }} />
-
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-start',
-                    gap: '12px'
-                  }}>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ color: '#fff', fontSize: '13px', fontWeight: '500', marginBottom: '4px' }}>
-                        {item.stage}
-                      </div>
-                      <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px' }}>
-                        {item.deadline !== 'Day 0' && item.deadline !== 'Immediate' ? `Deadline: ${item.deadline}` : item.deadline}
-                      </div>
-                    </div>
-                    <div style={{
-                      padding: '4px 10px',
-                      background: 'rgba(59, 130, 246, 0.15)',
-                      border: '1px solid rgba(59, 130, 246, 0.3)',
-                      borderRadius: '4px',
-                      color: '#3b82f6',
-                      fontSize: '11px',
-                      fontWeight: '600',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      {item.estimatedDate}
-                    </div>
+                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--space-2) var(--space-3)', background: 'var(--color-surface-subtle)', borderRadius: 'var(--radius-sm)' }}>
+                  <div>
+                    <div style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-medium)', color: 'var(--color-text)' }}>{item.stage}</div>
+                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>Deadline: {item.deadline}</div>
                   </div>
+                  <StatusBadge variant="info" size="sm">
+                    {item.estimatedDate}
+                  </StatusBadge>
                 </div>
               ))}
             </div>
-          </DocumentSection>
+          </GlassCard>
 
-          {/* SECTION 4: Conclusion / Order */}
-          <DocumentSection bgColor="rgba(40, 167, 69, 0.05)">
-            <SectionHeader number="IV" title="Conclusion & Order" />
-            
+          {/* Section IV: Conclusion & Order */}
+          <GlassCard variant="primary" style={{ padding: 'var(--space-5)' }}>
+            <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text)', textTransform: 'uppercase', marginBottom: 'var(--space-3)' }}>
+              SECTION IV — Conclusion & Order
+            </h4>
             <div style={{
-              padding: '20px',
-              background: 'rgba(40, 167, 69, 0.1)',
-              border: '2px solid #28a745',
-              borderRadius: '8px',
-              marginBottom: '16px'
+              padding: 'var(--space-4)',
+              background: 'var(--color-surface-subtle)',
+              borderLeft: '4px solid var(--color-primary)',
+              borderRadius: 'var(--radius-md)',
+              fontSize: 'var(--text-base)',
+              fontWeight: 'var(--font-semibold)',
+              color: 'var(--color-text)'
             }}>
-              <div style={{
-                color: '#28a745',
-                fontSize: '18px',
-                fontWeight: '700',
-                textAlign: 'center',
-                letterSpacing: '2px'
-              }}>
-                {decision.recommendation?.type === 'ESCALATE' ? 'ESCALATION ADVISED — CONSULT LEGAL COUNSEL' :
-                 decision.recommendation?.type === 'REVIEW' ? 'REVIEW RECOMMENDED BEFORE ACTING' :
-                 decision.recommendation?.type === 'INSUFFICIENT_DATA' ? 'ADDITIONAL INFORMATION NEEDED' :
-                 'ADVISORY GUIDANCE — NOT A BINDING ORDER'}
-              </div>
+              {decision.recommendation?.type === 'ESCALATE' ? 'ESCALATION ADVISED — FORMAL COUNSEL REQUIRED' :
+               decision.recommendation?.type === 'REVIEW' ? 'FURTHER REVIEW RECOMMENDED BEFORE FILING' :
+               decision.recommendation?.type === 'INSUFFICIENT_DATA' ? 'ADDITIONAL FACTUAL EVIDENCE NEEDED' :
+               'INFORMATIONAL / PROCEED UNDER APPLICABLE PROCEDURE'}
             </div>
+          </GlassCard>
 
-            {decision.reasoning_trace?.remedies && decision.reasoning_trace.remedies.length > 0 && (
-              <div style={{ marginBottom: '16px' }}>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '8px' }}>
-                  AVAILABLE REMEDIES
-                </div>
-                <ul style={{ 
-                  margin: 0, 
-                  paddingLeft: '20px', 
-                  color: 'rgba(255,255,255,0.9)', 
-                  fontSize: '13px',
-                  lineHeight: '1.8' 
-                }}>
-                  {decision.reasoning_trace.remedies.map((remedy, idx) => (
-                    <li key={idx} style={{ marginBottom: '6px' }}>{remedy}</li>
-                  ))}
-                </ul>
+          {/* Technical Details via DeveloperDetails */}
+          <DeveloperDetails title="Document Technical Metadata" defaultOpen={false}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>Trace ID:</span>
+                <span style={{ fontFamily: 'var(--font-family-mono)', fontSize: 'var(--text-xs)', color: 'var(--color-text)' }}>{traceId || 'N/A'}</span>
               </div>
-            )}
-
-            {decision.legal_route && decision.legal_route.length > 0 && (
-              <div>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '8px' }}>
-                  LEGAL ROUTE
+              {decision.legal_route && (
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)' }}>Route:</span>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-primary-light)' }}>{decision.legal_route.join(' → ')}</span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                  {decision.legal_route.map((agent, idx) => (
-                    <React.Fragment key={idx}>
-                      <span style={{
-                        padding: '6px 12px',
-                        background: 'rgba(139, 92, 246, 0.2)',
-                        border: '1px solid rgba(139, 92, 246, 0.4)',
-                        borderRadius: '4px',
-                        color: '#a78bfa',
-                        fontSize: '11px',
-                        fontWeight: '600'
-                      }}>
-                        {agent.replace(/_/g, ' ')}
-                      </span>
-                      {idx < decision.legal_route.length - 1 && (
-                        <span style={{ color: 'rgba(255,255,255,0.4)' }}>→</span>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </div>
-              </div>
-            )}
-          </DocumentSection>
+              )}
+            </div>
+          </DeveloperDetails>
 
-          {/* Reset Button */}
-          <button
-            onClick={handleReset}
-            style={{
-              padding: '10px 20px',
-              background: 'rgba(255,255,255,0.1)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              borderRadius: '6px',
-              color: '#fff',
-              fontSize: '13px',
-              cursor: 'pointer',
-              marginTop: '10px'
-            }}
-          >
-            NEW CASE INTAKE
-          </button>
+          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+            <BHIVButton variant="outline" onClick={handleReset}>
+              Create New Case Intake
+            </BHIVButton>
+          </div>
         </div>
       )}
     </div>

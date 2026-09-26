@@ -59,9 +59,9 @@ async function setupDecisionPage(page: Page) {
   await page.waitForLoadState('domcontentloaded');
 
   // Wait for auth gate to clear and dashboard module cards to mount
-  await expect(page.getByRole('heading', { name: 'NYAI', level: 1 })).toBeVisible({ timeout: 15000 });
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 15000 });
 
-  const legalDecisionsButton = page.getByRole('button', { name: /^Legal Decisions\b/ });
+  const legalDecisionsButton = page.locator('.bhiv-sidebar__nav-btn', { hasText: 'Decisions' });
   await expect(legalDecisionsButton).toBeVisible({ timeout: 15000 });
   await legalDecisionsButton.click();
 
@@ -213,7 +213,7 @@ test.describe('3. Rendering Fidelity Test - Data Matching', () => {
       await expect(page.getByText(step, { exact: false }).first()).toBeVisible();
     }
 
-    await page.getByRole('button', { name: /Timeline/i }).click();
+    await page.locator('.section-toggle', { hasText: 'Timeline' }).click();
     for (const item of expectedTimeline) {
       await expect(page.getByText(item.step, { exact: false }).first()).toBeVisible();
     }

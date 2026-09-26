@@ -1,0 +1,170 @@
+/**
+ * BHIV Design System - Button Styles
+ */
+
+.bhiv-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bhiv-space-2, 8px);
+  position: relative;
+  font-family: var(--bhiv-font-body);
+  font-weight: var(--bhiv-weight-medium, 500);
+  line-height: 1;
+  text-decoration: none;
+  border-radius: var(--bhiv-radius-md, 12px);
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    background-color var(--bhiv-transition-fast),
+    border-color var(--bhiv-transition-fast),
+    box-shadow var(--bhiv-transition-fast),
+    transform var(--bhiv-transition-fast),
+    opacity var(--bhiv-transition-fast);
+  outline: none;
+}
+
+/* ==========================================================================
+   Sizes
+   ========================================================================== */
+.bhiv-btn--sm {
+  padding: 6px 12px;
+  font-size: var(--bhiv-text-xs, 0.75rem);
+  border-radius: var(--bhiv-radius-sm, 8px);
+  min-height: 32px;
+}
+
+.bhiv-btn--md {
+  padding: 10px 18px;
+  font-size: var(--bhiv-text-sm, 0.875rem);
+  border-radius: var(--bhiv-radius-md, 12px);
+  min-height: 40px;
+}
+
+.bhiv-btn--lg {
+  padding: 12px 24px;
+  font-size: var(--bhiv-text-md, 1rem);
+  border-radius: var(--bhiv-radius-md, 12px);
+  min-height: 48px;
+}
+
+.bhiv-btn--full-width {
+  width: 100%;
+}
+
+/* ==========================================================================
+   Variants
+   ========================================================================== */
+/* Primary */
+.bhiv-btn--primary {
+  background-color: var(--bhiv-primary, #6366f1);
+  color: var(--bhiv-text-primary, #f9fafb);
+  box-shadow: var(--bhiv-shadow-primary);
+}
+
+.bhiv-btn--primary:hover:not(:disabled):not(.bhiv-btn--loading) {
+  background-color: var(--bhiv-primary-hover, #818cf8);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.45);
+}
+
+.bhiv-btn--primary:active:not(:disabled):not(.bhiv-btn--loading) {
+  background-color: var(--bhiv-primary-active, #4f46e5);
+  transform: translateY(0);
+}
+
+/* Secondary */
+.bhiv-btn--secondary {
+  background-color: var(--bhiv-secondary, #8b5cf6);
+  color: var(--bhiv-text-primary, #f9fafb);
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
+}
+
+.bhiv-btn--secondary:hover:not(:disabled):not(.bhiv-btn--loading) {
+  background-color: var(--bhiv-secondary-hover, #a78bfa);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(139, 92, 246, 0.4);
+}
+
+.bhiv-btn--secondary:active:not(:disabled):not(.bhiv-btn--loading) {
+  background-color: #7c3aed;
+  transform: translateY(0);
+}
+
+/* Ghost */
+.bhiv-btn--ghost {
+  background-color: transparent;
+  color: var(--bhiv-text-primary, #f9fafb);
+  border-color: var(--bhiv-border, rgba(255, 255, 255, 0.10));
+}
+
+.bhiv-btn--ghost:hover:not(:disabled):not(.bhiv-btn--loading) {
+  background-color: var(--bhiv-glass-bg-hover, rgba(255, 255, 255, 0.08));
+  border-color: var(--bhiv-glass-border-hover, rgba(255, 255, 255, 0.18));
+  transform: translateY(-1px);
+}
+
+.bhiv-btn--ghost:active:not(:disabled):not(.bhiv-btn--loading) {
+  background-color: rgba(255, 255, 255, 0.05);
+  transform: translateY(0);
+}
+
+/* Danger */
+.bhiv-btn--danger {
+  background-color: var(--bhiv-error, #ef4444);
+  color: var(--bhiv-text-primary, #f9fafb);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+}
+
+.bhiv-btn--danger:hover:not(:disabled):not(.bhiv-btn--loading) {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
+}
+
+.bhiv-btn--danger:active:not(:disabled):not(.bhiv-btn--loading) {
+  background-color: #b91c1c;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   States
+   ========================================================================== */
+.bhiv-btn:disabled,
+.bhiv-btn--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.bhiv-btn--loading {
+  cursor: wait;
+  pointer-events: none;
+}
+
+.bhiv-btn:focus-visible {
+  outline: 2px solid var(--bhiv-primary-hover, #818cf8);
+  outline-offset: 2px;
+}
+
+/* Spinner */
+.bhiv-btn__spinner {
+  width: 1em;
+  height: 1em;
+  animation: bhiv-spin 0.8s linear infinite;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+@keyframes bhiv-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

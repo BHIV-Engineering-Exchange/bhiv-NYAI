@@ -25,6 +25,11 @@ import DecisionPage from './components/DecisionPage.jsx'
 import LegalDecisionDocument from './components/LegalDecisionDocument.jsx'
 import StaggeredMenu from './components/StaggeredMenu.jsx'
 import OfflineBanner from './components/OfflineBanner.jsx'
+import { BHIVShell, PageContainer } from './components/layout/index.js'
+import BHIVButton from './components/ui/BHIVButton.jsx'
+import GlassCard from './components/ui/GlassCard.jsx'
+import StatusBadge from './components/ui/StatusBadge.jsx'
+import { Globe, PenTool, ShieldCheck } from 'lucide-react'
 import { casePresentationService } from './services/nyayaApi.js'
 import { useResiliency } from './hooks/useResiliency.js'
 
@@ -118,91 +123,78 @@ const CasePresentation = ({ traceId, jurisdiction, caseType, caseId }) => {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-        {/* Loading skeleton for case presentation */}
-        <div className="consultation-card" style={{ padding: '30px' }}>
-          <SkeletonLoader type="card" count={5} />
-          <div style={{ textAlign: 'center', marginTop: '20px' }}>
-            <p style={{ color: '#6c757d', fontSize: '14px' }}>
-              Fetching case data from backend for {currentJurisdiction} jurisdiction...
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+        <GlassCard variant="secondary" style={{ padding: 'var(--space-8)' }}>
+          <SkeletonLoader type="card" count={4} />
+          <div style={{ textAlign: 'center', marginTop: 'var(--space-4)' }}>
+            <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-sm)', margin: 0 }}>
+              Retrieving sovereign case telemetry for {currentJurisdiction} jurisdiction...
             </p>
           </div>
-        </div>
+        </GlassCard>
       </div>
     )
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
       {/* Error notification with retry option */}
       {error && (
-        <div style={{
-          padding: '20px',
-          backgroundColor: 'rgba(220, 53, 69, 0.1)',
-          border: '1px solid rgba(220, 53, 69, 0.3)',
-          borderRadius: '8px',
-          color: '#721c24'
-        }}>
+        <GlassCard
+          variant="secondary"
+          style={{
+            padding: 'var(--space-4)',
+            borderColor: 'rgba(239, 68, 68, 0.3)',
+            background: 'rgba(239, 68, 68, 0.08)'
+          }}
+        >
           <div style={{ 
             display: 'flex', 
             justifyContent: 'space-between', 
-            alignItems: 'flex-start',
-            gap: '15px'
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 'var(--space-3)'
           }}>
-            <div style={{ flex: 1 }}>
-              <strong style={{ display: 'block', marginBottom: '8px', fontSize: '14px' }}>
-                Error Loading Case Data
-              </strong>
-              <p style={{ margin: 0, fontSize: '13px', lineHeight: '1.5' }}>
-                {error}. The backend may be unreachable or returned an unexpected response.
+            <div style={{ flex: 1, minWidth: '220px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-1)' }}>
+                <StatusBadge variant="error" size="sm">TELEMETRY ERROR</StatusBadge>
+              </div>
+              <p style={{ margin: 0, fontSize: 'var(--text-sm)', color: 'var(--color-text-secondary)', lineHeight: 'var(--line-height-normal)' }}>
+                {error}
               </p>
             </div>
-            <button
+            <BHIVButton
+              variant="danger"
+              size="sm"
               onClick={handleRetry}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: '#dc3545',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '13px',
-                fontWeight: '500',
-                whiteSpace: 'nowrap'
-              }}
             >
-              Retry ({retryCount})
-            </button>
+              Retry Connection ({retryCount})
+            </BHIVButton>
           </div>
-        </div>
+        </GlassCard>
       )}
 
       {/* Jurisdiction Switcher */}
-      <div className="consultation-card" style={{ padding: '20px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '15px' }}>
-          <h3 style={{ margin: 0, color: '#2c3e50', fontWeight: '600' }}>Select Jurisdiction</h3>
-          <div style={{ display: 'flex', gap: '10px' }}>
+      <GlassCard variant="secondary" style={{ padding: 'var(--space-4)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
+          <span style={{ fontSize: 'var(--text-xs)', fontWeight: 'var(--font-semibold)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Active Jurisdiction
+          </span>
+          <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
             {['India', 'UK', 'UAE'].map((j) => (
-              <button
+              <BHIVButton
                 key={j}
+                variant={currentJurisdiction === j ? 'primary' : 'outline'}
+                size="sm"
                 onClick={() => handleJurisdictionChange(j)}
-                style={{
-                  padding: '10px 20px',
-                  border: currentJurisdiction === j ? '2px solid #007bff' : '2px solid #e9ecef',
-                  borderRadius: '8px',
-                  backgroundColor: currentJurisdiction === j ? 'rgba(0, 123, 255, 0.1)' : '#fff',
-                  color: currentJurisdiction === j ? '#007bff' : '#495057',
-                  cursor: 'pointer',
-                  fontWeight: '600',
-                  transition: 'all 0.2s ease'
-                }}
               >
+                <Globe size={13} style={{ marginRight: '6px' }} />
                 {j}
-              </button>
+              </BHIVButton>
             ))}
           </div>
         </div>
-      </div>
+      </GlassCard>
 
       {/* Recommendation Status Card - Shows REVIEW, ESCALATE, INSUFFICIENT_DATA states */}
       <RecommendationStatusCard
@@ -236,7 +228,6 @@ function App() {
   const [user, setUser] = useState(null)
   const [isAuthChecking, setIsAuthChecking] = useState(true)
   const [lastResponse, setLastResponse] = useState(null)
-  const menuRef = useRef(null)
 
   // Ref always holds latest case intake for offline snapshot capture
   const caseIntakeRef = useRef(null)
@@ -269,6 +260,7 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem('nyaya_user')
+    localStorage.removeItem('authToken')
     setUser(null)
     setActiveView('dashboard')
   }
@@ -299,185 +291,121 @@ function App() {
         return <LegalOSDashboard onModuleSelect={handleModuleSelect} />
       case 'consult':
         return (
-          <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <button
-              onClick={handleBackToDashboard}
-              style={{
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '8px',
-                padding: '10px 20px',
-                color: '#fff',
-                cursor: 'pointer',
-                marginBottom: '20px',
-                fontSize: '14px'
-              }}
-            >
-              ← Back to Dashboard
-            </button>
-            <ErrorBoundary>
-              <LegalQueryCard onResponseReceived={setLastResponse} isOffline={isOffline} />
-            </ErrorBoundary>
-          </div>
+          <ErrorBoundary>
+            <LegalQueryCard
+              onResponseReceived={setLastResponse}
+              isOffline={isOffline}
+              onNavigateHome={handleBackToDashboard}
+            />
+          </ErrorBoundary>
         )
       case 'law-agent':
         return (
-          <div>
-            <button
-              onClick={handleBackToDashboard}
-              style={{
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '8px',
-                padding: '10px 20px',
-                color: '#fff',
-                cursor: 'pointer',
-                marginBottom: '20px',
-                fontSize: '14px',
-                marginLeft: '20px'
-              }}
-            >
-              ← Back to Dashboard
-            </button>
-            <ErrorBoundary>
-              <LawAgentView responseData={lastResponse} />
-            </ErrorBoundary>
-          </div>
+          <ErrorBoundary>
+            <LawAgentView
+              responseData={lastResponse}
+              onNavigateHome={handleBackToDashboard}
+              onNavigateConsult={() => handleModuleSelect('consult')}
+            />
+          </ErrorBoundary>
         )
       case 'decision':
         return (
-          <div>
-            <button
-              onClick={handleBackToDashboard}
-              style={{
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '8px',
-                padding: '10px 20px',
-                color: '#fff',
-                cursor: 'pointer',
-                marginBottom: '20px',
-                fontSize: '14px',
-                marginLeft: '20px'
-              }}
-            >
-              ← Back to Dashboard
-            </button>
-            <ErrorBoundary>
-              <DecisionPage />
-            </ErrorBoundary>
-          </div>
+          <ErrorBoundary>
+            <DecisionPage
+              onNavigateHome={handleBackToDashboard}
+              onNavigateConsult={() => handleModuleSelect('consult')}
+            />
+          </ErrorBoundary>
         )
       case 'decision-draft':
         return (
-          <div>
-            <button
-              onClick={handleBackToDashboard}
-              style={{
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '8px',
-                padding: '10px 20px',
-                color: '#fff',
-                cursor: 'pointer',
-                marginBottom: '20px',
-                fontSize: '14px',
-                marginLeft: '20px'
-              }}
-            >
-              ← Back to Dashboard
-            </button>
-            <ErrorBoundary>
-              <LegalDecisionDocument onResponseReceived={setLastResponse} isOffline={isOffline} />
-            </ErrorBoundary>
-          </div>
+          <ErrorBoundary>
+            <LegalDecisionDocument
+              onResponseReceived={setLastResponse}
+              isOffline={isOffline}
+              onNavigateHome={handleBackToDashboard}
+            />
+          </ErrorBoundary>
         )
       case 'procedure':
         return (
           <ErrorBoundary>
-            <JurisdictionProcedure onBack={handleBackToDashboard} />
+            <JurisdictionProcedure
+              onBack={handleBackToDashboard}
+              onNavigateHome={handleBackToDashboard}
+            />
           </ErrorBoundary>
         )
       case 'timeline':
         return (
           <ErrorBoundary>
-            <CaseTimelineGenerator onBack={handleBackToDashboard} />
+            <CaseTimelineGenerator
+              onBack={handleBackToDashboard}
+              onNavigateHome={handleBackToDashboard}
+            />
           </ErrorBoundary>
         )
       case 'glossary':
         return (
           <ErrorBoundary>
-            <LegalGlossary onBack={handleBackToDashboard} />
+            <LegalGlossary
+              onBack={handleBackToDashboard}
+              onNavigateHome={handleBackToDashboard}
+            />
           </ErrorBoundary>
         )
       case 'docs':
         return (
           <ErrorBoundary>
-            <Documentation onBack={handleBackToDashboard} />
+            <Documentation
+              onBack={handleBackToDashboard}
+              onNavigateHome={handleBackToDashboard}
+            />
           </ErrorBoundary>
         )
       case 'draft':
         return (
-          <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <button
-              onClick={handleBackToDashboard}
-              style={{
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '8px',
-                padding: '10px 20px',
-                color: '#fff',
-                cursor: 'pointer',
-                marginBottom: '20px',
-                fontSize: '14px'
-              }}
-            >
-              ← Back to Dashboard
-            </button>
-            <div style={{
-              background: 'rgba(255, 255, 255, 0.05)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '16px',
-              padding: '40px',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '64px', marginBottom: '20px' }}>✍️</div>
-              <h2 style={{ color: '#fff', fontSize: '24px', marginBottom: '12px' }}>Generate Legal Draft</h2>
-              <p style={{ color: 'rgba(255, 255, 255, 0.6)', marginBottom: '24px' }}>AI document generation coming soon</p>
-            </div>
+          <div style={{ maxWidth: '1000px', margin: '0 auto', width: '100%' }}>
+            <GlassCard variant="primary" style={{ padding: 'var(--space-12) var(--space-6)', textAlign: 'center' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-4)', color: 'var(--bhiv-primary-hover, #818cf8)' }}>
+                <PenTool size={44} />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-2)' }}>
+                <StatusBadge variant="neutral" size="sm">ROADMAP</StatusBadge>
+              </div>
+              <h2 style={{ fontFamily: 'var(--font-family-heading)', color: 'var(--color-text)', fontSize: 'var(--text-xl)', margin: 'var(--space-2) 0' }}>
+                Generate Legal Draft
+              </h2>
+              <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-sm)', margin: '0 0 var(--space-6) 0' }}>
+                AI-assisted legal document drafting and verification will be integrated here.
+              </p>
+              <BHIVButton variant="outline" size="sm" onClick={handleBackToDashboard}>
+                Return to Overview
+              </BHIVButton>
+            </GlassCard>
           </div>
         )
       case 'compliance':
         return (
-          <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <button
-              onClick={handleBackToDashboard}
-              style={{
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '8px',
-                padding: '10px 20px',
-                color: '#fff',
-                cursor: 'pointer',
-                marginBottom: '20px',
-                fontSize: '14px'
-              }}
-            >
-              ← Back to Dashboard
-            </button>
-            <div style={{
-              background: 'rgba(255, 255, 255, 0.05)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '16px',
-              padding: '40px',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '64px', marginBottom: '20px' }}>✓</div>
-              <h2 style={{ color: '#fff', fontSize: '24px', marginBottom: '12px' }}>Compliance Risk Check</h2>
-              <p style={{ color: 'rgba(255, 255, 255, 0.6)', marginBottom: '24px' }}>Compliance verification coming soon</p>
-            </div>
+          <div style={{ maxWidth: '1000px', margin: '0 auto', width: '100%' }}>
+            <GlassCard variant="primary" style={{ padding: 'var(--space-12) var(--space-6)', textAlign: 'center' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-4)', color: 'var(--bhiv-accent-emerald, #34d399)' }}>
+                <ShieldCheck size={44} />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-2)' }}>
+                <StatusBadge variant="neutral" size="sm">ROADMAP</StatusBadge>
+              </div>
+              <h2 style={{ fontFamily: 'var(--font-family-heading)', color: 'var(--color-text)', fontSize: 'var(--text-xl)', margin: 'var(--space-2) 0' }}>
+                Compliance Risk Check
+              </h2>
+              <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--text-sm)', margin: '0 0 var(--space-6) 0' }}>
+                Multi-jurisdictional statutory compliance audits and regulatory cross-checks will be integrated here.
+              </p>
+              <BHIVButton variant="outline" size="sm" onClick={handleBackToDashboard}>
+                Return to Overview
+              </BHIVButton>
+            </GlassCard>
           </div>
         )
       default:
@@ -486,115 +414,21 @@ function App() {
   }
 
   return (
-    <div className="container" style={{ paddingTop: '100px', position: 'relative' }}>
-      {/* Galaxy Background */}
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
-        <Galaxy 
-          mouseInteraction
-          density={0.8}
-          glowIntensity={0.2}
-          saturation={0}
-          hueShift={200}
-          twinkleIntensity={0.4}
-          rotationSpeed={0.05}
-          starSpeed={0.3}
-          speed={0.8}
-        />
-      </div>
-
-      {/* Floating Pill-Shaped Glassmorphism Navbar */}
-      <nav style={{
-        position: 'fixed',
-        top: '20px',
-        left: '20px',
-        right: '20px',
-        zIndex: 1000,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '10px',
-        padding: '12px 24px',
-        background: 'rgba(255, 255, 255, 0.1)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        borderRadius: '9999px',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05)'
-      }}>
-        <div 
-          onClick={handleBackToDashboard}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            cursor: 'pointer'
-          }}
-        >
-          <img 
-            src="/03.svg" 
-            alt="NYAI Logo" 
-            style={{ 
-              width: '40px', 
-              height: '40px', 
-              objectFit: 'contain'
-            }} 
-          />
-          <span style={{
-            fontSize: '16px',
-            fontWeight: '700',
-            background: 'linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.7) 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-          }}>
-            NYAI
-          </span>
+    <BHIVShell
+      activeView={activeView}
+      onSelectView={(view) => {
+        setActiveModule(view)
+        setActiveView(view)
+      }}
+      user={user}
+      onLogout={handleLogout}
+      isOffline={isOffline}
+    >
+      <PageContainer width="default">
+        <div className="bhiv-page-transition" key={activeView}>
+          {renderView()}
         </div>
-        <button
-          onClick={() => {
-            if (menuRef.current) {
-              menuRef.current.toggle();
-            }
-          }}
-          style={{
-            padding: '8px 20px',
-            background: 'rgba(255, 255, 255, 0.1)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            borderRadius: '9999px',
-            color: '#fff',
-            fontSize: '14px',
-            fontWeight: '600',
-            cursor: 'pointer'
-          }}
-        >
-          Menu
-        </button>
-      </nav>
-
-      <StaggeredMenu
-        ref={menuRef}
-        items={[
-          { label: 'Chat Mode', value: 'consult' },
-          { label: 'Decision Draft', value: 'decision-draft' },
-          { label: 'Law Agent', value: 'law-agent' },
-          { label: 'Explore', value: 'docs' },
-          { label: user.name, value: 'profile' },
-          { label: 'Logout', value: 'logout' }
-        ]}
-        accentColor="#8c929b"
-        onItemClick={(item) => {
-          if (item.value === 'logout') {
-            handleLogout();
-          } else {
-            setActiveView(item.value);
-          }
-        }}
-      />
-
-      {/* Main Content */}
-      <div style={{ position: 'relative', zIndex: 1 }}>
-        {renderView()}
-      </div>
+      </PageContainer>
 
       {/* Degraded Mode Banner — mounts globally, visible across all views */}
       <OfflineBanner
@@ -603,8 +437,9 @@ function App() {
         hasPending={hasPending}
         onSyncClick={() => syncToServer(casePresentationService.getAllCaseData)}
       />
-    </div>
+    </BHIVShell>
   )
 }
 
 export default App
+

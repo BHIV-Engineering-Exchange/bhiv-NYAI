@@ -1,175 +1,179 @@
-import React, { useState } from 'react'
-import GlareHover from './GlareHover.jsx'
+import React from 'react';
+import PropTypes from 'prop-types';
+import {
+  LayoutDashboard,
+  MessageSquare,
+  Scale,
+  FileText,
+  Bot,
+  Clock3,
+  Globe2,
+  BookOpen,
+  Library,
+  Shield,
+  CheckCircle2,
+  Activity
+} from 'lucide-react';
+import { GlassCard, BHIVButton, StatusBadge } from './ui/index.js';
+import './LegalOSDashboard.css';
 
+/**
+ * Redesigned LegalOSDashboard
+ * Unified BHIV design language, professional icons, no emojis.
+ */
 const LegalOSDashboard = ({ onModuleSelect }) => {
-  const [activeModule, setActiveModule] = useState(null)
-
   const modules = [
     {
       id: 'consult',
       title: 'Ask Legal Question',
-      description: 'Get instant AI-powered legal analysis',
-      color: '#3b82f6'
+      description: 'Submit legal scenarios for real-time statutory reasoning, procedural routes, and jurisdiction mapping.',
+      Icon: MessageSquare,
+      badge: 'CORE QUERY',
+      actionText: 'Launch Legal Query'
     },
     {
       id: 'decision',
       title: 'Legal Decisions',
-      description: 'Query structured legal decisions with advisory recommendations',
-      color: '#ec4899'
+      description: 'Access structured judicial determinations, advisory recommendation flags, and precedent findings.',
+      Icon: Scale,
+      badge: 'STRUCTURED',
+      actionText: 'Review Decisions'
     },
     {
       id: 'procedure',
       title: 'Jurisdiction Procedure',
-      description: 'Navigate through legal procedures by jurisdiction',
-      color: '#8b5cf6'
+      description: 'Explore procedural workflows, limitation periods, and statutory filing guidelines across India, UK, and UAE.',
+      Icon: Globe2,
+      badge: 'MULTI-REGION',
+      actionText: 'Explore Procedures'
     },
     {
       id: 'timeline',
-      title: 'Case Timeline',
-      description: 'Generate timeline for your legal case',
-      color: '#10b981'
+      title: 'Case Timeline Generator',
+      description: 'Build comprehensive procedural event timelines, statutory milestones, and chronological roadmaps.',
+      Icon: Clock3,
+      badge: 'CHRONOLOGY',
+      actionText: 'Build Timeline'
     },
     {
       id: 'glossary',
       title: 'Legal Glossary',
-      description: 'Search legal terms and definitions',
-      color: '#f59e0b'
+      description: 'Search jurisdictional legal terminology, statutory definitions, and doctrine cross-references.',
+      Icon: BookOpen,
+      badge: 'LEXICON',
+      actionText: 'Search Glossary'
+    },
+    {
+      id: 'law-agent',
+      title: 'Law Agent Engine',
+      description: 'Inspect multi-agent legal consultation workflows, evidence chains, and reasoning traces.',
+      Icon: Bot,
+      badge: 'AGENTIC',
+      actionText: 'Inspect Agent'
     }
-  ]
+  ];
+
+  const capabilities = [
+    { Icon: Shield, label: 'Sovereign Compliant' },
+    { Icon: Activity, label: 'Transparent Reasoning' },
+    { Icon: Globe2, label: 'Multi-Jurisdiction (IN/UK/UAE)' },
+    { Icon: CheckCircle2, label: 'Audit-Grade Provenance' }
+  ];
 
   return (
-    <div style={{ padding: '40px 20px', maxWidth: '1400px', margin: '0 auto' }}>
-      {/* Hero Section */}
-      <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-        <h1 style={{ 
-          fontSize: '48px', 
-          fontWeight: '700', 
-          marginBottom: '16px',
-          background: 'linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.7) 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text'
-        }}>
-          NYAI
+    <div className="bhiv-dashboard">
+      {/* Restrained BHIV Hero Section */}
+      <section className="bhiv-dashboard__hero" aria-labelledby="dashboard-hero-title">
+        <div className="bhiv-dashboard__eyebrow">
+          <span>BHIV / NYAI</span>
+        </div>
+
+        <h1 id="dashboard-hero-title" className="bhiv-dashboard__heading">
+          Legal Intelligence, Unified.
         </h1>
-        <p style={{ 
-          fontSize: '18px', 
-          color: 'rgba(255, 255, 255, 0.7)',
-          maxWidth: '600px',
-          margin: '0 auto'
-        }}>
-          AI-powered legal intelligence across India, UK, and UAE jurisdictions
+
+        <p className="bhiv-dashboard__subtitle">
+          Operational legal reasoning and decision intelligence across sovereign jurisdictions.
+          Evaluate statutory procedures, precedent routes, and structured outcomes with audit-grade fidelity.
         </p>
-      </div>
 
-      {/* Module Grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(2, 1fr)',
-        gap: '20px',
-        marginBottom: '60px',
-        maxWidth: '750px',
-        margin: '0 auto 60px auto'
-      }}>
-        {modules.map(module => (
-          <GlareHover key={module.id}>
-            <button
-              onClick={() => onModuleSelect(module.id)}
-              style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '16px',
-                padding: '24px',
-                textAlign: 'left',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                position: 'relative',
-                overflow: 'hidden',
-                width: '100%',
-                height: '140px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)'
-                e.currentTarget.style.borderColor = module.color
-                e.currentTarget.style.transform = 'translateY(-4px)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'
-                e.currentTarget.style.transform = 'translateY(0)'
-              }}
-            >
-            <h3 style={{ 
-              color: '#fff', 
-              fontSize: '20px', 
-              fontWeight: '600', 
-              marginBottom: '8px' 
-            }}>
-              {module.title}
-            </h3>
-            <p style={{ 
-              color: 'rgba(255, 255, 255, 0.6)', 
-              fontSize: '14px',
-              lineHeight: '1.6',
-              margin: 0
-            }}>
-              {module.description}
-            </p>
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              width: '120px',
-              height: '120px',
-              background: `radial-gradient(circle, ${module.color}20 0%, transparent 70%)`,
-              pointerEvents: 'none'
-            }} />
-            </button>
-          </GlareHover>
+        <div className="bhiv-dashboard__cta-group">
+          <BHIVButton
+            variant="primary"
+            size="lg"
+            onClick={() => onModuleSelect('consult')}
+          >
+            Ask a Legal Question
+          </BHIVButton>
+
+          <BHIVButton
+            variant="ghost"
+            size="lg"
+            onClick={() => onModuleSelect('decision')}
+          >
+            Review Decisions
+          </BHIVButton>
+        </div>
+      </section>
+
+      {/* Operational Capabilities Bar */}
+      <section className="bhiv-dashboard__capabilities" aria-label="System Capabilities">
+        {capabilities.map((cap, idx) => (
+          <div key={idx} className="bhiv-dashboard__cap-item">
+            <cap.Icon size={14} strokeWidth={2} className="bhiv-dashboard__cap-icon" aria-hidden="true" />
+            <span>{cap.label}</span>
+          </div>
         ))}
-      </div>
+      </section>
 
-      {/* About Us */}
-      <div style={{
-        background: 'rgba(255, 255, 255, 0.03)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        borderRadius: '16px',
-        padding: '32px',
-        textAlign: 'center'
-      }}>
-        <h3 style={{ 
-          color: '#fff', 
-          fontSize: '18px', 
-          fontWeight: '600',
-          marginBottom: '24px'
-        }}>
-          About Us
-        </h3>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '40px',
-          flexWrap: 'wrap'
-        }}>
-          {['Sovereign Compliant', 'Transparent AI', 'Real-time Analysis', 'Multi-Jurisdiction'].map((feature, idx) => (
-            <div key={idx} style={{ 
-              color: 'rgba(255, 255, 255, 0.7)',
-              fontSize: '14px',
-              fontWeight: '500'
-            }}>
-              {feature}
-            </div>
+      {/* Core Operational Modules */}
+      <section className="bhiv-dashboard__section" aria-labelledby="core-modules-heading">
+        <div className="bhiv-dashboard__section-header">
+          <h2 id="core-modules-heading" className="bhiv-dashboard__section-title">
+            Operational Modules
+          </h2>
+          <span className="bhiv-dashboard__section-desc">
+            Select a module to initiate consultation or procedure workflows
+          </span>
+        </div>
+
+        <div className="bhiv-dashboard__grid">
+          {modules.map((module) => (
+            <GlassCard
+              key={module.id}
+              interactive
+              padding="normal"
+              className="bhiv-dashboard__module-card"
+              onClick={() => onModuleSelect(module.id)}
+              aria-label={`Open ${module.title}`}
+            >
+              <div className="bhiv-dashboard__card-top">
+                <div className="bhiv-dashboard__card-header">
+                  <div className="bhiv-dashboard__card-icon" aria-hidden="true">
+                    <module.Icon size={20} strokeWidth={1.75} />
+                  </div>
+                  <StatusBadge variant="neutral" size="sm">
+                    {module.badge}
+                  </StatusBadge>
+                </div>
+                <h3 className="bhiv-dashboard__card-title">{module.title}</h3>
+                <p className="bhiv-dashboard__card-desc">{module.description}</p>
+              </div>
+
+              <div className="bhiv-dashboard__card-action" aria-hidden="true">
+                <span>{module.actionText}</span>
+                <span>→</span>
+              </div>
+            </GlassCard>
           ))}
         </div>
-      </div>
+      </section>
     </div>
-  )
-}
+  );
+};
 
-export default LegalOSDashboard
+LegalOSDashboard.propTypes = {
+  onModuleSelect: PropTypes.func.isRequired
+};
+
+export default LegalOSDashboard;
