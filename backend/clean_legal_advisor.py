@@ -2517,8 +2517,9 @@ class EnhancedLegalAdvisor:
             all_statutes = LAND_DISPUTE_STATUTES.copy()
 
         override_statutes = self._match_query_statute_override(query_lower)
-        if jurisdiction == 'IN' and override_statutes:
-            all_statutes = override_statutes
+        # Disable hardcoded IPC overrides to let the system fetch BNS dynamically
+        # if jurisdiction == 'IN' and override_statutes:
+        #     all_statutes = override_statutes
         
         # Store domains in advice object
         advice = LegalAdvice(
