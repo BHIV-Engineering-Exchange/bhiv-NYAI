@@ -69,7 +69,6 @@ const AuthPage = ({ onAuthSuccess, onSkipAuth }) => {
             return;
           }
         } catch (fetchErr) {
-          // Fallback local session if backend unreachable
           userData.token = 'local_fallback_token';
         }
 
@@ -95,7 +94,7 @@ const AuthPage = ({ onAuthSuccess, onSkipAuth }) => {
           clearTimeout(timer);
 
           if (signupRes.ok) {
-            setSuccessMessage('Registration successful! Please log in with your email and password.');
+            setSuccessMessage('Registration successful! Please log in with your credentials.');
             setIsLogin(true);
             setFormData(prev => ({ ...prev, password: '' }));
             setIsSubmitting(false);
@@ -125,124 +124,128 @@ const AuthPage = ({ onAuthSuccess, onSkipAuth }) => {
 
   return (
     <div className="bhiv-auth-page">
-      {/* Lightweight gradient background layer (Zero UI Lag) */}
-      <div className="bhiv-auth-page__galaxy-layer" style={{ background: 'radial-gradient(circle at 50% 30%, #1a233a 0%, #0b0f19 70%)' }} aria-hidden="true" />
+      <div className="bhiv-auth-page__galaxy-layer" style={{ background: 'radial-gradient(circle at 50% 30%, #111827 0%, #0b0f19 80%)' }} aria-hidden="true" />
 
-      <div className="bhiv-auth-page__content">
-        <div className="bhiv-auth-page__header">
-          <div className="bhiv-auth-page__badge">
+      <div className="bhiv-auth-card">
+        <div className="bhiv-auth-card__header">
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
             <StatusBadge variant="info">SOVEREIGN AI GATEWAY</StatusBadge>
           </div>
-          <h1 className="bhiv-auth-page__title">Nyaya Legal AI</h1>
-          <p className="bhiv-auth-page__subtitle">
+          <div className="bhiv-auth-card__brand-text" style={{ justifyContent: 'center' }}>
+            <span>Nyaya Legal AI</span>
+          </div>
+          <p className="bhiv-auth-card__subtitle">
             Autonomous Multi-Agent Legal Intelligence Platform
           </p>
         </div>
 
-        <div className="bhiv-auth-page__card">
-          <div className="bhiv-auth-page__tabs" role="tablist">
-            <button
-              type="button"
-              className={`bhiv-auth-page__tab ${isLogin ? 'active' : ''}`}
-              onClick={() => { setIsLogin(true); setError(''); setSuccessMessage(''); }}
-              role="tab"
-              aria-selected={isLogin}
-            >
-              Log In
-            </button>
-            <button
-              type="button"
-              className={`bhiv-auth-page__tab ${!isLogin ? 'active' : ''}`}
-              onClick={() => { setIsLogin(false); setError(''); setSuccessMessage(''); }}
-              role="tab"
-              aria-selected={!isLogin}
-            >
-              Sign Up
-            </button>
+        <div className="bhiv-auth-card__tabs" role="tablist">
+          <button
+            type="button"
+            className={`bhiv-auth-card__tab-btn ${isLogin ? 'bhiv-auth-card__tab-btn--active' : ''}`}
+            onClick={() => { setIsLogin(true); setError(''); setSuccessMessage(''); }}
+            role="tab"
+            aria-selected={isLogin}
+          >
+            Log In
+          </button>
+          <button
+            type="button"
+            className={`bhiv-auth-card__tab-btn ${!isLogin ? 'bhiv-auth-card__tab-btn--active' : ''}`}
+            onClick={() => { setIsLogin(false); setError(''); setSuccessMessage(''); }}
+            role="tab"
+            aria-selected={!isLogin}
+          >
+            Sign Up
+          </button>
+        </div>
+
+        {successMessage && (
+          <div style={{ background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.4)', color: '#10b981', padding: '10px 14px', borderRadius: '8px', fontSize: '13px', marginBottom: '16px', lineHeight: '1.4' }}>
+            ✅ {successMessage}
+          </div>
+        )}
+
+        {error && (
+          <div className="bhiv-auth-card__error" role="alert">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          {!isLogin && (
+            <div className="bhiv-auth-card__form-group">
+              <label className="bhiv-auth-card__label" htmlFor="auth-name">Full Name</label>
+              <input
+                id="auth-name"
+                className="bhiv-auth-card__input"
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="e.g. Senior Counsel"
+                required={!isLogin}
+              />
+            </div>
+          )}
+
+          <div className="bhiv-auth-card__form-group">
+            <label className="bhiv-auth-card__label" htmlFor="auth-email">Email Address</label>
+            <input
+              id="auth-email"
+              className="bhiv-auth-card__input"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="counsel@nyaya.ai"
+              required
+            />
           </div>
 
-          {successMessage && (
-            <div style={{ background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.4)', color: '#10b981', padding: '10px 14px', borderRadius: '8px', fontSize: '13px', marginBottom: '16px', lineHeight: '1.4' }}>
-              ✅ {successMessage}
-            </div>
-          )}
-
-          {error && (
-            <div className="bhiv-auth-page__error" role="alert">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="bhiv-auth-page__form">
-            {!isLogin && (
-              <div className="bhiv-auth-page__field">
-                <label htmlFor="auth-name">Full Name</label>
-                <input
-                  id="auth-name"
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="e.g. Senior Counsel"
-                  required={!isLogin}
-                />
-              </div>
-            )}
-
-            <div className="bhiv-auth-page__field">
-              <label htmlFor="auth-email">Email Address</label>
-              <input
-                id="auth-email"
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="counsel@nyaya.ai"
-                required
-              />
-            </div>
-
-            <div className="bhiv-auth-page__field">
-              <label htmlFor="auth-password">Password</label>
-              <input
-                id="auth-password"
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="••••••••••••"
-                required
-              />
-            </div>
-
-            <BHIVButton
-              type="submit"
-              variant="primary"
-              size="lg"
-              className="bhiv-auth-page__submit"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Authenticating...' : (isLogin ? 'Log In to Nyaya' : 'Create Account')}
-            </BHIVButton>
-          </form>
-
-          <div className="bhiv-auth-page__divider">
-            <span>or</span>
+          <div className="bhiv-auth-card__form-group">
+            <label className="bhiv-auth-card__label" htmlFor="auth-password">Password</label>
+            <input
+              id="auth-password"
+              className="bhiv-auth-card__input"
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="••••••••••••"
+              required
+            />
           </div>
 
           <BHIVButton
-            type="button"
-            variant="ghost"
-            size="md"
-            className="bhiv-auth-page__guest"
-            onClick={onSkipAuth}
+            type="submit"
+            variant="primary"
+            size="lg"
+            style={{ width: '100%', marginTop: '12px' }}
+            disabled={isSubmitting}
           >
-            Continue as Guest Researcher
+            {isSubmitting ? 'Authenticating...' : (isLogin ? 'Log In to Nyaya' : 'Create Account')}
           </BHIVButton>
+        </form>
+
+        <div className="bhiv-auth-card__guest-divider">
+          <span>or</span>
         </div>
 
-        <div className="bhiv-auth-page__footer">
-          <p>Protected by BHIV Governance Architecture • Sovereign Compliance</p>
+        <BHIVButton
+          type="button"
+          variant="ghost"
+          size="md"
+          style={{ width: '100%' }}
+          onClick={onSkipAuth}
+        >
+          Continue as Guest Researcher
+        </BHIVButton>
+
+        <div className="bhiv-auth-card__footer">
+          <span className="bhiv-auth-card__toggle-text">
+            Protected by BHIV Governance Architecture • Sovereign Compliance
+          </span>
         </div>
       </div>
     </div>
