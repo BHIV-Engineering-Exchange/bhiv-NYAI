@@ -1,0 +1,10 @@
+{
+  "lawyer@nyai.bhiv": {
+    "id": "usr_lawyer_01",
+    "name": "Senior Legal Counsel",
+    "email": "lawyer@nyai.bhiv",
+    "password_hash": "22ff025364e86758bf6944ddd467d79ad970a91f2f455c05d54e3aba672c8f76",
+    "role": "lawyer",
+    "created_at": "2026-09-29T08:40:14.108437+00:00"
+  }
+}
