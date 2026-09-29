@@ -1,0 +1,58 @@
+{
+  "jurisdiction": "India",
+  "country_code": "IN",
+  "legal_system": "Common Law & Statutory Codes",
+  "primary_penal_code": "Bharatiya Nyaya Sanhita (BNS 2026)",
+  "statutes": [
+    {
+      "id": "bns_303",
+      "act_name": "Bharatiya Nyaya Sanhita 2023",
+      "section": "303",
+      "title": "Theft",
+      "description": "Whoever intending to take dishonestly any movable property out of the possession of any person without that person's consent, moves that property in order to such taking, is said to commit theft.",
+      "penalty": "Imprisonment of up to 3 years, or fine, or both.",
+      "bailable": true,
+      "cognizable": true,
+      "replaced_legacy_ipc": "IPC Section 378 / 379"
+    },
+    {
+      "id": "bns_305",
+      "act_name": "Bharatiya Nyaya Sanhita 2023",
+      "section": "305",
+      "title": "Theft in Dwelling House or Building",
+      "description": "Theft committed in any building, tent or vessel used as a human dwelling or for custody of property.",
+      "penalty": "Imprisonment of up to 7 years and fine.",
+      "bailable": false,
+      "cognizable": true,
+      "replaced_legacy_ipc": "IPC Section 380"
+    },
+    {
+      "id": "bns_103",
+      "act_name": "Bharatiya Nyaya Sanhita 2023",
+      "section": "103",
+      "title": "Punishment for Murder",
+      "description": "Whoever commits murder shall be punished with death or imprisonment for life, and shall also be liable to fine.",
+      "penalty": "Death or Life Imprisonment + Fine",
+      "bailable": false,
+      "cognizable": true,
+      "replaced_legacy_ipc": "IPC Section 302"
+    },
+    {
+      "id": "hma_13",
+      "act_name": "Hindu Marriage Act 1955",
+      "section": "13",
+      "title": "Divorce Proceedings and Grounds",
+      "description": "Grounds for dissolution of marriage by decree of divorce including cruelty, desertion, adultery, and mutual consent.",
+      "domain": "Civil / Family Law",
+      "procedural_court": "Family Court / District Court"
+    },
+    {
+      "id": "jj_75",
+      "act_name": "Juvenile Justice Act 2015",
+      "section": "75",
+      "title": "Punishment for Cruelty to Child",
+      "description": "Whoever having the actual charge of or control over a child, assaults, abandons, abuses, exposes or wilfully neglects the child.",
+      "domain": "Special Criminal Law"
+    }
+  ]
+}

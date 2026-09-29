@@ -1,0 +1,45 @@
+{
+  "jurisdiction": "UK",
+  "country_code": "GB",
+  "legal_system": "English Common Law & Parliamentary Acts",
+  "primary_penal_code": "Theft Act 1968 & Offences Against Person Act 1861",
+  "statutes": [
+    {
+      "id": "uk_theft_1",
+      "act_name": "Theft Act 1968",
+      "section": "Section 1",
+      "title": "Basic Definition of Theft",
+      "description": "A person is guilty of theft if he dishonestly appropriates property belonging to another with the intention of permanently depriving the other of it.",
+      "penalty": "Maximum penalty on indictment: 7 years imprisonment.",
+      "domain": "Criminal Law",
+      "court_type": "Magistrates' Court / Crown Court"
+    },
+    {
+      "id": "uk_theft_9",
+      "act_name": "Theft Act 1968",
+      "section": "Section 9",
+      "title": "Burglary of Domestic or Commercial Building",
+      "description": "A person is guilty of burglary if he enters any building or part of a building as a trespasser with intent to commit theft or grievous bodily harm.",
+      "penalty": "Maximum penalty for domestic burglary: 14 years imprisonment.",
+      "domain": "Criminal Law / Crown Court"
+    },
+    {
+      "id": "uk_matrimonial_1",
+      "act_name": "Matrimonial Causes Act 1973 (as amended by Divorce, Dissolution & Separation Act 2020)",
+      "section": "Section 1",
+      "title": "Divorce on No-Fault Irretrievable Breakdown",
+      "description": "Application for divorce stating irretrievable breakdown of marriage without requirement to prove marital fault.",
+      "domain": "Family Law",
+      "court_type": "Family Court England & Wales"
+    },
+    {
+      "id": "uk_companies_994",
+      "act_name": "Companies Act 2006",
+      "section": "Section 994",
+      "title": "Unfair Prejudice Petition by Shareholder",
+      "description": "A member of a company may apply to court by petition for an order on the ground that the company's affairs are being conducted in a manner unfairly prejudicial to the interests of members.",
+      "domain": "Commercial / Corporate Law",
+      "court_type": "High Court Chancery Division"
+    }
+  ]
+}

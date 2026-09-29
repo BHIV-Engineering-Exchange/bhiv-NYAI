@@ -119,6 +119,12 @@ except ImportError:
     pass
 from api.evidence_router import evidence_router
 app.include_router(evidence_router)
+try:
+    from api.jurisdiction_router import jurisdiction_api_router
+    app.include_router(jurisdiction_api_router)
+except ImportError:
+    pass
+
 app.include_router(router)
 
 # Include procedure router
