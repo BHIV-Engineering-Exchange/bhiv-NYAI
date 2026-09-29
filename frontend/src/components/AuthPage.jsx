@@ -38,7 +38,7 @@ const AuthPage = ({ onAuthSuccess, onSkipAuth }) => {
             const baseUrl = getMitraApiBaseUrl();
             const controller = new AbortController();
             const timer = setTimeout(() => controller.abort(), 3500);
-            const authRes = await fetch(`${baseUrl}/api/auth/login`, {
+            const authRes = await fetch(`${baseUrl}/auth/login`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ email: formData.email, password: formData.password }),
@@ -47,10 +47,11 @@ const AuthPage = ({ onAuthSuccess, onSkipAuth }) => {
             clearTimeout(timer);
             if (authRes.ok) {
               const authData = await authRes.json();
-              if (authData.token) {
-                userData.token = authData.token;
+              const token = authData.access_token || authData.token;
+              if (token) {
+                userData.token = token;
                 userData.id = authData.user?.id || userData.email;
-                localStorage.setItem('authToken', authData.token);
+                localStorage.setItem('authToken', token);
               }
             }
           } catch {
@@ -72,7 +73,7 @@ const AuthPage = ({ onAuthSuccess, onSkipAuth }) => {
             const baseUrl = getMitraApiBaseUrl();
             const controller = new AbortController();
             const timer = setTimeout(() => controller.abort(), 3500);
-            const signupRes = await fetch(`${baseUrl}/api/auth/signup`, {
+            const signupRes = await fetch(`${baseUrl}/auth/signup`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ name: formData.name, email: formData.email, password: formData.password }),
@@ -81,10 +82,11 @@ const AuthPage = ({ onAuthSuccess, onSkipAuth }) => {
             clearTimeout(timer);
             if (signupRes.ok) {
               const sData = await signupRes.json();
-              if (sData.token) {
-                userData.token = sData.token;
+              const token = sData.access_token || sData.token;
+              if (token) {
+                userData.token = token;
                 userData.id = sData.user?.id || userData.email;
-                localStorage.setItem('authToken', sData.token);
+                localStorage.setItem('authToken', token);
               }
             }
           } catch {
