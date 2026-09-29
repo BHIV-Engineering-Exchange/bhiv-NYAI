@@ -71,7 +71,7 @@ frontend_url = os.getenv("FRONTEND_URL", "")
 if frontend_url and frontend_url not in allowed_origins:
     allowed_origins.append(frontend_url)
 
-# Global exception handler — FAIL CLOSED
+# Global exception handler
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     from fastapi.responses import JSONResponse
@@ -99,7 +99,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Routers — health and metrics before nyaya (no auth required)
+# Routers - auth, health, and metrics before nyaya (no auth required)
+try:
+    from api.auth_router import router as auth_router
+    app.include_router(auth_router)
+except ImportError:
+    try:
+        from .auth_router import router as auth_router
+        app.include_router(auth_router)
+    except Exception as e:
+        print('Auth router load error:', e)
+
 app.include_router(health_router)
 app.include_router(metrics_router)
 try:
@@ -132,7 +142,7 @@ if os.getenv("ENABLE_DEBUG_ROUTES", "false").lower() in {"1", "true", "yes"}:
     except ImportError:
         pass
 
-# Phase V: Platform Infrastructure Expansion — mounted AFTER existing routers
+# Phase V: Platform Infrastructure Expansion - mounted AFTER existing routers
 import logging as _logging
 _phase_v_logger = _logging.getLogger("nyai.phase_v")
 
@@ -163,51 +173,15 @@ async def root():
         "version": "1.0.0",
         "description": "Sovereign-compliant multi-agent legal intelligence platform",
         "endpoints": {
+            "auth": {
+                "signup": "POST /auth/signup",
+                "login": "POST /auth/login",
+                "me": "GET /auth/me"
+            },
             "query": "POST /nyaya/query",
             "multi_jurisdiction": "POST /nyaya/multi_jurisdiction",
-            "explain_reasoning": "POST /nyaya/explain_reasoning",
-            "feedback": "POST /nyaya/feedback",
-            "trace": "GET /nyaya/trace/{trace_id}",
-            "case_summary": "GET /nyaya/case_summary?trace_id={trace_id}",
-            "legal_routes": "GET /nyaya/legal_routes?trace_id={trace_id}",
-            "timeline": "GET /nyaya/timeline?trace_id={trace_id}",
-            "glossary": "GET /nyaya/glossary?trace_id={trace_id}",
-            "jurisdiction_info": "GET /nyaya/jurisdiction_info?jurisdiction={code}",
-            "recommendation_status": "GET /nyaya/recommendation_status?trace_id={trace_id}",
-            "rl_signal": "POST /nyaya/rl_signal",
-            "procedure_analyze": "POST /nyaya/procedures/analyze",
-            "procedure_summary": "GET /nyaya/procedures/summary/{country}/{domain}",
-            "evidence_assess": "POST /nyaya/procedures/evidence/assess",
-            "failure_analyze": "POST /nyaya/procedures/failure/analyze",
-            "procedure_compare": "POST /nyaya/procedures/compare",
-            "procedure_list": "GET /nyaya/procedures/list",
-            "procedure_schemas": "GET /nyaya/procedures/schemas",
-            "enhanced_analysis": "GET /nyaya/procedures/enhanced_analysis/{jurisdiction}/{domain}",
-            "domain_classification": "GET /nyaya/procedures/domain_classification/{jurisdiction}",
-            "legal_sections": "GET /nyaya/procedures/legal_sections/{jurisdiction}/{domain}",
             "health": "GET /health",
-            "health_live": "GET /health/live",
-            "health_ready": "GET /health/ready",
-            "metrics": "GET /metrics",
-            "docs": "GET /docs",
-            "knowledge": {
-                "register_asset": "POST /knowledge/assets",
-                "get_asset": "GET /knowledge/assets/{asset_id}",
-                "ingest": "POST /knowledge/ingest",
-                "promote": "POST /knowledge/assets/{asset_id}/promote",
-                "rollback": "POST /knowledge/assets/{asset_id}/rollback",
-            },
-            "workspace": {
-                "upload": "POST /workspace/documents/upload",
-                "annotate": "POST /workspace/annotations",
-                "compare": "GET /workspace/documents/{doc_id_a}/compare/{doc_id_b}",
-            },
-            "graph": {
-                "register_entity": "POST /graph/entities",
-                "register_relationship": "POST /graph/relationships",
-                "dependencies": "GET /graph/entities/{entity_id}/dependencies",
-                "impact": "GET /graph/entities/{entity_id}/impact",
-            },
+            "docs": "GET /docs"
         }
     }
 
@@ -222,5 +196,3 @@ if __name__ == "__main__":
         reload=True,
         log_level="info"
     )
-
-# Trigger reload
