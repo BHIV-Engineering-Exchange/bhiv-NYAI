@@ -19,6 +19,7 @@ const AuthPage = ({ onAuthSuccess, onSkipAuth }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -58,8 +59,10 @@ const AuthPage = ({ onAuthSuccess, onSkipAuth }) => {
             // Standalone / offline fallback preserved
           }
 
-          localStorage.setItem('nyaya_user', JSON.stringify(userData));
-          onAuthSuccess(userData);
+          setSuccessMessage('Registration successful! Please log in with your email and password.');
+          setIsLogin(true);
+          setIsSubmitting(false);
+          return;
         } else {
           setError('Please enter both email and password');
           setIsSubmitting(false);
@@ -93,8 +96,10 @@ const AuthPage = ({ onAuthSuccess, onSkipAuth }) => {
             // Standalone / offline fallback preserved
           }
 
-          localStorage.setItem('nyaya_user', JSON.stringify(userData));
-          onAuthSuccess(userData);
+          setSuccessMessage('Registration successful! Please log in with your email and password.');
+          setIsLogin(true);
+          setIsSubmitting(false);
+          return;
         } else {
           setError('Please complete all required fields');
           setIsSubmitting(false);

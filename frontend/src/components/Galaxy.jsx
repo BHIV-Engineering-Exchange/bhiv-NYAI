@@ -174,7 +174,7 @@ function GalaxyComponent({
   focal = [0.5, 0.5],
   rotation = [1.0, 0.0],
   starSpeed = 0.5,
-  density = 1,
+  density = 0.3,
   hueShift = 140,
   disableAnimation = false,
   speed = 1.0,
