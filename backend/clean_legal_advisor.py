@@ -2024,7 +2024,7 @@ class EnhancedLegalAdvisor:
                         metadata={'title': st.get('title', ''), 'punishment': st.get('penalty', ''), 'bailable': st.get('bailable'), 'cognizable': st.get('cognizable'), 'replaced_legacy_ipc': st.get('replaced_legacy_ipc')}
                     )
                     converted_sections.append(sec_obj)
-                if converted_sections and (jurisdiction in ['UAE', 'UK'] or any(kw in legal_query.query_text.lower() for kw in ['theft', 'child cruelty', 'divorce', 'murder', 'house theft', 'photo', 'privacy', 'picture', 'stalking', 'voyeurism', 'camera'])):
+                if converted_sections:
                     domain_val = mj_statutes[0].get('domain', 'criminal').lower()
                     if 'family' in domain_val or 'divorce' in legal_query.query_text.lower():
                         domain_val = 'family'

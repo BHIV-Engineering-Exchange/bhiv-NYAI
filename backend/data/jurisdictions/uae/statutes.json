@@ -49,6 +49,32 @@
       "description": "Eavesdropping, taking photos, or capturing images of any person in a public or private place using electronic devices without consent.",
       "penalty": "Detention for not less than 6 months and fine between AED 150,000 to AED 500,000.",
       "domain": "Cybercrime & Privacy Law"
+    },
+    {
+      "id": "uae_penal_399",
+      "act_name": "Federal Decree-Law No. 31/2021 Concerning Crimes and Penalties",
+      "section": "Article 399",
+      "title": "Fraud and Swindling",
+      "description": "Whoever takes possession of movable property or documents by fraudulent means or using a false name or capacity with intent to deceive.",
+      "penalty": "Detention for a period from 1 month to 3 years or fine.",
+      "domain": "Criminal Fraud"
+    },
+    {
+      "id": "uae_traffic_348",
+      "act_name": "Federal Decree-Law No. 31/2021",
+      "section": "Article 348",
+      "title": "Dangerous Driving & Endangering Life",
+      "description": "Any person who wilfully commits an act that endangers the life, health, safety, or freedoms of people during traffic or operating machinery.",
+      "penalty": "Detention and fine or either of these two penalties.",
+      "domain": "Traffic & Safety"
+    },
+    {
+      "id": "uae_consumer_4",
+      "act_name": "Federal Law No. 15/2020 on Consumer Protection",
+      "section": "Article 4",
+      "title": "Consumer Right to Safety, Quality & Refund",
+      "description": "Ensuring consumer protection against unfair trade practices, defective goods, and non-compliance with standard specifications.",
+      "domain": "Consumer Protection"
     }
   ]
 }

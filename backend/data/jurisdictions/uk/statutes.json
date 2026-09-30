@@ -49,6 +49,40 @@
       "description": "Taking photographs or monitoring individuals in public or private spaces causing distress, alarm, or violation of personal dignity without consent.",
       "penalty": "Imprisonment of up to 2 years or fine, or both.",
       "domain": "Criminal Law"
+    },
+    {
+      "id": "uk_fraud_2",
+      "act_name": "Fraud Act 2006",
+      "section": "Section 2",
+      "title": "Fraud by False Representation",
+      "description": "A person is in breach of this section if he dishonestly makes a false representation and intends by making the representation to make a gain for himself or another, or cause loss to another.",
+      "penalty": "Imprisonment of up to 10 years or fine, or both.",
+      "domain": "Financial Crime"
+    },
+    {
+      "id": "uk_road_3",
+      "act_name": "Road Traffic Act 1988",
+      "section": "Section 3",
+      "title": "Careless and Inconsiderate Driving",
+      "description": "If a person drives a mechanically propelled vehicle on a road or other public place without due care and attention, or without reasonable consideration for other persons.",
+      "penalty": "Fine up to GBP 5,000, penalty points, and disqualification from driving.",
+      "domain": "Traffic Law"
+    },
+    {
+      "id": "uk_employment_94",
+      "act_name": "Employment Rights Act 1996",
+      "section": "Section 94",
+      "title": "Right Not to be Unfairly Dismissed",
+      "description": "An employee has the right not to be unfairly dismissed by his employer. Gives right to claim before Employment Tribunal.",
+      "domain": "Employment Law"
+    },
+    {
+      "id": "uk_consumer_9",
+      "act_name": "Consumer Rights Act 2015",
+      "section": "Section 9",
+      "title": "Goods to be of Satisfactory Quality",
+      "description": "Every contract to supply goods is to be treated as including a term that the quality of the goods is satisfactory. Entitles consumer to repair, replacement, or full refund.",
+      "domain": "Consumer Protection"
     }
   ]
 }
