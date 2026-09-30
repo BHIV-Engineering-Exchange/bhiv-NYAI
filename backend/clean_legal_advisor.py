@@ -2007,6 +2007,48 @@ class EnhancedLegalAdvisor:
         # Detect jurisdiction
         jurisdiction = self._detect_jurisdiction(legal_query.query_text, legal_query.jurisdiction_hint)
 
+        # Multi-Jurisdiction Integration Bridge (India, UAE, UK)
+        try:
+            from legal_database.multi_jurisdiction_db import multi_jurisdiction_db
+            mj_res = multi_jurisdiction_db.search_statutes(query=legal_query.query_text, jurisdiction=jurisdiction)
+            mj_statutes = mj_res.get('statutes', [])
+            if mj_statutes:
+                converted_sections = []
+                for st in mj_statutes:
+                    sec_obj = Section(
+                        section_id=st.get('id', 'st_gen'),
+                        act_id=st.get('act_name', 'Statute'),
+                        section_number=st.get('section', 'Section'),
+                        text=f"{st.get('title', '')}: {st.get('description', '')}",
+                        jurisdiction=Jurisdiction.IN if jurisdiction in ['IN', 'India'] else (Jurisdiction.UAE if jurisdiction in ['UAE', 'AE'] else Jurisdiction.UK),
+                        metadata={'title': st.get('title', ''), 'punishment': st.get('penalty', ''), 'bailable': st.get('bailable'), 'cognizable': st.get('cognizable'), 'replaced_legacy_ipc': st.get('replaced_legacy_ipc')}
+                    )
+                    converted_sections.append(sec_obj)
+                if converted_sections and (jurisdiction in ['UAE', 'UK'] or any(kw in legal_query.query_text.lower() for kw in ['theft', 'child cruelty', 'divorce', 'murder', 'house theft'])):
+                    domain_val = mj_statutes[0].get('domain', 'criminal').lower()
+                    if 'family' in domain_val or 'divorce' in legal_query.query_text.lower():
+                        domain_val = 'family'
+                    elif 'civil' in domain_val:
+                        domain_val = 'civil'
+                    else:
+                        domain_val = 'criminal'
+                    return LegalAdvice(
+                        query=legal_query.query_text,
+                        jurisdiction=jurisdiction,
+                        domain=domain_val,
+                        relevant_sections=converted_sections,
+                        legal_analysis=self._generate_legal_analysis(legal_query.query_text, converted_sections, jurisdiction),
+                        procedural_steps=self._generate_procedural_steps(converted_sections, domain_val, jurisdiction, legal_query.query_text),
+                        remedies=self._generate_remedies(converted_sections, domain_val, jurisdiction, legal_query.query_text),
+                        confidence_score=0.92,
+                        trace_id=trace_id,
+                        timestamp=datetime.now().isoformat(),
+                        statutes=[s.to_dict() for s in converted_sections]
+                    )
+        except Exception as e:
+            print('MJ_BRIDGE_EXCEPT:', e)
+            import traceback; traceback.print_exc()
+
         # Query understanding (Groq/local) for better routing hints
         query_understanding = self.groq_retrieval_augmentor.understand_query(
             query=legal_query.query_text,

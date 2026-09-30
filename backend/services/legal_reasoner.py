@@ -8,10 +8,14 @@ from typing import Any, Dict, List, Tuple
 logger = logging.getLogger(__name__)
 
 
-def apply_reasoning_rules(query: str, domain: str, statutes: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def apply_reasoning_rules(query: str, domain: str, statutes: List[Dict[str, Any]], jurisdiction: str = 'IN') -> List[Dict[str, Any]]:
     """Apply domain-specific reasoning rules to refine statute list."""
     normalized_domain = (domain or "").strip().lower()
     base_statutes = [dict(item) for item in (statutes or [])]
+    # Isolated multi-jurisdiction guard: Do not apply Indian statutory overrides to non-Indian queries
+    if jurisdiction and str(jurisdiction).upper() not in ['IN', 'INDIA']:
+        return _dedupe_preserve(base_statutes)[:5]
+
     for item in base_statutes:
         item.setdefault("source", "retrieval")
 
