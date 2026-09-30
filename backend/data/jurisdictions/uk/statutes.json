@@ -40,6 +40,15 @@
       "description": "A member of a company may apply to court by petition for an order on the ground that the company's affairs are being conducted in a manner unfairly prejudicial to the interests of members.",
       "domain": "Commercial / Corporate Law",
       "court_type": "High Court Chancery Division"
+    },
+    {
+      "id": "uk_harass_2",
+      "act_name": "Protection from Harassment Act 1997 / Voyeurism Offences Act 2019",
+      "section": "Section 2A",
+      "title": "Stalking and Taking Photos Without Consent",
+      "description": "Taking photographs or monitoring individuals in public or private spaces causing distress, alarm, or violation of personal dignity without consent.",
+      "penalty": "Imprisonment of up to 2 years or fine, or both.",
+      "domain": "Criminal Law"
     }
   ]
 }

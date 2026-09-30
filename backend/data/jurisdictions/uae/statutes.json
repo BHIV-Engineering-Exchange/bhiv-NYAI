@@ -40,6 +40,15 @@
       "description": "Termination of employment without valid statutory cause entitles worker to compensation up to 3 months full salary.",
       "domain": "Labour Law",
       "court_type": "MOHRE / Dubai Labour Court"
+    },
+    {
+      "id": "uae_cyber_44",
+      "act_name": "Federal Decree-Law No. 34/2021 on Combatting Rumors & Cybercrimes",
+      "section": "Article 44",
+      "title": "Violation of Privacy & Taking Photographs Without Permission",
+      "description": "Eavesdropping, taking photos, or capturing images of any person in a public or private place using electronic devices without consent.",
+      "penalty": "Detention for not less than 6 months and fine between AED 150,000 to AED 500,000.",
+      "domain": "Cybercrime & Privacy Law"
     }
   ]
 }

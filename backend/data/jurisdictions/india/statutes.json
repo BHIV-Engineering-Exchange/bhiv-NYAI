@@ -53,6 +53,54 @@
       "title": "Punishment for Cruelty to Child",
       "description": "Whoever having the actual charge of or control over a child, assaults, abandons, abuses, exposes or wilfully neglects the child.",
       "domain": "Special Criminal Law"
+    },
+    {
+      "id": "bns_77",
+      "act_name": "Bharatiya Nyaya Sanhita 2023",
+      "section": "77",
+      "title": "Voyeurism & Taking Photos Without Consent",
+      "description": "Any person who captures, photographs, publishes or transmits the image of a person without consent in circumstances where privacy is expected or captures private acts without authorization.",
+      "penalty": "Imprisonment of 1 to 3 years and fine for first conviction; up to 7 years for subsequent conviction.",
+      "bailable": true,
+      "cognizable": true,
+      "replaced_legacy_ipc": "IPC Section 354C (Voyeurism)"
+    },
+    {
+      "id": "it_66e",
+      "act_name": "Information Technology Act 2000",
+      "section": "66E",
+      "title": "Punishment for Violation of Privacy",
+      "description": "Intentionally or knowingly capturing, publishing, or transmitting the image of a private area of any person without consent, violating their privacy.",
+      "penalty": "Imprisonment up to 3 years or fine up to Rs. 2 Lakhs, or both.",
+      "bailable": true,
+      "cognizable": true
+    },
+    {
+      "id": "bns_78",
+      "act_name": "Bharatiya Nyaya Sanhita 2023",
+      "section": "78",
+      "title": "Stalking & Electronic Surveillance",
+      "description": "Any person who follows, monitors, photographs, or contacts a person repeatedly despite clear indication of disinterest, or monitors someone electronically without consent.",
+      "penalty": "Imprisonment of up to 3 years and fine for first conviction.",
+      "bailable": true,
+      "cognizable": true,
+      "replaced_legacy_ipc": "IPC Section 354D (Stalking)"
+    },
+    {
+      "id": "dpdp_6",
+      "act_name": "Digital Personal Data Protection Act 2023",
+      "section": "Section 6",
+      "title": "Unlawful Personal Data & Biometric Image Capture",
+      "description": "Processing or capturing personal data (including facial photograph or identity details) without valid notice and explicit consent of the data principal.",
+      "penalty": "Penalty of up to Rs. 250 Crores imposed by Data Protection Board of India."
+    },
+    {
+      "id": "const_21",
+      "act_name": "Constitution of India",
+      "section": "Article 21",
+      "title": "Fundamental Right to Personal Liberty and Privacy",
+      "description": "Protection of Life and Personal Liberty. Extends to the Fundamental Right to Privacy as upheld by the Supreme Court of India in K.S. Puttaswamy v. Union of India.",
+      "penalty": "Constitutional Remedy via Writ Petitions under Article 226 / 32."
     }
   ]
 }
