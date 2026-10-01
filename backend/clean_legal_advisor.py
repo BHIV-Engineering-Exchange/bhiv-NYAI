@@ -1617,7 +1617,8 @@ class EnhancedLegalAdvisor:
         analysis += "=" * 50 + "\n\n"
         
         for i, section in enumerate(sections, 1):
-            analysis += f"{i}. Section {section.section_number}"
+            sec_prefix = section.section_number if section.section_number.lower().startswith(('section', 'article', 'rule', 'order')) else f'Section {section.section_number}'
+            analysis += f"{i}. {sec_prefix}"
             
             # Add act information if available
             if section.act_id:

@@ -215,12 +215,17 @@ async def query_legal(request: QueryRequest, http_request: Request):
         advice = advisor.provide_legal_advice(legal_query)
         observer.record("clean_legal_advisor", {"sections": len(advice.statutes or []), "domain": advice.domain, "jurisdiction": advice.jurisdiction})
         
-        # Prefer deterministic pipeline statutes; fallback to advisor if empty
-        statute_records = final_sections or []
-        statute_source = "reasoning_pipeline"
-        if not statute_records:
-            statute_records = advice.statutes or []
-            statute_source = "advisor_fallback"
+        # Multi-Jurisdiction Isolated Routing (India, UAE, UK):
+        # Always use EnhancedLegalAdvisor's advice statutes if jurisdiction is UK/UAE or if advice returned statutes
+        if advice and (advice.jurisdiction in ['UK', 'UAE'] or (advice.statutes and advice.jurisdiction != 'IN')):
+            statute_records = advice.statutes or [s.to_dict() for s in (advice.relevant_sections or [])]
+            statute_source = "clean_legal_advisor"
+        elif advice and advice.statutes:
+            statute_records = advice.statutes
+            statute_source = "clean_legal_advisor"
+        else:
+            statute_records = final_sections or []
+            statute_source = "reasoning_pipeline"
 
         # ─── ACT-HINTS BRIDGE ───
         # If statutes are STILL empty but the LLM identified act_hints,
@@ -268,9 +273,9 @@ async def query_legal(request: QueryRequest, http_request: Request):
         statutes = []
         seen_statutes = set()
         for statute in statute_records:
-            act = str(statute.get("act", "")).strip()
-            section = str(statute.get("section", "")).strip()
-            title = str(statute.get("title", "")).strip()
+            act = str(statute.get("act") or statute.get("act_id") or "").strip()
+            section = str(statute.get("section") or statute.get("section_number") or "").strip()
+            title = str(statute.get("title") or (statute.get("metadata", {}) if isinstance(statute.get("metadata"), dict) else {}).get("title") or "").strip()
             if not act or not section:
                 continue
             year_raw = statute.get("year")
@@ -294,9 +299,9 @@ async def query_legal(request: QueryRequest, http_request: Request):
         top_statutes = []
         seen_top = set()
         for item in statute_records:
-            act = str(item.get("act", "")).strip()
-            section = str(item.get("section", "")).strip()
-            title = str(item.get("title", "")).strip()
+            act = str(item.get("act") or item.get("act_id") or "").strip()
+            section = str(item.get("section") or item.get("section_number") or "").strip()
+            title = str(item.get("title") or (item.get("metadata", {}) if isinstance(item.get("metadata"), dict) else {}).get("title") or "").strip()
             if not act or not section:
                 continue
             year_raw = item.get("year")
@@ -338,12 +343,15 @@ async def query_legal(request: QueryRequest, http_request: Request):
             ]
         observer.record("case_law_retriever", {"cases_found": len(case_laws)})
         
-        # Build qualified legal analysis
-        legal_analysis = _build_qualified_analysis(
-            cleaned_query,
-            statutes,
-            advice.jurisdiction
-        )
+        # Build qualified legal analysis using EnhancedLegalAdvisor output if valid
+        if advice and advice.legal_analysis and not advice.legal_analysis.startswith("No specific legal provisions"):
+            legal_analysis = advice.legal_analysis
+        else:
+            legal_analysis = _build_qualified_analysis(
+                cleaned_query,
+                statutes,
+                advice.jurisdiction
+            )
         
         # Calculate structured confidence
         # TANTRA: Use jurisdiction_result.confidence (deterministic keyword detector)
