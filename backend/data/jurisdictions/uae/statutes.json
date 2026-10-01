@@ -168,6 +168,28 @@
       "penalty": "Imprisonment, fine between AED 200,000 to AED 500,000, and confiscation of collected funds.",
       "bailable": true,
       "cognizable": true
+    },
+    {
+      "id": "uae_consumer_protection_4_12_17",
+      "act_name": "Federal Law No. 15 of 2020 on Consumer Protection",
+      "section": "Article 4 / Article 12 / Article 17",
+      "title": "Consumer Right to Safety, 14-day Refund / Return & Repair Guarantee",
+      "description": "Electronics stores refusing 14-day return/refund for defective smart TVs or refrigerators, AC repair companies taking advance but failing to fix cooling, defective maintenance, or service provider non-performance.",
+      "domain": "civil",
+      "penalty": "Mandatory refund, product replacement, fine between AED 10,000 to AED 100,000 imposed by DED Consumer Rights.",
+      "bailable": null,
+      "cognizable": null
+    },
+    {
+      "id": "uae_commercial_transactions_advance_breach_378",
+      "act_name": "Federal Decree-Law No. 50 of 2022 Commercial Transactions Law",
+      "section": "Article 378 / Article 380",
+      "title": "Unfulfilled Commercial Advance Payments & Non-performance of Service Contract",
+      "description": "Service companies, AC repair vendors, contractors, or technicians taking advance money but failing to complete service or perform contract obligations.",
+      "domain": "commercial",
+      "penalty": "Refund of advance payment, legal interest, and commercial damages.",
+      "bailable": null,
+      "cognizable": null
     }
   ]
 }

@@ -63,7 +63,8 @@ class MultiJurisdictionDatabaseManager:
         norm_j = self.normalize_jurisdiction(target_j)
         statutes = self.get_statutes(norm_j)
 
-        q_terms = [t for t in query.lower().split() if len(t) > 2]
+        stop_words = {"the", "for", "and", "with", "that", "this", "from", "have", "will", "what", "when", "about", "like", "some", "been", "were", "make", "does", "take", "gives", "pays", "paid"}
+        q_terms = [t for t in query.lower().split() if len(t) > 2 and t not in stop_words]
         matches = []
 
         for st in statutes:
@@ -71,13 +72,17 @@ class MultiJurisdictionDatabaseManager:
             text_to_search = f"{st.get('title', '')} {st.get('description', '')} {st.get('act_name', '')} {st.get('section', '')}".lower()
             for term in q_terms:
                 if term in text_to_search:
-                    score += 1
-            if score > 0:
+                    # Give higher weight to exact section or act matches
+                    if term in st.get('title', '').lower() or term in st.get('act_name', '').lower():
+                        score += 2
+                    else:
+                        score += 1
+            if score >= 2:
                 matches.append({**st, "relevance_score": score})
 
         matches.sort(key=lambda x: x.get("relevance_score", 0), reverse=True)
         top_score = matches[0]["relevance_score"] if matches else 0
-        filtered_matches = [m for m in matches if m.get("relevance_score", 0) >= max(1, top_score - 1)]
+        filtered_matches = [m for m in matches if m.get("relevance_score", 0) >= max(2, top_score - 1)]
 
         db_meta = self._databases.get(norm_j, {})
         return {

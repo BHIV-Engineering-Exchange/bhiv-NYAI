@@ -201,6 +201,39 @@
       "penalty": "Imprisonment up to 5 years, fine, and drone seizure.",
       "bailable": true,
       "cognizable": true
+    },
+    {
+      "id": "uk_cra_reasonable_care_49_54",
+      "act_name": "Consumer Rights Act 2015",
+      "section": "Section 49 / Section 54",
+      "title": "Service to be Performed with Reasonable Care and Skill & Defective Repairs",
+      "description": "Failure of tradesmen, plumbers, electricians, mechanics, dry cleaners, or repair technicians to perform services with reasonable care and skill, causing property damage, plaster damage, or worsening leaks.",
+      "domain": "civil",
+      "penalty": "Repeat performance of service at trader's cost or price reduction / full refund plus damages.",
+      "bailable": null,
+      "cognizable": null
+    },
+    {
+      "id": "uk_cra_goods_refund_repair_20_22",
+      "act_name": "Consumer Rights Act 2015",
+      "section": "Section 20 / Section 22",
+      "title": "Short-term Right to Reject & 30-day Statutory Refund for Defective Goods",
+      "description": "Right of consumer to reject defective electronics, smart TVs, refrigerators, or appliances within 30 days for full refund, repair, or replacement.",
+      "domain": "civil",
+      "penalty": "Full refund within 14 days without fee deductions.",
+      "bailable": null,
+      "cognizable": null
+    },
+    {
+      "id": "uk_cra_faulty_car_brake_service_55",
+      "act_name": "Consumer Rights Act 2015 & Road Traffic Act 1988",
+      "section": "Section 55 / Sec 75",
+      "title": "Faulty Car Servicing, Defective Brake Repairs & Safety Hazards",
+      "description": "Car garages or mechanics performing faulty brake servicing or negligent vehicle repairs causing brake failure or road safety risks.",
+      "domain": "civil",
+      "penalty": "Full cost of corrective repairs, rental car costs, and personal injury compensation.",
+      "bailable": null,
+      "cognizable": null
     }
   ]
 }

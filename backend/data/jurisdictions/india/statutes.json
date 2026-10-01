@@ -245,6 +245,39 @@
       "penalty": "Simple imprisonment up to 2 years, or fine, or both.",
       "bailable": true,
       "cognizable": false
+    },
+    {
+      "id": "in_copra_deficiency_service_2_11",
+      "act_name": "Consumer Protection Act 2019",
+      "section": "Section 2(11) / Section 35",
+      "title": "Deficiency in Service, Unfair Trade Practice & Refusal of Refund",
+      "description": "Faulty dry cleaning ruining clothes, airline flight delays without food/accommodation, plumber leaving leaking pipes, AC repair failure, electrician wall damage, refrigerator breakdown, or dealer refusing statutory refund/repair/replacement.",
+      "domain": "civil",
+      "penalty": "Refund of full service/product fee, compensation for damage/harassment, and punitive costs.",
+      "bailable": null,
+      "cognizable": null
+    },
+    {
+      "id": "in_bns_cheating_duplicate_parts_318",
+      "act_name": "Bharatiya Nyaya Sanhita 2023",
+      "section": "Section 318 / Section 316",
+      "title": "Cheating, Dishonest Inducement & Replacing Original Parts with Duplicates",
+      "description": "Laptop service centers, mobile repair shops, or mechanics secretly replacing original RAM, engine parts, or components with cheap duplicate parts during repair.",
+      "domain": "criminal",
+      "penalty": "Imprisonment up to 7 years and fine.",
+      "bailable": true,
+      "cognizable": true
+    },
+    {
+      "id": "in_contract_service_breach_73",
+      "act_name": "Indian Contract Act 1872",
+      "section": "Section 73 / Section 74",
+      "title": "Breach of Service Contract & Unskilled Workmanship",
+      "description": "Failure of contractors, service providers, dry cleaners, repairmen, or vendors to perform promised work with reasonable skill, causing property loss or damage.",
+      "domain": "civil",
+      "penalty": "Damages for actual loss, repair cost reimbursement, and breach of contract compensation.",
+      "bailable": null,
+      "cognizable": null
     }
   ]
 }
