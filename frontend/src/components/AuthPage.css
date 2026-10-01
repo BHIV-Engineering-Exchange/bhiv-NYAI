@@ -1,5 +1,5 @@
 /**
- * BHIV Design System - AuthPage Styles
+ * BHIV Design System - Premium AuthPage Styles
  */
 
 .bhiv-auth-page {
@@ -7,9 +7,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--bhiv-space-4, 16px);
+  padding: 24px;
   position: relative;
-  background-color: var(--bhiv-bg, #0b0f19);
+  background-color: #070913;
   overflow: hidden;
 }
 
@@ -25,185 +25,197 @@
 
 .bhiv-auth-card {
   position: relative;
-  z-index: 1;
+  z-index: 10;
   width: 100%;
-  max-width: 440px;
-  background: rgba(17, 24, 39, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--bhiv-border, rgba(255, 255, 255, 0.12));
-  border-radius: var(--bhiv-radius-xl, 20px);
-  padding: var(--bhiv-space-8, 32px);
-  box-shadow: var(--bhiv-shadow-lg);
+  max-width: 450px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  padding: 36px 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.bhiv-auth-card:hover {
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .bhiv-auth-card__header {
   text-align: center;
-  margin-bottom: var(--bhiv-space-6, 24px);
+  margin-bottom: 24px;
 }
 
 .bhiv-auth-card__logo-group {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--bhiv-space-3, 12px);
-  margin-bottom: var(--bhiv-space-2, 8px);
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
 .bhiv-auth-card__logo {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(59, 130, 246, 0.4));
 }
 
 .bhiv-auth-card__brand-text {
-  font-family: var(--bhiv-font-heading);
-  font-size: 1.75rem;
-  font-weight: var(--bhiv-weight-bold, 700);
-  color: var(--bhiv-text-primary, #f9fafb);
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #f8fafc;
   display: flex;
   align-items: center;
   gap: 6px;
+  letter-spacing: -0.02em;
 }
 
 .bhiv-auth-card__brand-ecosystem {
-  color: var(--bhiv-text-secondary, #9ca3af);
+  color: #94a3b8;
+  font-weight: 500;
 }
 
 .bhiv-auth-card__brand-separator {
-  color: var(--bhiv-text-muted, #6b7280);
+  color: #64748b;
 }
 
 .bhiv-auth-card__subtitle {
-  font-family: var(--bhiv-font-body);
-  font-size: var(--bhiv-text-sm, 0.875rem);
-  color: var(--bhiv-text-secondary, #9ca3af);
-  margin-top: 4px;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin-top: 6px;
 }
 
 .bhiv-auth-card__tabs {
   display: flex;
-  gap: var(--bhiv-space-2, 8px);
-  background: rgba(0, 0, 0, 0.3);
-  padding: 4px;
-  border-radius: var(--bhiv-radius-md, 12px);
-  border: 1px solid var(--bhiv-border-subtle, rgba(255, 255, 255, 0.06));
-  margin-bottom: var(--bhiv-space-6, 24px);
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 5px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 24px;
 }
 
-.bhiv-auth-card__tab-btn {
+.bhiv-auth-card__tab {
   flex: 1;
-  padding: 8px 16px;
-  border-radius: var(--bhiv-radius-sm, 8px);
-  border: none;
+  padding: 10px 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #94a3b8;
   background: transparent;
-  color: var(--bhiv-text-secondary, #9ca3af);
-  font-family: var(--bhiv-font-body);
-  font-size: var(--bhiv-text-sm, 0.875rem);
-  font-weight: var(--bhiv-weight-medium, 500);
+  border: none;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all var(--bhiv-transition-fast);
+  transition: all 0.2s ease;
 }
 
-.bhiv-auth-card__tab-btn:hover {
-  color: var(--bhiv-text-primary, #f9fafb);
+.bhiv-auth-card__tab--active {
+  color: #ffffff;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
 }
 
-.bhiv-auth-card__tab-btn--active {
-  background: rgba(99, 102, 241, 0.2);
-  color: var(--bhiv-text-primary, #f9fafb);
-  border: 1px solid rgba(99, 102, 241, 0.4);
-  font-weight: var(--bhiv-weight-semibold, 600);
+.bhiv-auth-card__form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .bhiv-auth-card__form-group {
-  margin-bottom: var(--bhiv-space-4, 16px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .bhiv-auth-card__label {
-  display: block;
-  font-family: var(--bhiv-font-body);
-  font-size: var(--bhiv-text-xs, 0.75rem);
-  font-weight: var(--bhiv-weight-medium, 500);
-  color: var(--bhiv-text-secondary, #9ca3af);
-  margin-bottom: 6px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bhiv-auth-card__input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .bhiv-auth-card__input {
   width: 100%;
-  padding: 12px 14px;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--bhiv-border, rgba(255, 255, 255, 0.12));
-  border-radius: var(--bhiv-radius-sm, 8px);
-  color: var(--bhiv-text-primary, #f9fafb);
-  font-family: var(--bhiv-font-body);
-  font-size: var(--bhiv-text-sm, 0.875rem);
-  outline: none;
-  transition: border-color var(--bhiv-transition-fast), box-shadow var(--bhiv-transition-fast);
+  padding: 12px 16px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  color: #f8fafc;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .bhiv-auth-card__input:focus {
-  border-color: var(--bhiv-primary, #6366f1);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
 }
 
-.bhiv-auth-card__input::placeholder {
-  color: var(--bhiv-text-muted, #6b7280);
-}
-
-.bhiv-auth-card__error {
-  padding: 10px 14px;
-  background: var(--bhiv-error-bg, rgba(239, 68, 68, 0.12));
-  border: 1px solid var(--bhiv-error-border, rgba(239, 68, 68, 0.25));
-  border-radius: var(--bhiv-radius-sm, 8px);
-  color: var(--bhiv-error, #ef4444);
-  font-family: var(--bhiv-font-body);
-  font-size: var(--bhiv-text-xs, 0.75rem);
-  margin-bottom: var(--bhiv-space-4, 16px);
-}
-
-.bhiv-auth-card__footer {
-  margin-top: var(--bhiv-space-6, 24px);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--bhiv-space-3, 12px);
-}
-
-.bhiv-auth-card__toggle-text {
-  font-family: var(--bhiv-font-body);
-  font-size: var(--bhiv-text-xs, 0.75rem);
-  color: var(--bhiv-text-muted, #6b7280);
-}
-
-.bhiv-auth-card__toggle-link {
-  color: var(--bhiv-primary-hover, #818cf8);
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: var(--bhiv-weight-semibold, 600);
-  text-decoration: underline;
-  margin-left: 4px;
-}
-
-.bhiv-auth-card__guest-divider {
-  display: flex;
-  align-items: center;
-  gap: var(--bhiv-space-3, 12px);
+.bhiv-auth-card__submit-btn {
   width: 100%;
-  color: var(--bhiv-text-muted, #6b7280);
-  font-size: var(--bhiv-text-xs, 0.75rem);
-  margin: var(--bhiv-space-1, 4px) 0;
+  padding: 13px;
+  margin-top: 8px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.bhiv-auth-card__guest-divider::before,
-.bhiv-auth-card__guest-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--bhiv-border-subtle, rgba(255, 255, 255, 0.08));
+.bhiv-auth-card__submit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
+}
+
+.bhiv-auth-card__guest-btn {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bhiv-auth-card__guest-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+}
+
+.bhiv-auth-card__banner {
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.bhiv-auth-card__banner--success {
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #4ade80;
+}
+
+.bhiv-auth-card__banner--error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
 }
