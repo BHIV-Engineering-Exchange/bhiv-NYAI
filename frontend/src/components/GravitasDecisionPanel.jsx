@@ -1,3 +1,4 @@
+import { generatePrintablePdfReport } from '../utils/pdfExporter.js'
 import React, { useState, useEffect } from 'react'
 import './GravitasDecisionPanel.css'
 import ConfidenceIndicator from './ConfidenceIndicator.jsx'
@@ -289,14 +290,7 @@ const GravitasDecisionPanel = ({
           )}
           <button
             className="action-button tertiary"
-            onClick={() => {
-              const dataBlob = new Blob([JSON.stringify(decision, null, 2)], { type: 'application/json' })
-              const url = URL.createObjectURL(dataBlob)
-              const link = document.createElement('a')
-              link.href = url
-              link.download = `decision-${decision.trace_id}.json`
-              link.click()
-            }}
+            onClick={() => generatePrintablePdfReport(decision)}
           >
             <span className="button-icon">📥</span>
             Export Decision

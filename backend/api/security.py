@@ -21,6 +21,8 @@ _ECOSYSTEM_READ_PREFIXES = ("/knowledge/", "/graph/")
 
 
 def _is_protected_path(path: str) -> bool:
+    if path.startswith("/nyaya/export-pdf") or path.startswith("/auth/"):
+        return False
     return any(path.startswith(prefix) for prefix in _PROTECTED_PREFIXES)
 
 

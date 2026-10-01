@@ -1,3 +1,4 @@
+import { generatePrintablePdfReport } from '../utils/pdfExporter.js'
 import React, { useState } from 'react'
 import { legalQueryService } from '../services/nyayaApi.js'
 import WorkspaceHeader from './layout/WorkspaceHeader.jsx'
@@ -464,15 +465,7 @@ function DecisionPage({ onNavigateHome }) {
           <div className="decision-footer">
             <button 
               className="action-button"
-              onClick={() => {
-                const dataStr = JSON.stringify(decision, null, 2)
-                const dataBlob = new Blob([dataStr], { type: 'application/json' })
-                const url = URL.createObjectURL(dataBlob)
-                const link = document.createElement('a')
-                link.href = url
-                link.download = `decision-${decision.trace_id}.json`
-                link.click()
-              }}
+              onClick={() => generatePrintablePdfReport(decision, query)}
             >
               Export Decision
             </button>
