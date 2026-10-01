@@ -5,76 +5,114 @@
   "primary_penal_code": "Federal Decree-Law No. 31/2021 (UAE Penal Code)",
   "statutes": [
     {
-      "id": "uae_penal_435",
-      "act_name": "Federal Decree-Law No. 31/2021 Concerning Crimes and Penalties",
-      "section": "Article 435",
-      "title": "Theft of Property (Embezzlement & Larceny)",
-      "description": "Any person who unlawfully appropriates moveable property belonging to another with intent to deprive the owner permanently.",
-      "penalty": "Detention for a period not less than 6 months or fine.",
-      "domain": "Criminal Law",
-      "court_type": "Federal Criminal Court of First Instance"
+      "id": "uae_civil_880",
+      "act_name": "UAE Civil Code (Federal Decree-Law No. 42 of 2022)",
+      "section": "Article 880",
+      "title": "Decennial Liability for Structural Building Collapse",
+      "description": "Joint 10-year strict liability of contractor and architect for total or partial collapse or structural defects of buildings and skyscraper structures.",
+      "domain": "civil",
+      "penalty": "Full compensation for reconstruction costs, property damage, and losses.",
+      "bailable": null,
+      "cognizable": null
     },
     {
-      "id": "uae_penal_438",
-      "act_name": "Federal Decree-Law No. 31/2021",
-      "section": "Article 438",
-      "title": "Theft Accompanied by Infiltration or Night Entry",
-      "description": "Theft committed during night time or by breaking into inhabited premises or inhabited structures.",
-      "penalty": "Imprisonment for a period between 2 to 7 years.",
-      "domain": "Aggravated Felony"
-    },
-    {
-      "id": "uae_personal_117",
-      "act_name": "Federal Law No. 28/2005 on Personal Status",
-      "section": "Article 117",
-      "title": "Dissolution of Marriage for Harm (Divorce)",
-      "description": "Either spouse may apply for divorce on grounds of prejudice or harm making continuation of conjugal life impossible.",
-      "domain": "Personal Status / Family Court",
-      "court_type": "Personal Status Court Dubai / Abu Dhabi"
-    },
-    {
-      "id": "uae_labour_52",
-      "act_name": "Federal Decree-Law No. 33/2021 on Regulation of Labour Relations",
-      "section": "Article 52",
-      "title": "Arbitrary Termination & End of Service Gratuity",
-      "description": "Termination of employment without valid statutory cause entitles worker to compensation up to 3 months full salary.",
-      "domain": "Labour Law",
-      "court_type": "MOHRE / Dubai Labour Court"
-    },
-    {
-      "id": "uae_cyber_44",
+      "id": "uae_cyber_43_44",
       "act_name": "Federal Decree-Law No. 34/2021 on Combatting Rumors & Cybercrimes",
-      "section": "Article 44",
-      "title": "Violation of Privacy & Taking Photographs Without Permission",
-      "description": "Eavesdropping, taking photos, or capturing images of any person in a public or private place using electronic devices without consent.",
-      "penalty": "Detention for not less than 6 months and fine between AED 150,000 to AED 500,000.",
-      "domain": "Cybercrime & Privacy Law"
+      "section": "Article 43 / Article 44",
+      "title": "Violation of Privacy, Unpermitted Filming & Online Insults",
+      "description": "Capturing, filming, or broadcasting video/photos of any person at airport, public, or private place without consent, or sending abusive swearing / emojis online.",
+      "domain": "criminal",
+      "penalty": "Detention not less than 6 months and fine between AED 150,000 to AED 500,000, and deportation for expats.",
+      "bailable": true,
+      "cognizable": true
     },
     {
-      "id": "uae_penal_399",
-      "act_name": "Federal Decree-Law No. 31/2021 Concerning Crimes and Penalties",
-      "section": "Article 399",
-      "title": "Fraud and Swindling",
-      "description": "Whoever takes possession of movable property or documents by fraudulent means or using a false name or capacity with intent to deceive.",
-      "penalty": "Detention for a period from 1 month to 3 years or fine.",
-      "domain": "Criminal Fraud"
+      "id": "uae_commercial_641_643",
+      "act_name": "Federal Decree-Law No. 50/2022 Commercial Transactions Law",
+      "section": "Article 641 / Article 643",
+      "title": "Bounced Cheques & Cheque Drawn on Closed Corporate Account",
+      "description": "Drawing, issuing, or signing a commercial check without sufficient funds or on a closed bank account with bad faith.",
+      "domain": "criminal",
+      "penalty": "Fine between AED 20,000 to AED 100,000, travel ban, and civil enforcement order.",
+      "bailable": true,
+      "cognizable": true
     },
     {
-      "id": "uae_traffic_348",
-      "act_name": "Federal Decree-Law No. 31/2021",
-      "section": "Article 348",
-      "title": "Dangerous Driving & Endangering Life",
-      "description": "Any person who wilfully commits an act that endangers the life, health, safety, or freedoms of people during traffic or operating machinery.",
-      "penalty": "Detention and fine or either of these two penalties.",
-      "domain": "Traffic & Safety"
+      "id": "uae_labour_43_51",
+      "act_name": "Federal Decree-Law No. 33/2021 on Regulation of Labour Relations",
+      "section": "Article 43 / Article 51",
+      "title": "Arbitrary Termination & End of Service Gratuity",
+      "description": "Termination of employment without notice, unlawful dismissal, or withholding statutory end-of-service gratuity calculation.",
+      "domain": "civil",
+      "penalty": "Compensation up to 3 months gross salary plus full end-of-service gratuity payout.",
+      "bailable": null,
+      "cognizable": null
     },
     {
-      "id": "uae_consumer_4",
-      "act_name": "Federal Law No. 15/2020 on Consumer Protection",
-      "section": "Article 4",
-      "title": "Consumer Right to Safety, Quality & Refund",
-      "description": "Ensuring consumer protection against unfair trade practices, defective goods, and non-compliance with standard specifications.",
-      "domain": "Consumer Protection"
+      "id": "uae_difc_law_12",
+      "act_name": "Dubai Law No. 12 of 2004 & DIFC Judicial Authority Law",
+      "section": "Article 8 / Article 9",
+      "title": "DIFC Court Jurisdiction & Commercial Contract Dispute",
+      "description": "Jurisdiction of DIFC Courts over civil and commercial disputes involving DIFC-registered entities or opt-in commercial contracts.",
+      "domain": "commercial",
+      "penalty": "DIFC Court judgment, injunction, and worldwide asset enforcement.",
+      "bailable": null,
+      "cognizable": null
+    },
+    {
+      "id": "uae_dubai_landlord_34",
+      "act_name": "Dubai Law No. 26 of 2007 (Landlord and Tenant Relationship)",
+      "section": "Article 34",
+      "title": "Prohibition of Landlord Disconnecting Services or Changing Locks",
+      "description": "Unlawful eviction, lock code changes, or utility disconnection by landlord to force tenant eviction without Rental Dispute Center order.",
+      "domain": "civil",
+      "penalty": "RDC police enforcement, restoration of access, and tenant compensation.",
+      "bailable": null,
+      "cognizable": null
+    },
+    {
+      "id": "uae_industrial_prop_38",
+      "act_name": "Federal Law No. 11/2021 Protection of Industrial Property Rights",
+      "section": "Article 38",
+      "title": "Counterfeiting Registered Trademarks & Brand Logos",
+      "description": "Manufacturing, stocking, or selling counterfeit luxury bags, apparel, or commercial products bearing fake registered trademarks.",
+      "domain": "criminal",
+      "penalty": "Imprisonment, fine up to AED 1,000,000, and destruction of counterfeit stock.",
+      "bailable": true,
+      "cognizable": true
+    },
+    {
+      "id": "uae_medical_liability_4_5",
+      "act_name": "Federal Law No. 4/2016 on Medical Liability",
+      "section": "Article 4 / Article 5",
+      "title": "Medical Malpractice, Gross Negligence & Wrong Dosage",
+      "description": "Failure of medical practitioner to exercise due care, issuing incorrect medication dosage, or gross surgical negligence causing cardiac arrest or injury.",
+      "domain": "criminal",
+      "penalty": "Imprisonment up to 2 years, fine up to AED 500,000, medical license revocation, and civil compensation.",
+      "bailable": true,
+      "cognizable": true
+    },
+    {
+      "id": "uae_narcotics_7_29",
+      "act_name": "Federal Decree-Law No. 30/2021 Combatting Narcotics",
+      "section": "Article 7 / Article 29",
+      "title": "Import & Possession of Psychotropic Pills Without Prescription",
+      "description": "Carrying or importing restricted narcotic or psychotropic pills into UAE border checkpoints without authenticated Ministry medical prescription.",
+      "domain": "criminal",
+      "penalty": "Detention not less than 3 months, fine, mandatory deportation for non-citizens.",
+      "bailable": false,
+      "cognizable": true
+    },
+    {
+      "id": "uae_penal_451",
+      "act_name": "Federal Decree-Law No. 31/2021 Crimes and Penalties",
+      "section": "Article 451",
+      "title": "Fraud, Embezzlement & Double Booking Real Estate",
+      "description": "Deceiving persons by using fraudulent names, fake real estate authority, or taking multiple deposits for the same apartment property.",
+      "domain": "criminal",
+      "penalty": "Imprisonment up to 3 years and fine.",
+      "bailable": false,
+      "cognizable": true
     }
   ]
 }

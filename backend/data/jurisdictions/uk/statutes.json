@@ -5,84 +5,180 @@
   "primary_penal_code": "Theft Act 1968 & Offences Against Person Act 1861",
   "statutes": [
     {
-      "id": "uk_theft_1",
-      "act_name": "Theft Act 1968",
-      "section": "Section 1",
-      "title": "Basic Definition of Theft",
-      "description": "A person is guilty of theft if he dishonestly appropriates property belonging to another with the intention of permanently depriving the other of it.",
-      "penalty": "Maximum penalty on indictment: 7 years imprisonment.",
-      "domain": "Criminal Law",
-      "court_type": "Magistrates' Court / Crown Court"
-    },
-    {
-      "id": "uk_theft_9",
-      "act_name": "Theft Act 1968",
+      "id": "uk_consumer_rights_9",
+      "act_name": "Consumer Rights Act 2015 & Donoghue v Stevenson",
       "section": "Section 9",
-      "title": "Burglary of Domestic or Commercial Building",
-      "description": "A person is guilty of burglary if he enters any building or part of a building as a trespasser with intent to commit theft or grievous bodily harm.",
-      "penalty": "Maximum penalty for domestic burglary: 14 years imprisonment.",
-      "domain": "Criminal Law / Crown Court"
+      "title": "Goods to be of Satisfactory Quality & Duty of Care for Defective Products",
+      "description": "Requirement that goods sold (including food and beverages, ginger beer) must be of satisfactory quality, fit for purpose, and safe, establishing manufacturer duty of care for foreign objects or decomposition causing injury.",
+      "domain": "civil",
+      "penalty": "Refund, repair, replacement, and common law damages for gastroenteritis and personal injury.",
+      "bailable": null,
+      "cognizable": null
     },
     {
-      "id": "uk_matrimonial_1",
-      "act_name": "Matrimonial Causes Act 1973 (as amended by Divorce, Dissolution & Separation Act 2020)",
-      "section": "Section 1",
-      "title": "Divorce on No-Fault Irretrievable Breakdown",
-      "description": "Application for divorce stating irretrievable breakdown of marriage without requirement to prove marital fault.",
-      "domain": "Family Law",
-      "court_type": "Family Court England & Wales"
+      "id": "uk_dpa_173_gdpr",
+      "act_name": "Data Protection Act 2018 & UK GDPR",
+      "section": "Section 173 / Article 32",
+      "title": "Data Protection Violations & Network Breach Security",
+      "description": "Failure of data controllers and processors to implement appropriate technical measures to prevent unauthorized access, downloading, or hacking of personal data and financial records.",
+      "domain": "civil",
+      "penalty": "Administrative fines up to \u00a317.5M or 4% of global turnover, and statutory compensation.",
+      "bailable": null,
+      "cognizable": null
     },
     {
-      "id": "uk_companies_994",
-      "act_name": "Companies Act 2006",
-      "section": "Section 994",
-      "title": "Unfair Prejudice Petition by Shareholder",
-      "description": "A member of a company may apply to court by petition for an order on the ground that the company's affairs are being conducted in a manner unfairly prejudicial to the interests of members.",
-      "domain": "Commercial / Corporate Law",
-      "court_type": "High Court Chancery Division"
+      "id": "uk_fisher_v_bell",
+      "act_name": "Consumer Rights Act 2015 & Fisher v Bell Principles",
+      "section": "Common Law / Sec 14",
+      "title": "Invitation to Treat vs Binding Offer in Retail Pricing",
+      "description": "Item catalogs, shop displays, and price labels are invitations to treat rather than binding contract offers; retailer is not compelled to sell if pricing error occurs prior to acceptance at till.",
+      "domain": "civil",
+      "penalty": "No forced sale; catalog pricing disclaimer enforced.",
+      "bailable": null,
+      "cognizable": null
     },
     {
-      "id": "uk_harass_2",
-      "act_name": "Protection from Harassment Act 1997 / Voyeurism Offences Act 2019",
-      "section": "Section 2A",
-      "title": "Stalking and Taking Photos Without Consent",
-      "description": "Taking photographs or monitoring individuals in public or private spaces causing distress, alarm, or violation of personal dignity without consent.",
-      "penalty": "Imprisonment of up to 2 years or fine, or both.",
-      "domain": "Criminal Law"
-    },
-    {
-      "id": "uk_fraud_2",
-      "act_name": "Fraud Act 2006",
+      "id": "uk_occupiers_2",
+      "act_name": "Occupiers' Liability Act 1957",
       "section": "Section 2",
-      "title": "Fraud by False Representation",
-      "description": "A person is in breach of this section if he dishonestly makes a false representation and intends by making the representation to make a gain for himself or another, or cause loss to another.",
-      "penalty": "Imprisonment of up to 10 years or fine, or both.",
-      "domain": "Financial Crime"
+      "title": "Occupier Common Duty of Care to Visitors",
+      "description": "Duty of premises occupier or hotel to take reasonable care to ensure visitors are safe, prohibiting exposed electrical cables or hazardous dim lighting causing trips and falls.",
+      "domain": "civil",
+      "penalty": "Damages for physical injury, pain, suffering, and medical expenses.",
+      "bailable": null,
+      "cognizable": null
     },
     {
-      "id": "uk_road_3",
+      "id": "uk_equality_18_99",
+      "act_name": "Equality Act 2010 & Employment Rights Act 1996",
+      "section": "Section 18 / Section 99",
+      "title": "Pregnancy Discrimination & Automatic Unfair Dismissal",
+      "description": "Unlawful discrimination and automatic unfair dismissal of employee due to pregnancy, maternity leave notification, or related medical absence.",
+      "domain": "civil",
+      "penalty": "Employment tribunal reinstatement, re-engagement, and uncapped injury to feelings compensation.",
+      "bailable": null,
+      "cognizable": null
+    },
+    {
+      "id": "uk_environmental_79_80",
+      "act_name": "Environmental Protection Act 1990",
+      "section": "Section 79 / Section 80",
+      "title": "Statutory Nuisance & Sub-Woofer Noise Pollution",
+      "description": "Noise emitted from premises (such as continuous midnight sub-woofer bass tracks) so as to be prejudicial to health or a statutory private nuisance.",
+      "domain": "civil",
+      "penalty": "Abatement notice, criminal prosecution for non-compliance, and fine up to \u00a35,000.",
+      "bailable": null,
+      "cognizable": null
+    },
+    {
+      "id": "uk_planning_7_9",
+      "act_name": "Planning (Listed Buildings and Conservation Areas) Act 1990",
+      "section": "Section 7 / Section 9",
+      "title": "Unauthorized Demolition or Alteration of Listed Building",
+      "description": "Executing unauthorized works for demolition, alteration, or extension of Grade-I or Grade-II listed heritage buildings affecting special architectural character.",
+      "domain": "criminal",
+      "penalty": "Imprisonment up to 2 years, unlimited fine, and enforcement order to restore building.",
+      "bailable": true,
+      "cognizable": true
+    },
+    {
+      "id": "uk_road_traffic_2_41d",
       "act_name": "Road Traffic Act 1988",
-      "section": "Section 3",
-      "title": "Careless and Inconsiderate Driving",
-      "description": "If a person drives a mechanically propelled vehicle on a road or other public place without due care and attention, or without reasonable consideration for other persons.",
-      "penalty": "Fine up to GBP 5,000, penalty points, and disqualification from driving.",
-      "domain": "Traffic Law"
+      "section": "Section 2 / Section 41D",
+      "title": "Dangerous Driving & Mobile Phone Usage in School Zone",
+      "description": "Driving a mechanically propelled vehicle dangerously on a road (such as 50mph in a 20mph school zone) or using a handheld mobile phone while driving.",
+      "domain": "criminal",
+      "penalty": "Mandatory driving disqualification, up to 2 years imprisonment, fine, and penalty points.",
+      "bailable": true,
+      "cognizable": true
     },
     {
-      "id": "uk_employment_94",
-      "act_name": "Employment Rights Act 1996",
-      "section": "Section 94",
-      "title": "Right Not to be Unfairly Dismissed",
-      "description": "An employee has the right not to be unfairly dismissed by his employer. Gives right to claim before Employment Tribunal.",
-      "domain": "Employment Law"
+      "id": "uk_copyright_107",
+      "act_name": "Copyright, Designs and Patents Act 1988",
+      "section": "Section 107",
+      "title": "Criminal Liability for Piracy Server & Commercial Infringement",
+      "description": "Making, distributing, or hosting unauthorized file servers for downloading pirated software, media, or copyrighted digital material without paying royalties.",
+      "domain": "criminal",
+      "penalty": "Imprisonment up to 10 years, unlimited fine, and asset forfeiture.",
+      "bailable": true,
+      "cognizable": true
     },
     {
-      "id": "uk_consumer_9",
-      "act_name": "Consumer Rights Act 2015",
-      "section": "Section 9",
-      "title": "Goods to be of Satisfactory Quality",
-      "description": "Every contract to supply goods is to be treated as including a term that the quality of the goods is satisfactory. Entitles consumer to repair, replacement, or full refund.",
-      "domain": "Consumer Protection"
+      "id": "uk_defamation_1",
+      "act_name": "Defamation Act 2013",
+      "section": "Section 1",
+      "title": "Requirement of Serious Harm for Online Defamation",
+      "description": "Publishing false defamatory statements on social media or online platforms causing or likely to cause serious harm to personal or commercial reputation.",
+      "domain": "civil",
+      "penalty": "Damages, injunction prohibiting republishing, and mandatory apology publication.",
+      "bailable": null,
+      "cognizable": null
+    },
+    {
+      "id": "uk_eviction_1",
+      "act_name": "Protection from Eviction Act 1977 & Covenant of Quiet Enjoyment",
+      "section": "Section 1",
+      "title": "Unlawful Entry & Harassment of Residential Tenant",
+      "description": "Unlawful entry into tenant's private rented room using master keys without emergency or prior written notice, constituting breach of quiet enjoyment and harassment.",
+      "domain": "criminal",
+      "penalty": "Imprisonment up to 2 years, fine, and civil damages for harassment.",
+      "bailable": true,
+      "cognizable": true
+    },
+    {
+      "id": "uk_criminal_law_51",
+      "act_name": "Criminal Law Act 1977 & Malicious Communications Act 1988",
+      "section": "Section 51",
+      "title": "Bomb Hoax & False Threat Reports",
+      "description": "Placing or communicating false reports that an explosive device or bomb is present in public transport, subway stations, or public places.",
+      "domain": "criminal",
+      "penalty": "Imprisonment up to 7 years and fine.",
+      "bailable": false,
+      "cognizable": true
+    },
+    {
+      "id": "uk_highways_41_58",
+      "act_name": "Highways Act 1980",
+      "section": "Section 41 / Section 58",
+      "title": "Highway Authority Duty to Maintain Public Road & Potholes",
+      "description": "Failure of local highway authority to maintain public roads in safe condition, causing pothole accidents and injuries to cyclists or motorists.",
+      "domain": "civil",
+      "penalty": "Damages for physical injury, loss of earnings, and property damage.",
+      "bailable": null,
+      "cognizable": null
+    },
+    {
+      "id": "uk_poca_330",
+      "act_name": "Proceeds of Crime Act 2002 & Money Laundering Regulations 2017",
+      "section": "Section 330",
+      "title": "Failure to Disclose Suspicious Money Laundering Activity",
+      "description": "Failure of financial institution or bank employee to submit Suspicious Activity Report (SAR) when handling unverified multi-million cash deposits.",
+      "domain": "criminal",
+      "penalty": "Imprisonment up to 5 years, unlimited fine, and regulatory sanction.",
+      "bailable": true,
+      "cognizable": true
+    },
+    {
+      "id": "uk_land_reg_96",
+      "act_name": "Land Registration Act 2002",
+      "section": "Section 96 / Schedule 6",
+      "title": "Adverse Possession of Unregistered or Registered Land",
+      "description": "Uninterrupted adverse possession and occupation of land or farmland for 10 to 12 years without landlord consent or rent payment.",
+      "domain": "civil",
+      "penalty": "Registration of title ownership subject to statutory conditions.",
+      "bailable": null,
+      "cognizable": null
+    },
+    {
+      "id": "uk_pace_41_42",
+      "act_name": "Police and Criminal Evidence Act 1984 (PACE)",
+      "section": "Section 41 / Section 42",
+      "title": "Limits on Police Detention Without Charge",
+      "description": "Maximum 24-hour police detention limit without charge, requiring senior officer or Magistrates' Court warrant extension for detention up to 36 or 96 hours.",
+      "domain": "criminal",
+      "penalty": "Immediate release of detainee and civil claim for unlawful imprisonment.",
+      "bailable": null,
+      "cognizable": null
     }
   ]
 }

@@ -72,10 +72,12 @@ class MultiJurisdictionDatabaseManager:
             for term in q_terms:
                 if term in text_to_search:
                     score += 1
-            if score > 0 or not q_terms:
+            if score > 0:
                 matches.append({**st, "relevance_score": score})
 
         matches.sort(key=lambda x: x.get("relevance_score", 0), reverse=True)
+        top_score = matches[0]["relevance_score"] if matches else 0
+        filtered_matches = [m for m in matches if m.get("relevance_score", 0) >= max(1, top_score - 1)]
 
         db_meta = self._databases.get(norm_j, {})
         return {
@@ -83,8 +85,8 @@ class MultiJurisdictionDatabaseManager:
             "country_code": db_meta.get("country_code", "IN"),
             "legal_system": db_meta.get("legal_system", "Statutory Code"),
             "query": query,
-            "total_matches": len(matches),
-            "statutes": matches[:5]
+            "total_matches": len(filtered_matches),
+            "statutes": filtered_matches[:5]
         }
 
 multi_jurisdiction_db = MultiJurisdictionDatabaseManager()
