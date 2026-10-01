@@ -31,6 +31,34 @@ function DecisionPage({ onNavigateHome }) {
     return () => window.removeEventListener('keydown', handleKeyPress)
   }, [])
 
+    const handleDownloadPdf = () => {
+    if (!decision) return;
+    const exportData = {
+      query: query || decision.query || 'Legal Query',
+      jurisdiction: decision.jurisdiction_detected || decision.jurisdiction || 'IN',
+      domain: decision.domain || 'General',
+      legal_analysis: decision.reasoning_trace?.legal_analysis || '',
+      statutes: decision.relevant_sections || decision.statutes || [],
+      remedies: decision.remedies || [],
+      procedural_steps: decision.procedural_steps || []
+    };
+
+    fetch('http://localhost:8000/nyaya/export-pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(exportData)
+    })
+      .then(res => res.text())
+      .then(htmlContent => {
+        const win = window.open('', '_blank');
+        if (win) {
+          win.document.write(htmlContent);
+          win.document.close();
+        }
+      })
+      .catch(err => console.error('PDF export failed:', err));
+  };
+
   const handleSubmitQuery = async (e) => {
     e.preventDefault()
     
@@ -178,6 +206,31 @@ function DecisionPage({ onNavigateHome }) {
                 <p className="recommendation-rationale">{decision.recommendation.rationale}</p>
               )}
             </div>
+          </div>
+
+          {/* PDF Export Banner Action */}
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+            <button
+              onClick={handleDownloadPdf}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 20px',
+                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                color: '#ffffff',
+                fontWeight: '700',
+                fontSize: '0.9rem',
+                border: 'none',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                boxShadow: '0 4px 14px rgba(16, 185, 129, 0.4)',
+                transition: 'transform 0.15s ease, box-shadow 0.15s ease'
+              }}
+              className="pdf-download-btn"
+            >
+              ?? Download PDF Legal Report
+            </button>
           </div>
 
           {/* Decision Summary */}
