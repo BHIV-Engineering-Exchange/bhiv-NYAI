@@ -179,6 +179,28 @@
       "penalty": "Immediate release of detainee and civil claim for unlawful imprisonment.",
       "bailable": null,
       "cognizable": null
+    },
+    {
+      "id": "uk_consumer_unfair_trading_5",
+      "act_name": "Consumer Protection from Unfair Trading Regulations 2008 & Human Medicines Regulations 2012",
+      "section": "Regulation 5 / Section 45",
+      "title": "Unfair Trading, False Cure Guarantees & Unapproved Medicines",
+      "description": "Marketing herbal solutions, medical treatments, or health products with false claims of clinically proven cures for diabetes without medical testing or licensing.",
+      "domain": "civil",
+      "penalty": "Fine, prohibition order, and criminal prosecution for misleading commercial practices.",
+      "bailable": true,
+      "cognizable": true
+    },
+    {
+      "id": "uk_air_navigation_94_240",
+      "act_name": "Air Navigation Order 2016",
+      "section": "Article 94 / Article 240",
+      "title": "Endangering Safety of Aircraft & Illegal Drone Operation",
+      "description": "Flying unmanned aircraft, drones, or 2kg devices through active flight paths or near Heathrow Airport endangering aircraft safety.",
+      "domain": "criminal",
+      "penalty": "Imprisonment up to 5 years, fine, and drone seizure.",
+      "bailable": true,
+      "cognizable": true
     }
   ]
 }

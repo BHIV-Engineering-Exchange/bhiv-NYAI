@@ -113,6 +113,61 @@
       "penalty": "Imprisonment up to 3 years and fine.",
       "bailable": false,
       "cognizable": true
+    },
+    {
+      "id": "uae_traffic_57_342",
+      "act_name": "UAE Federal Traffic Law & Federal Decree-Law No. 31/2021 (Penal Code)",
+      "section": "Article 57 / Article 342",
+      "title": "Reckless Driving, Red Light Collision & Diyah Liability",
+      "description": "Running red signals at city intersections, causing severe injury or bodily harm to pedestrians, establishing traffic fines and Diyah compensation liability.",
+      "domain": "criminal",
+      "penalty": "Imprisonment, black points, vehicle impoundment, and Diyah compensation Payout.",
+      "bailable": true,
+      "cognizable": true
+    },
+    {
+      "id": "uae_midday_work_ban_13",
+      "act_name": "MOHRE Midday Work Ban & Federal Decree-Law No. 33/2021",
+      "section": "Article 13 / Ministerial Resolution",
+      "title": "Violation of Peak Summer Midday Work Ban",
+      "description": "Forcing field laborers to work in open outdoor sites or skyscraper scaffolds under direct sunlight between 12:30 PM and 3:00 PM during peak summer months.",
+      "domain": "civil",
+      "penalty": "Fine of AED 5,000 per worker up to AED 50,000 and company suspension.",
+      "bailable": null,
+      "cognizable": null
+    },
+    {
+      "id": "uae_penal_314_315",
+      "act_name": "Federal Decree-Law No. 31/2021 Crimes and Penalties",
+      "section": "Article 314 / Article 315",
+      "title": "Anti-discrimination, Religious Insult & Blasphemy",
+      "description": "Publishing videos, posts, or media mocking, insulting, or trivializing spiritual practices, sacred figures, or recognized global religions.",
+      "domain": "criminal",
+      "penalty": "Imprisonment not less than 5 years and fine between AED 250,000 to AED 1,000,000, and deportation.",
+      "bailable": false,
+      "cognizable": true
+    },
+    {
+      "id": "uae_dubai_rera_11",
+      "act_name": "Dubai Executive Council Resolution No. 6 of 2010 & Dubai RERA Regulations",
+      "section": "Article 11",
+      "title": "Dubai Executive Council Resolution No. 6 of 2010 & Dubai RERA Regulations",
+      "description": "Developer completely stopping work, deserting construction site, or abandoning residential master-planned community for more than 24 months, triggering RERA project cancellation, liquidation committee, and buyer refund proceedings.",
+      "domain": "civil",
+      "penalty": "Project cancellation, developer liquidation, and mandatory refund of buyer deposits.",
+      "bailable": null,
+      "cognizable": null
+    },
+    {
+      "id": "uae_fundraising_5",
+      "act_name": "UAE Federal Law No. 3 of 2021 on Regulating Fundraising Activities",
+      "section": "Article 5",
+      "title": "Unauthorized Online Charity, Instagram Fundraising & Animal Rescue Donations",
+      "description": "Setting up unauthorized charity websites, Instagram accounts, or public financial donation campaigns for private animal rescue missions or non-permitted fundraising without licensing.",
+      "domain": "criminal",
+      "penalty": "Imprisonment, fine between AED 200,000 to AED 500,000, and confiscation of collected funds.",
+      "bailable": true,
+      "cognizable": true
     }
   ]
 }
