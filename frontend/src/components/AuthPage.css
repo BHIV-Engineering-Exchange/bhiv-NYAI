@@ -1,5 +1,5 @@
 /**
- * BHIV Design System - Premium AuthPage Styles
+ * BHIV Design System - Ultra Premium AuthPage Styles
  */
 
 .bhiv-auth-page {
@@ -9,7 +9,7 @@
   justify-content: center;
   padding: 24px;
   position: relative;
-  background-color: #070913;
+  background-color: #060814;
   overflow: hidden;
 }
 
@@ -23,43 +23,29 @@
   pointer-events: none;
 }
 
+/* Card Container */
 .bhiv-auth-card {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 450px;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  max-width: 440px;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 20px;
   padding: 36px 32px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
 }
 
 .bhiv-auth-card:hover {
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .bhiv-auth-card__header {
   text-align: center;
   margin-bottom: 24px;
-}
-
-.bhiv-auth-card__logo-group {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-
-.bhiv-auth-card__logo {
-  width: 44px;
-  height: 44px;
-  object-fit: contain;
-  filter: drop-shadow(0 4px 12px rgba(59, 130, 246, 0.4));
 }
 
 .bhiv-auth-card__brand-text {
@@ -73,33 +59,26 @@
   letter-spacing: -0.02em;
 }
 
-.bhiv-auth-card__brand-ecosystem {
-  color: #94a3b8;
-  font-weight: 500;
-}
-
-.bhiv-auth-card__brand-separator {
-  color: #64748b;
-}
-
 .bhiv-auth-card__subtitle {
   font-family: system-ui, -apple-system, sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   color: #94a3b8;
   margin-top: 6px;
+  line-height: 1.4;
 }
 
+/* Tabs Container & Buttons */
 .bhiv-auth-card__tabs {
   display: flex;
   gap: 6px;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(7, 11, 22, 0.75);
   padding: 5px;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   margin-bottom: 24px;
 }
 
-.bhiv-auth-card__tab {
+.bhiv-auth-card__tab-btn {
   flex: 1;
   padding: 10px 16px;
   font-size: 0.875rem;
@@ -109,113 +88,102 @@
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.bhiv-auth-card__tab--active {
-  color: #ffffff;
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+.bhiv-auth-card__tab-btn:hover {
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.06);
 }
 
-.bhiv-auth-card__form {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+.bhiv-auth-card__tab-btn--active {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45) !important;
 }
 
+/* Form Controls */
 .bhiv-auth-card__form-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  margin-bottom: 16px;
 }
 
 .bhiv-auth-card__label {
-  font-size: 0.825rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 700;
   color: #cbd5e1;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.bhiv-auth-card__input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
 .bhiv-auth-card__input {
   width: 100%;
   padding: 12px 16px;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(7, 11, 22, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 12px;
   color: #f8fafc;
   font-size: 0.95rem;
+  box-sizing: border-box;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .bhiv-auth-card__input:focus {
   outline: none;
   border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3), inset 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.bhiv-auth-card__submit-btn {
-  width: 100%;
-  padding: 13px;
-  margin-top: 8px;
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-  color: #ffffff;
-  font-size: 0.95rem;
-  font-weight: 700;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+.bhiv-auth-card__input::placeholder {
+  color: #64748b;
 }
 
-.bhiv-auth-card__submit-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
-}
-
-.bhiv-auth-card__guest-btn {
-  width: 100%;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
-  color: #94a3b8;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.bhiv-auth-card__guest-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #f8fafc;
-}
-
-.bhiv-auth-card__banner {
-  padding: 12px 16px;
-  border-radius: 12px;
-  font-size: 0.875rem;
+/* Error Alert */
+.bhiv-auth-card__error {
+  padding: 10px 14px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 10px;
+  color: #f87171;
+  font-size: 0.85rem;
   font-weight: 500;
   margin-bottom: 16px;
   line-height: 1.4;
 }
 
-.bhiv-auth-card__banner--success {
-  background: rgba(34, 197, 94, 0.15);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  color: #4ade80;
+/* Guest Divider & Footer */
+.bhiv-auth-card__guest-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 18px 0;
+  position: relative;
 }
 
-.bhiv-auth-card__banner--error {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #f87171;
+.bhiv-auth-card__guest-divider::before,
+.bhiv-auth-card__guest-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.bhiv-auth-card__guest-divider span {
+  padding: 0 12px;
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.bhiv-auth-card__footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.bhiv-auth-card__toggle-text {
+  font-size: 0.75rem;
+  color: #64748b;
+  line-height: 1.4;
 }
