@@ -1755,7 +1755,8 @@ class EnhancedLegalAdvisor:
         is_property = any(word in query_lower or word in section_text or word in act_text for word in ['property', 'tenant', 'landlord', 'eviction', 'boundary', 'title', 'encroachment', 'land'])
         is_salary = any(word in query_lower or word in section_text or word in act_text for word in ['salary', 'wages', 'termination', 'gratuity', 'pf', 'provident fund', 'employee', 'employer', 'labour'])
         is_consumer = any(word in query_lower or word in section_text or word in act_text for word in ['consumer', 'defective', 'refund', 'warranty', 'replacement', 'deficiency'])
-        is_medical = any(word in query_lower or word in section_text for word in ['medical negligence', 'doctor', 'hospital', 'malpractice', 'treatment'])
+        is_medical = any(word in query_lower or word in section_text for word in ['medical negligence', 'doctor', 'hospital', 'malpractice', 'treatment', 'sponge', 'surgery', 'surgeon', 'patient', 'appendectomy', 'operation', 'abdomen', 'negligence'])
+        is_divorce = any(word in query_lower or word in section_text or word in act_text for word in ['divorce', 'marriage', 'matrimonial', 'separation', 'spouse', 'dissolution', 'no fault', 'no-fault', 'custody', 'alimony'])
         is_domestic = any(word in query_lower or word in section_text for word in ['domestic violence', 'dowry', '498a', 'cruelty', 'husband', 'wife', 'protection order'])
         
         if is_sexual_offence:
@@ -1786,6 +1787,50 @@ class EnhancedLegalAdvisor:
                     "Medical and psychological support"
                 )
         
+        elif is_medical:
+            if jurisdiction == 'IN':
+                add_remedies(
+                    "Compensation for medical negligence, treatment costs, and disability under Consumer Protection Act 2019 / Civil Law",
+                    "Professional disciplinary complaint before National Medical Commission (NMC)",
+                    "Civil damages for pain, suffering, and emotional trauma",
+                    "Criminal prosecution for gross medical negligence under Section 106(1) BNS / Section 304A IPC"
+                )
+            elif jurisdiction == 'UK':
+                add_remedies(
+                    "Clinical negligence compensation claim against NHS Trust or private practitioner",
+                    "General Medical Council (GMC) professional disciplinary complaint",
+                    "Parliamentary and Health Service Ombudsman (PHSO) complaint",
+                    "Court damages for pain, suffering, loss of amenity, and financial loss"
+                )
+            elif jurisdiction == 'UAE':
+                add_remedies(
+                    "Medical Liability Committee complaint under UAE Federal Law No. 4/2016",
+                    "Health Authority disciplinary proceedings (DHA / DOH / MOHAP)",
+                    "Civil court compensation for medical malpractice and bodily harm",
+                    "Criminal complaint for gross medical fault"
+                )
+        elif is_divorce:
+            if jurisdiction == 'IN':
+                add_remedies(
+                    "Divorce decree under Hindu Marriage Act / Special Marriage Act / Personal Laws",
+                    "Permanent alimony and maintenance under Section 25 Hindu Marriage Act / Section 125 CrPC / BNSS",
+                    "Child custody and visitation rights under Guardians and Wards Act",
+                    "Mutual consent divorce filing under Section 13B"
+                )
+            elif jurisdiction == 'UK':
+                add_remedies(
+                    "Decree Nisi (Conditional Order of Divorce) & Decree Absolute (Final Order) under Divorce, Dissolution and Separation Act 2020",
+                    "Financial Remedy Order for property division, spousal maintenance, and pension sharing",
+                    "Child Arrangements Order for contact and residency rights",
+                    "Joint or sole no-fault divorce application"
+                )
+            elif jurisdiction == 'UAE':
+                add_remedies(
+                    "No-fault divorce decree under UAE Personal Status Law / Non-Muslim Personal Status Law (Federal Decree-Law No. 41/2022)",
+                    "Spousal alimony and child maintenance order",
+                    "Joint child custody and guardianship rights",
+                    "Division of joint assets and financial settlements"
+                )
         elif is_serious_crime:
             if jurisdiction == 'IN':
                 add_remedies(

@@ -5,6 +5,15 @@
   "primary_penal_code": "Theft Act 1968 & Offences Against Person Act 1861",
   "statutes": [
     {
+      "id": "uk_divorce_2020",
+      "act_name": "Divorce, Dissolution and Separation Act 2020 & Matrimonial Causes Act 1973",
+      "section": "Section 1 / Section 13",
+      "title": "No-Fault Divorce & Irretrievable Breakdown of Marriage",
+      "description": "Provides for no-fault divorce in England & Wales where either spouse or both jointly file a statement of irretrievable breakdown of marriage without needing to prove fault, adultery, or separation period. Governs Decree Nisi, Decree Absolute, and financial remedies.",
+      "jurisdiction": "UK",
+      "domain": "family"
+    },
+    {
       "id": "uk_consumer_rights_9",
       "act_name": "Consumer Rights Act 2015 & Donoghue v Stevenson",
       "section": "Section 9",
