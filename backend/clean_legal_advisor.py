@@ -143,7 +143,7 @@ QUERY_STATUTE_OVERRIDES = [
     },
     {
         "any": ["fir"],
-        "exclude": ["after fir", "refuse to register fir", "refuse fir", "after an fir", "after filing fir"],
+        "exclude": ["after fir", "refuse to register fir", "refuse fir", "after an fir", "after filing fir", "fires", "fired", "fire employee"],
         "statutes": [
             {"act": "Code of Criminal Procedure", "year": 1973, "section": "154", "title": "Information in cognizable cases (FIR)"},
         ],
@@ -456,6 +456,88 @@ QUERY_STATUTE_OVERRIDES = [
             {"act": "Bharatiya Sakshya Adhiniyam", "year": 2023, "section": "170", "title": "Certificate for electronic records - admissibility without further proof"},
             {"act": "Bharatiya Sakshya Adhiniyam", "year": 2023, "section": "57", "title": "Burden of proof on party asserting facts"},
             {"act": "Bharatiya Sakshya Adhiniyam", "year": 2023, "section": "63", "title": "Oral evidence must be direct"},
+        ],
+    },
+    # ============================================================
+    # HOUSE-BREAKING / THEFT FROM HOUSE / BURGLARY
+    # ============================================================
+    {
+        "any": ["break into house", "house break", "house-break", "break-in", "breaks into", "broke into", "burglary", "night robbery", "breaks into home", "broke into home", "jewelry theft", "jewellery theft"],
+        "exclude": ["cyber", "data", "it act"],
+        "statutes": [
+            {"act": "Bharatiya Nyaya Sanhita", "year": 2023, "section": "305", "title": "Theft in a dwelling house - imprisonment up to 7 years and fine"},
+            {"act": "Bharatiya Nyaya Sanhita", "year": 2023, "section": "331", "title": "Punishment for house-trespass or house-breaking"},
+            {"act": "Bharatiya Nyaya Sanhita", "year": 2023, "section": "303", "title": "Theft - punishment under BNS"},
+        ],
+    },
+    # ============================================================
+    # TENANT EVICTION / LANDLORD LOCK-OUT / LEASE EXPIRY
+    # ============================================================
+    {
+        "any": ["tenant refuses to vacate", "tenant not vacating", "landlord locks tenant", "landlord locked tenant", "locks tenant out", "lock tenant out", "evict tenant", "forced eviction", "tenant eviction", "vacate apartment", "refuse to vacate", "refuses to vacate"],
+        "statutes": [
+            {"act": "Transfer of Property Act", "year": 1882, "section": "111", "title": "Determination of Lease - grounds for termination of tenancy and eviction"},
+            {"act": "Transfer of Property Act", "year": 1882, "section": "108", "title": "Rights and liabilities of lessor and lessee"},
+        ],
+    },
+    # ============================================================
+    # SALARY DEDUCTION / UNPAID WAGES / ILLEGAL TERMINATION
+    # ============================================================
+    {
+        "any": ["salary not paid", "salary deducted", "wages not paid", "salary withheld", "unpaid salary", "illegal termination", "wrongful termination", "employer deducts salary", "employer withholds", "not paid wages", "pending salary"],
+        "exclude": ["dubai", "uae", "mohre", "gratuity"],
+        "statutes": [
+            {"act": "Payment of Wages Act", "year": 1936, "section": "4", "title": "Fixation of wage periods - wages must be paid on time every month"},
+            {"act": "Payment of Wages Act", "year": 1936, "section": "7", "title": "Deductions which may be made from wages - unauthorized deductions prohibited"},
+            {"act": "Industrial Disputes Act", "year": 1947, "section": "25F", "title": "Conditions precedent to retrenchment of workmen - notice and compensation required"},
+            {"act": "Industrial Disputes Act", "year": 1947, "section": "25N", "title": "Conditions for retrenchment in establishments with 100+ workers"},
+        ],
+    },
+    # ============================================================
+    # CYBER FRAUD / ONLINE SCAM / LOTTERY SCAM / PHISHING
+    # ============================================================
+    {
+        "any": ["cyber fraud", "online fraud", "online scam", "lottery scam", "fake lottery", "phishing", "whatsapp fraud", "email fraud", "online cheating", "digital fraud", "internet fraud", "fake offer", "fake prize", "lottery scam via whatsapp", "online lottery"],
+        "statutes": [
+            {"act": "Information Technology Act", "year": 2000, "section": "66", "title": "Computer related offences - hacking, data theft, fraud via digital means"},
+            {"act": "Information Technology Act", "year": 2000, "section": "66C", "title": "Identity theft - fraudulent use of electronic signature, password"},
+            {"act": "Information Technology Act", "year": 2000, "section": "66D", "title": "Cheating by personation using computer resources"},
+            {"act": "Bharatiya Nyaya Sanhita", "year": 2023, "section": "318", "title": "Cheating - inducing someone to deliver property or alter property by deception"},
+        ],
+    },
+    # ============================================================
+    # BUSINESS PARTNER FRAUD / PARTNERSHIP DISPUTE / EMBEZZLEMENT
+    # ============================================================
+    {
+        "any": ["business partner", "partnership fraud", "partner fraud", "partner takes money", "business fraud", "embezzlement", "partner ran away", "partner disappears", "misappropriation", "criminal breach of trust", "partner takes entire", "took funds"],
+        "exclude": ["cyber", "online"],
+        "statutes": [
+            {"act": "Bharatiya Nyaya Sanhita", "year": 2023, "section": "316", "title": "Criminal breach of trust - misappropriation of entrusted property"},
+            {"act": "Bharatiya Nyaya Sanhita", "year": 2023, "section": "318", "title": "Cheating - obtaining property by deception"},
+            {"act": "Indian Partnership Act", "year": 1932, "section": "9", "title": "General duties of partners - bound to act in good faith"},
+            {"act": "Indian Partnership Act", "year": 1932, "section": "52", "title": "Return of premium on dissolution of firm"},
+        ],
+    },
+    # ============================================================
+    # UK EMPLOYMENT / UNFAIR DISMISSAL / WRONGFUL TERMINATION
+    # ============================================================
+    {
+        "any": ["unfair dismissal", "wrongful dismissal", "employment tribunal", "redundancy uk", "notice period uk", "uk employment", "dismissed without notice", "sacked without notice", "employment rights", "fires employee without notice", "employer fires employee", "employee without notice", "notice period", "without prior notice"],
+        "statutes": [
+            {"act": "Employment Rights Act", "year": 1996, "section": "94", "title": "Right not to be unfairly dismissed - employee protection after 2 years service"},
+            {"act": "Employment Rights Act", "year": 1996, "section": "86", "title": "Minimum notice periods - 1 week per year of service up to 12 weeks"},
+            {"act": "Equality Act", "year": 2010, "section": "39", "title": "Prohibition of discrimination in employment decisions"},
+        ],
+    },
+    # ============================================================
+    # UAE GRATUITY / END OF SERVICE / MOHRE LABOUR COMPLAINT
+    # ============================================================
+    {
+        "any": ["gratuity dubai", "gratuity uae", "end of service gratuity", "end of service payment", "final salary dubai", "salary not paid dubai", "uae gratuity", "mohre complaint", "labour complaint dubai", "withholds salary dubai", "pay gratuity", "fails to pay gratuity", "withholds final salary"],
+        "statutes": [
+            {"act": "Federal Decree-Law No. 33/2021 on Regulation of Labour Relations", "year": 2021, "section": "Article 51", "title": "End of Service Gratuity - 21 days per year for first 5 years, 30 days per year beyond 5 years"},
+            {"act": "Federal Decree-Law No. 33/2021 on Regulation of Labour Relations", "year": 2021, "section": "Article 43", "title": "Arbitrary termination of employee - compensation up to 3 months gross salary"},
+            {"act": "Federal Decree-Law No. 33/2021 on Regulation of Labour Relations", "year": 2021, "section": "Article 18", "title": "Salary payment obligations - employer must pay within 10 days of due date"},
         ],
     },
 ]
@@ -2052,6 +2134,53 @@ class EnhancedLegalAdvisor:
         
         # Detect jurisdiction
         jurisdiction = self._detect_jurisdiction(legal_query.query_text, legal_query.jurisdiction_hint)
+
+        # ============================================================
+        # QUERY STATUTE OVERRIDE CHECK (runs BEFORE multi_jurisdiction_db)
+        # This ensures high-precision keyword-rule matches take priority
+        # ============================================================
+        query_lower_for_override = legal_query.query_text.lower()
+        override_statutes = self._match_query_statute_override(query_lower_for_override)
+        if override_statutes:
+            # Convert override statutes to Section objects and return immediately
+            converted_override_sections = []
+            for st in override_statutes:
+                j_enum = Jurisdiction.IN if jurisdiction in ['IN', 'India'] else (Jurisdiction.UAE if jurisdiction in ['UAE', 'AE'] else Jurisdiction.UK)
+                sec_obj = Section(
+                    section_id=f"override_{st.get('section', 'sec')}",
+                    act_id=f"{st.get('act', 'Act')} {st.get('year', '')}",
+                    section_number=st.get('section', 'Section'),
+                    text=f"{st.get('title', '')}",
+                    jurisdiction=j_enum,
+                    metadata={'title': st.get('title', ''), 'punishment': '', 'bailable': None, 'cognizable': None, 'replaced_legacy_ipc': None}
+                )
+                converted_override_sections.append(sec_obj)
+            if converted_override_sections:
+                override_domain = 'criminal'
+                q_lower = legal_query.query_text.lower()
+                if any(w in q_lower for w in ['divorce', 'marriage', 'family', 'custody', 'maintenance', 'alimony', 'dowry']):
+                    override_domain = 'family'
+                elif any(w in q_lower for w in ['salary', 'wages', 'employee', 'employer', 'labour', 'gratuity', 'termination']):
+                    override_domain = 'employment'
+                elif any(w in q_lower for w in ['tenant', 'landlord', 'eviction', 'rent', 'lease', 'property', 'house']):
+                    override_domain = 'civil'
+                elif any(w in q_lower for w in ['consumer', 'refund', 'defective', 'warranty']):
+                    override_domain = 'consumer'
+                elif any(w in q_lower for w in ['cyber', 'online fraud', 'data breach', 'hacking', 'phishing']):
+                    override_domain = 'cyber'
+                return LegalAdvice(
+                    query=legal_query.query_text,
+                    jurisdiction=jurisdiction,
+                    domain=override_domain,
+                    relevant_sections=converted_override_sections,
+                    legal_analysis=self._generate_legal_analysis(legal_query.query_text, converted_override_sections, jurisdiction),
+                    procedural_steps=self._generate_procedural_steps(converted_override_sections, override_domain, jurisdiction, legal_query.query_text),
+                    remedies=self._generate_remedies(converted_override_sections, override_domain, jurisdiction, legal_query.query_text),
+                    confidence_score=0.92,
+                    trace_id=trace_id,
+                    timestamp=datetime.now().isoformat(),
+                    statutes=[s.to_dict() for s in converted_override_sections]
+                )
 
         # Multi-Jurisdiction Integration Bridge (India, UAE, UK)
         try:
