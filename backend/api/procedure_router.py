@@ -1,6 +1,6 @@
 """Procedure API router for legal procedure intelligence."""
 from fastapi import APIRouter, HTTPException, Depends
-from typing import Dict, Any
+from typing import Dict, Any, List
 from api.schemas import (
     ProcedureRequest, ProcedureResponse, EvidenceAssessmentRequest,
     EvidenceAssessmentResponse, FailureAnalysisRequest, FailureAnalysisResponse,
@@ -14,6 +14,19 @@ from procedures.loader import procedure_loader
 procedure_router = APIRouter(prefix="/nyaya/procedures", tags=["procedures"])
 
 
+def _normalize_country(country: str) -> str:
+    c = (country or "").strip().lower()
+    if c in ["in", "india", "ind"]:
+        return "india"
+    if c in ["uk", "united kingdom", "gb", "england", "britain"]:
+        return "uk"
+    if c in ["uae", "united arab emirates", "ae", "dubai", "abu dhabi"]:
+        return "uae"
+    if c in ["ksa", "saudi", "saudi arabia", "sa"]:
+        return "ksa"
+    return c
+
+
 @procedure_router.post("/analyze", response_model=ProcedureResponse)
 async def analyze_procedure(
     request: ProcedureRequest,
@@ -21,8 +34,9 @@ async def analyze_procedure(
 ):
     """Analyze a legal procedure for a specific country and domain."""
     try:
+        norm_country = _normalize_country(request.country)
         analysis = procedure_intelligence.analyze_procedure(
-            country=request.country,
+            country=norm_country,
             domain=request.domain,
             current_step=request.current_step
         )
@@ -60,7 +74,8 @@ async def get_procedure_summary(
 ):
     """Get a summary of a legal procedure."""
     try:
-        summary = procedure_intelligence.get_procedure_summary(country, domain)
+        norm_country = _normalize_country(country)
+        summary = procedure_intelligence.get_procedure_summary(norm_country, domain)
         
         if "error" in summary:
             raise HTTPException(
@@ -153,8 +168,9 @@ async def compare_procedures(
 ):
     """Compare procedures across multiple countries for the same domain."""
     try:
+        norm_countries = [_normalize_country(c) for c in request.countries]
         comparison = procedure_intelligence.compare_procedures(
-            countries=request.countries,
+            countries=norm_countries,
             domain=request.domain
         )
         
