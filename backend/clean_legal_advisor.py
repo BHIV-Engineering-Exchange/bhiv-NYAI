@@ -2240,7 +2240,8 @@ class EnhancedLegalAdvisor:
             from legal_database.multi_jurisdiction_db import multi_jurisdiction_db
             mj_res = multi_jurisdiction_db.search_statutes(query=legal_query.query_text, jurisdiction=jurisdiction)
             mj_statutes = mj_res.get('statutes', [])
-            if mj_statutes:
+            # For India, only accept high-confidence multi_db matches (score >= 6), otherwise search full 9723 BM25 dataset
+            if mj_statutes and (jurisdiction != 'IN' or any(st.get('relevance_score', 0) >= 6 for st in mj_statutes)):
                 converted_sections = []
                 for st in mj_statutes:
                     sec_obj = Section(
