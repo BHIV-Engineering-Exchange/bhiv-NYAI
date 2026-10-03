@@ -7,10 +7,17 @@ logger = logging.getLogger(__name__)
 
 JURISDICTIONS_DIR = os.path.join(os.path.dirname(__file__), '..', 'data', 'jurisdictions')
 
+STOPWORDS = {
+    'and', 'the', 'with', 'for', 'after', 'from', 'that', 'this', 'into', 'without',
+    'where', 'years', 'year', 'under', 'before', 'between', 'during', 'about', 'over',
+    'such', 'their', 'which', 'will', 'have', 'been', 'each', 'other', 'them', 'they',
+    'what', 'when', 'some', 'than', 'then', 'also', 'just', 'does', 'did', 'was', 'were'
+}
+
 class MultiJurisdictionDatabaseManager:
     """
     Multi-Jurisdiction Database Engine for Nyaya AI.
-    Manages isolated legal statutory databases for India 🇮🇳, UAE 🇦🇪, and UK 🇬🇧.
+    Manages isolated legal statutory databases for India, UAE, and UK.
     """
 
     def __init__(self):
@@ -27,7 +34,8 @@ class MultiJurisdictionDatabaseManager:
                         data = json.load(f)
                         jurisdiction_name = data.get('jurisdiction', code.capitalize())
                         self._databases[jurisdiction_name.lower()] = data
-                        logger.info(f"Loaded {len(data.get('statutes', []))} statutes for jurisdiction: {jurisdiction_name}")
+                        num_stat = len(data.get('statutes', []))
+                        logger.info(f"Loaded {num_stat} statutes for jurisdiction: {jurisdiction_name}")
                 except Exception as e:
                     logger.error(f"Error loading jurisdiction data for {code}: {e}")
 
@@ -35,9 +43,9 @@ class MultiJurisdictionDatabaseManager:
         if not jurisdiction:
             return "india"
         j_lower = jurisdiction.strip().lower()
-        if "uae" in j_lower or "dubai" in j_lower or "emirates" in j_lower or "ae" == j_lower:
+        if any(term in j_lower for term in ["uae", "dubai", "emirates", "abu dhabi", "ae"]):
             return "uae"
-        if "uk" in j_lower or "london" in j_lower or "england" in j_lower or "gb" == j_lower:
+        if any(term in j_lower for term in ["uk", "london", "england", "britain", "gb", "scotland", "wales", "manchester"]):
             return "uk"
         return "india"
 
@@ -46,9 +54,9 @@ class MultiJurisdictionDatabaseManager:
         if not text:
             return "India"
         t_lower = text.lower()
-        if any(term in t_lower for term in ["dubai", "abu dhabi", "uae", "mohre", "article 435", "article 117"]):
+        if any(term in t_lower for term in ["dubai", "abu dhabi", "uae", "mohre", "emirates", "dirham", "aed"]):
             return "UAE"
-        if any(term in t_lower for term in ["london", "uk", "england", "theft act 1968", "companies act 2006", "chancery"]):
+        if any(term in t_lower for term in ["london", "uk", "england", "manchester", "theft act", "companies act", "crown court"]):
             return "UK"
         return "India"
 
@@ -58,12 +66,12 @@ class MultiJurisdictionDatabaseManager:
         return db.get("statutes", [])
 
     def search_statutes(self, query: str, jurisdiction: Optional[str] = None) -> Dict[str, Any]:
-        """Searches legal sections isolated within the target jurisdiction."""
+        """Searches legal sections strictly isolated within the target jurisdiction."""
         target_j = jurisdiction or self.detect_jurisdiction_from_text(query)
         norm_j = self.normalize_jurisdiction(target_j)
         statutes = self.get_statutes(norm_j)
 
-        q_terms = [t for t in query.lower().split() if len(t) > 2]
+        q_terms = [t for t in query.lower().split() if len(t) > 2 and t not in STOPWORDS]
         matches = []
 
         for st in statutes:
@@ -71,13 +79,21 @@ class MultiJurisdictionDatabaseManager:
             text_to_search = f"{st.get('title', '')} {st.get('description', '')} {st.get('act_name', '')} {st.get('section', '')}".lower()
             for term in q_terms:
                 if term in text_to_search:
-                    score += 1
-            if score > 0:
+                    score += 2
+            
+            # Phrase bonuses for strong relevance
+            for bigram_len in [2, 3]:
+                for i in range(len(q_terms) - bigram_len + 1):
+                    phrase = ' '.join(q_terms[i:i+bigram_len])
+                    if phrase in text_to_search:
+                        score += 5
+
+            if score >= 2:
                 matches.append({**st, "relevance_score": score})
 
         matches.sort(key=lambda x: x.get("relevance_score", 0), reverse=True)
         top_score = matches[0]["relevance_score"] if matches else 0
-        filtered_matches = [m for m in matches if m.get("relevance_score", 0) >= max(1, top_score - 1)]
+        filtered_matches = [m for m in matches if m.get("relevance_score", 0) >= max(2, top_score - 2)]
 
         db_meta = self._databases.get(norm_j, {})
         return {
@@ -90,11 +106,3 @@ class MultiJurisdictionDatabaseManager:
         }
 
 multi_jurisdiction_db = MultiJurisdictionDatabaseManager()
-
-# Reload trigger: 1790846010.5213964
-
-# Reload trigger: 1790846199.187317
-
-# Reload trigger: 1790846328.4835713
-
-# Reload trigger: 1790846404.7180424

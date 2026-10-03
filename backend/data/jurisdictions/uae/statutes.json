@@ -168,6 +168,39 @@
       "penalty": "Imprisonment, fine between AED 200,000 to AED 500,000, and confiscation of collected funds.",
       "bailable": true,
       "cognizable": true
+    },
+    {
+      "id": "uae_cyber_sec_11_fraud",
+      "act_name": "Federal Decree-Law No. 34 of 2021 on Combatting Rumors & Cybercrimes",
+      "section": "Article 11 / Article 14",
+      "title": "Cyber Fraud, Phishing, Bank OTP Theft & Electronic Impersonation",
+      "description": "Unlawful acquisition of OTP, bank passwords, phishing links, internet deception or electronic funds misappropriation in Dubai, Abu Dhabi and UAE.",
+      "penalty": "Imprisonment for at least 1 year and fine between AED 200,000 to AED 1,000,000",
+      "bailable": false,
+      "cognizable": true,
+      "domain": "criminal"
+    },
+    {
+      "id": "uae_penal_sec_442_theft",
+      "act_name": "Federal Decree-Law No. 31 of 2021 (Crimes and Penalties Law)",
+      "section": "Article 442 / Article 443",
+      "title": "Theft, Robbery and Housebreak Trespass",
+      "description": "Entering premises unlawfully, breaking doors or safe locks, or stealing jewelry, cash, and movable belongings with or without weapons.",
+      "penalty": "Imprisonment up to 7 years or temporary imprisonment",
+      "bailable": false,
+      "cognizable": true,
+      "domain": "criminal"
+    },
+    {
+      "id": "uae_tenancy_sec_25_eviction",
+      "act_name": "Dubai Law No. 26 of 2007 (Amended by Law No. 33 of 2008)",
+      "section": "Article 25",
+      "title": "Landlord Eviction Notice & Statutory 12-Month Notary Requirement",
+      "description": "Landlord must provide a formal 12-month notice served via Notary Public or registered mail before demanding tenant eviction upon lease expiry.",
+      "penalty": "Rental Dispute Center (RDC) injunction against eviction and compensation to tenant",
+      "bailable": null,
+      "cognizable": false,
+      "domain": "civil"
     }
   ]
 }

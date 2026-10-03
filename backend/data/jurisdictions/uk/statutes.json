@@ -210,6 +210,50 @@
       "penalty": "Imprisonment up to 5 years, fine, and drone seizure.",
       "bailable": true,
       "cognizable": true
+    },
+    {
+      "id": "uk_theft_sec_9_burglary",
+      "act_name": "Theft Act 1968",
+      "section": "Section 9",
+      "title": "Burglary & House-Breaking Offences",
+      "description": "Entering any building or part of a building as a trespasser with intent to steal electronic devices, cash, jewelry or inflict grievous bodily harm.",
+      "penalty": "Imprisonment up to 14 years for dwelling burglary on indictment",
+      "bailable": true,
+      "cognizable": true,
+      "domain": "criminal"
+    },
+    {
+      "id": "uk_theft_sec_1_theft",
+      "act_name": "Theft Act 1968",
+      "section": "Section 1",
+      "title": "Basic Definition and Offence of Theft",
+      "description": "A person is guilty of theft if he dishonestly appropriates property belonging to another with the intention of permanently depriving the other of it.",
+      "penalty": "Imprisonment up to 7 years",
+      "bailable": true,
+      "cognizable": true,
+      "domain": "criminal"
+    },
+    {
+      "id": "uk_fraud_sec_2_fraud",
+      "act_name": "Fraud Act 2006",
+      "section": "Section 2",
+      "title": "Fraud by False Representation & Cyber Phishing",
+      "description": "Dishonestly making a false representation with intent to make a gain or cause loss to another (online scams, OTP phishing, WhatsApp fraud).",
+      "penalty": "Imprisonment up to 10 years on indictment",
+      "bailable": true,
+      "cognizable": true,
+      "domain": "criminal"
+    },
+    {
+      "id": "uk_emp_sec_94_dismissal",
+      "act_name": "Employment Rights Act 1996",
+      "section": "Section 94 / Section 98",
+      "title": "Right Not to be Unfairly Dismissed & Notice Requirements",
+      "description": "An employee has the right not to be unfairly dismissed by his employer without statutory notice or disciplinary procedure after qualifying service period.",
+      "penalty": "Employment Tribunal reinstatement order or statutory compensation",
+      "bailable": null,
+      "cognizable": false,
+      "domain": "employment"
     }
   ]
 }

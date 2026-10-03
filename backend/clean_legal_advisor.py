@@ -1613,7 +1613,60 @@ class EnhancedLegalAdvisor:
         value = str(section_number or "").strip()
         return re.sub(r"^(section|article)[_\-\s]+", "", value, flags=re.IGNORECASE)
 
-    def _match_query_statute_override(self, query_lower: str) -> Optional[List[Dict[str, Any]]]:
+    def _match_query_statute_override(self, query_lower: str, jurisdiction: str = 'IN') -> Optional[List[Dict[str, Any]]]:
+        # UK specific overrides
+        if jurisdiction in ['UK', 'United Kingdom', 'GB']:
+            if any(term in query_lower for term in ['divorce', 'separation', 'marriage breakdown']):
+                return [
+                    {"act": "Divorce, Dissolution and Separation Act 2020 & Matrimonial Causes Act 1973", "year": 2020, "section": "Section 1 / Section 13", "title": "No-Fault Divorce and Irretrievable Breakdown of Marriage"}
+                ]
+            if any(term in query_lower for term in ['burglary', 'broke into house', 'intruder', 'broke in', 'house breaking']):
+                return [
+                    {"act": "Theft Act 1968", "year": 1968, "section": "Section 9", "title": "Burglary and House-Breaking Offences"}
+                ]
+            if any(term in query_lower for term in ['theft', 'steal', 'stole', 'stolen']):
+                return [
+                    {"act": "Theft Act 1968", "year": 1968, "section": "Section 1", "title": "Basic Definition and Offence of Theft"}
+                ]
+            if any(term in query_lower for term in ['phishing', 'cyber fraud', 'online scam', 'otp', 'lottery scam']):
+                return [
+                    {"act": "Fraud Act 2006", "year": 2006, "section": "Section 2", "title": "Fraud by False Representation and Cyber Phishing"}
+                ]
+            if any(term in query_lower for term in ['unfair dismissal', 'fired without notice', 'termination without notice', 'fires employee', 'fired employee', 'dismissal']):
+                return [
+                    {"act": "Employment Rights Act 1996", "year": 1996, "section": "Section 94 / Section 98", "title": "Right Not to be Unfairly Dismissed and Notice Requirements"}
+                ]
+            if any(term in query_lower for term in ['defective', 'faulty', 'refund', 'goods to be of satisfactory quality']):
+                return [
+                    {"act": "Consumer Rights Act 2015", "year": 2015, "section": "Section 9 / Section 20", "title": "Goods to be of Satisfactory Quality and Right to Reject / Refund"}
+                ]
+            return None
+
+        # UAE specific overrides
+        if jurisdiction in ['UAE', 'AE', 'Dubai', 'Abu Dhabi']:
+            if any(term in query_lower for term in ['otp', 'phishing', 'cyber fraud', 'bank otp', 'online scam', 'stolen otp', 'hacked']):
+                return [
+                    {"act": "Federal Decree-Law No. 34 of 2021 on Combatting Rumors and Cybercrimes", "year": 2021, "section": "Article 11 / Article 14", "title": "Cyber Fraud, Phishing, Bank OTP Theft and Electronic Impersonation"}
+                ]
+            if any(term in query_lower for term in ['gratuity', 'end of service', 'final salary', 'arbitrary dismissal', 'labour contract', 'labour law', 'termination of employment']):
+                return [
+                    {"act": "Federal Decree-Law No. 33 of 2021 on Regulation of Labour Relations", "year": 2021, "section": "Article 43 / Article 51", "title": "Arbitrary Termination and End of Service Gratuity"}
+                ]
+            if any(term in query_lower for term in ['eviction', 'notary notice', 'landlord', 'tenant', 'changing locks', 'disconnecting services', '12 months notice']):
+                return [
+                    {"act": "Dubai Law No. 26 of 2007 (Amended by Law No. 33 of 2008)", "year": 2007, "section": "Article 25 / Article 34", "title": "Landlord Eviction Notice and Prohibition of Lockouts / Disconnections"}
+                ]
+            if any(term in query_lower for term in ['bounced cheque', 'cheque bounce', 'dishonoured cheque', 'insufficient funds']):
+                return [
+                    {"act": "Federal Decree-Law No. 50 of 2022 Commercial Transactions Law", "year": 2022, "section": "Article 641 / Article 643", "title": "Bounced Cheques and Cheque Drawn on Closed/Insufficient Account"}
+                ]
+            if any(term in query_lower for term in ['theft', 'stolen', 'burglary', 'robbery', 'housebreak']):
+                return [
+                    {"act": "Federal Decree-Law No. 31 of 2021 (Crimes and Penalties Law)", "year": 2021, "section": "Article 442 / Article 443", "title": "Theft, Robbery and Housebreak Trespass"}
+                ]
+            return None
+
+        # India (IN) overrides
         for rule in QUERY_STATUTE_OVERRIDES:
             require_all = rule.get("all", [])
             require_any = rule.get("any", [])
@@ -2140,7 +2193,7 @@ class EnhancedLegalAdvisor:
         # This ensures high-precision keyword-rule matches take priority
         # ============================================================
         query_lower_for_override = legal_query.query_text.lower()
-        override_statutes = self._match_query_statute_override(query_lower_for_override)
+        override_statutes = self._match_query_statute_override(query_lower_for_override, jurisdiction=jurisdiction)
         if override_statutes:
             # Convert override statutes to Section objects and return immediately
             converted_override_sections = []

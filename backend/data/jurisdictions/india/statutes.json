@@ -245,6 +245,72 @@
       "penalty": "Simple imprisonment up to 2 years, or fine, or both.",
       "bailable": true,
       "cognizable": false
+    },
+    {
+      "id": "in_bns_331_332",
+      "act_name": "Bharatiya Nyaya Sanhita 2023",
+      "section": "Section 331 / Section 332",
+      "title": "Lurking House-Trespass or House-Breaking with Deadly Weapons",
+      "description": "Entering property unlawfully with weapons, breaking doors, locks or entering premises by night to commit an offence.",
+      "penalty": "Rigorous imprisonment up to 10 years and fine",
+      "bailable": false,
+      "cognizable": true,
+      "domain": "criminal"
+    },
+    {
+      "id": "in_bns_309_310",
+      "act_name": "Bharatiya Nyaya Sanhita 2023",
+      "section": "Section 309 / Section 310",
+      "title": "Robbery and Dacoity with Deadly Weapons",
+      "description": "Theft committed by causing or attempting to cause hurt, death or wrongful restraint using weapons or armed force.",
+      "penalty": "Rigorous imprisonment up to 10 years and fine; life imprisonment for dacoity",
+      "bailable": false,
+      "cognizable": true,
+      "domain": "criminal"
+    },
+    {
+      "id": "in_bns_303",
+      "act_name": "Bharatiya Nyaya Sanhita 2023",
+      "section": "Section 303",
+      "title": "Theft - Dishonestly Taking Movable Property",
+      "description": "Dishonestly taking any movable property out of the possession of any person without consent (stealing gold, cash, jewelry, vehicle).",
+      "penalty": "Imprisonment up to 3 years or fine or both",
+      "bailable": false,
+      "cognizable": true,
+      "domain": "criminal"
+    },
+    {
+      "id": "in_it_66d",
+      "act_name": "Information Technology Act 2000 & BNS Section 318",
+      "section": "Section 66D / BNS Section 318(4)",
+      "title": "Cheating by Personation via Computer Resource & Cyber Fraud",
+      "description": "Online fraud, WhatsApp lottery scams, fake investment schemes, phishing OTP theft and impersonation using internet or electronic devices.",
+      "penalty": "Imprisonment up to 3 years to 7 years and fine",
+      "bailable": false,
+      "cognizable": true,
+      "domain": "criminal"
+    },
+    {
+      "id": "in_ni_138",
+      "act_name": "Negotiable Instruments Act 1881",
+      "section": "Section 138",
+      "title": "Dishonour of Cheque for Insufficiency of Funds in Account",
+      "description": "Cheque bounced due to insufficient funds or exceeding amount arranged to be paid from account.",
+      "penalty": "Imprisonment up to 2 years or fine up to twice the cheque amount or both",
+      "bailable": true,
+      "cognizable": false,
+      "domain": "commercial"
+    },
+    {
+      "id": "in_hma_13",
+      "act_name": "Hindu Marriage Act 1955",
+      "section": "Section 13(1)(ia) / Section 13B",
+      "title": "Divorce on Grounds of Cruelty or Mutual Consent",
+      "description": "Dissolution of marriage by decree of divorce on grounds of mental or physical cruelty, desertion or mutual consent petition.",
+      "penalty": "Decree of dissolution of marriage and permanent alimony/maintenance",
+      "bailable": null,
+      "cognizable": false,
+      "domain": "family"
     }
   ]
 }
