@@ -72,7 +72,34 @@ LAND_DISPUTE_STATUTES = [
 ]
 
 # Targeted statute overrides for common FAQ-style queries (India)
+
+def _match_term(term: str, text: str) -> bool:
+    if not term or not text:
+        return False
+    import re
+    p = r'\b' + re.escape(term.strip()) + r'\b'
+    return bool(re.search(p, text, re.IGNORECASE))
+
 QUERY_STATUTE_OVERRIDES = [
+    {
+        "any": ["ancestral", "coparcenary", "father's property", "father's land", "father’s property", "father’s land", "demand her equal share", "daughter equal share", "ancestral land", "partition of ancestral", "ancestral agricultural"],
+        "statutes": [
+            {"act": "The Hindu Succession Act, 1956", "year": 1956, "section": "6", "title": "Devolution of interest in coparcenary property - Daughters equal coparcenary rights by birth"},
+            {"act": "The Hindu Succession Act, 1956", "year": 1956, "section": "8", "title": "General rules of succession in the case of males dying intestate"},
+            {"act": "The Partition Act, 1893", "year": 1893, "section": "2", "title": "Power to court to order sale instead of division in partition suits"},
+            {"act": "Code of Civil Procedure, 1908", "year": 1908, "section": "Order 20 Rule 18", "title": "Decree in suit for partition of property or separate possession of share"},
+            {"act": "Code of Civil Procedure, 1908", "year": 1908, "section": "Order 39 Rule 1", "title": "Temporary injunction against alienation/sale of suit property"},
+        ],
+    },
+    {
+        "any": ["chokes the streaming speed", "choke streaming", "throttling", "net neutrality", "rival ott", "streaming speed of a specific rival", "isp intentionally", "isp throttling"],
+        "statutes": [
+            {"act": "The Competition Act, 2002", "year": 2002, "section": "4", "title": "Abuse of dominant position - Denial of market access and discriminatory practices"},
+            {"act": "The Competition Act, 2002", "year": 2002, "section": "3", "title": "Anti-competitive agreements - Exclusive supply and refusal to deal"},
+            {"act": "Telecom Regulatory Authority of India Act, 1997", "year": 1997, "section": "11", "title": "Functions of Authority - Ensuring Net Neutrality and non-discriminatory access"},
+            {"act": "The Consumer Protection Act, 2019", "year": 2019, "section": "2(47)", "title": "Unfair trade practice - Manipulating supply or discriminatory conditions"},
+        ],
+    },
     {
         "any": ["theft", "steal", "stolen"],
         "exclude": ["juvenile", "minor", "child", "jjb"],
@@ -1590,27 +1617,27 @@ class EnhancedLegalAdvisor:
     def _match_query_statute_override(self, query_lower: str, jurisdiction: str = 'IN') -> Optional[List[Dict[str, Any]]]:
         # UK specific overrides
         if jurisdiction in ['UK', 'United Kingdom', 'GB']:
-            if any(term in query_lower for term in ['divorce', 'separation', 'marriage breakdown']):
+            if any(_match_term(term, query_lower) for term in ['divorce', 'separation', 'marriage breakdown']):
                 return [
                     {"act": "Divorce, Dissolution and Separation Act 2020 & Matrimonial Causes Act 1973", "year": 2020, "section": "Section 1 / Section 13", "title": "No-Fault Divorce and Irretrievable Breakdown of Marriage"}
                 ]
-            if any(term in query_lower for term in ['burglary', 'broke into house', 'intruder', 'broke in', 'house breaking']):
+            if any(_match_term(term, query_lower) for term in ['burglary', 'broke into house', 'intruder', 'broke in', 'house breaking']):
                 return [
                     {"act": "Theft Act 1968", "year": 1968, "section": "Section 9", "title": "Burglary and House-Breaking Offences"}
                 ]
-            if any(term in query_lower for term in ['theft', 'steal', 'stole', 'stolen']):
+            if any(_match_term(term, query_lower) for term in ['theft', 'steal', 'stole', 'stolen']):
                 return [
                     {"act": "Theft Act 1968", "year": 1968, "section": "Section 1", "title": "Basic Definition and Offence of Theft"}
                 ]
-            if any(term in query_lower for term in ['phishing', 'cyber fraud', 'online scam', 'otp', 'lottery scam']):
+            if any(_match_term(term, query_lower) for term in ['phishing', 'cyber fraud', 'online scam', 'otp', 'lottery scam']):
                 return [
                     {"act": "Fraud Act 2006", "year": 2006, "section": "Section 2", "title": "Fraud by False Representation and Cyber Phishing"}
                 ]
-            if any(term in query_lower for term in ['unfair dismissal', 'fired without notice', 'termination without notice', 'fires employee', 'fired employee', 'dismissal']):
+            if any(_match_term(term, query_lower) for term in ['unfair dismissal', 'fired without notice', 'termination without notice', 'fires employee', 'fired employee', 'dismissal']):
                 return [
                     {"act": "Employment Rights Act 1996", "year": 1996, "section": "Section 94 / Section 98", "title": "Right Not to be Unfairly Dismissed and Notice Requirements"}
                 ]
-            if any(term in query_lower for term in ['defective', 'faulty', 'refund', 'goods to be of satisfactory quality']):
+            if any(_match_term(term, query_lower) for term in ['defective', 'faulty', 'refund', 'goods to be of satisfactory quality']):
                 return [
                     {"act": "Consumer Rights Act 2015", "year": 2015, "section": "Section 9 / Section 20", "title": "Goods to be of Satisfactory Quality and Right to Reject / Refund"}
                 ]
@@ -1618,23 +1645,23 @@ class EnhancedLegalAdvisor:
 
         # UAE specific overrides
         if jurisdiction in ['UAE', 'AE', 'Dubai', 'Abu Dhabi']:
-            if any(term in query_lower for term in ['otp', 'phishing', 'cyber fraud', 'bank otp', 'online scam', 'stolen otp', 'hacked']):
+            if any(_match_term(term, query_lower) for term in ['otp', 'phishing', 'cyber fraud', 'bank otp', 'online scam', 'stolen otp', 'hacked']):
                 return [
                     {"act": "Federal Decree-Law No. 34 of 2021 on Combatting Rumors and Cybercrimes", "year": 2021, "section": "Article 11 / Article 14", "title": "Cyber Fraud, Phishing, Bank OTP Theft and Electronic Impersonation"}
                 ]
-            if any(term in query_lower for term in ['gratuity', 'end of service', 'final salary', 'arbitrary dismissal', 'labour contract', 'labour law', 'termination of employment']):
+            if any(_match_term(term, query_lower) for term in ['gratuity', 'end of service', 'final salary', 'arbitrary dismissal', 'labour contract', 'labour law', 'termination of employment']):
                 return [
                     {"act": "Federal Decree-Law No. 33 of 2021 on Regulation of Labour Relations", "year": 2021, "section": "Article 43 / Article 51", "title": "Arbitrary Termination and End of Service Gratuity"}
                 ]
-            if any(term in query_lower for term in ['eviction', 'notary notice', 'landlord', 'tenant', 'changing locks', 'disconnecting services', '12 months notice']):
+            if any(_match_term(term, query_lower) for term in ['eviction', 'notary notice', 'landlord', 'tenant', 'changing locks', 'disconnecting services', '12 months notice']):
                 return [
                     {"act": "Dubai Law No. 26 of 2007 (Amended by Law No. 33 of 2008)", "year": 2007, "section": "Article 25 / Article 34", "title": "Landlord Eviction Notice and Prohibition of Lockouts / Disconnections"}
                 ]
-            if any(term in query_lower for term in ['bounced cheque', 'cheque bounce', 'dishonoured cheque', 'insufficient funds']):
+            if any(_match_term(term, query_lower) for term in ['bounced cheque', 'cheque bounce', 'dishonoured cheque', 'insufficient funds']):
                 return [
                     {"act": "Federal Decree-Law No. 50 of 2022 Commercial Transactions Law", "year": 2022, "section": "Article 641 / Article 643", "title": "Bounced Cheques and Cheque Drawn on Closed/Insufficient Account"}
                 ]
-            if any(term in query_lower for term in ['theft', 'stolen', 'burglary', 'robbery', 'housebreak']):
+            if any(_match_term(term, query_lower) for term in ['theft', 'stolen', 'burglary', 'robbery', 'housebreak']):
                 return [
                     {"act": "Federal Decree-Law No. 31 of 2021 (Crimes and Penalties Law)", "year": 2021, "section": "Article 442 / Article 443", "title": "Theft, Robbery and Housebreak Trespass"}
                 ]
@@ -1645,11 +1672,11 @@ class EnhancedLegalAdvisor:
             require_all = rule.get("all", [])
             require_any = rule.get("any", [])
             exclude = rule.get("exclude", [])
-            if require_all and not all(term in query_lower for term in require_all):
+            if require_all and not all(_match_term(term, query_lower) for term in require_all):
                 continue
-            if require_any and not any(term in query_lower for term in require_any):
+            if require_any and not any(_match_term(term, query_lower) for term in require_any):
                 continue
-            if exclude and any(term in query_lower for term in exclude):
+            if exclude and any(_match_term(term, query_lower) for term in exclude):
                 continue
             return rule.get("statutes", [])
         return None
@@ -2128,6 +2155,14 @@ class EnhancedLegalAdvisor:
                         "Product recall, discontinuance, or other compliance directions where justified"
                     )
         
+        
+        if domain in ['consumer_commercial', 'commercial', 'consumer']:
+            add_remedies(
+                "Cease and desist order against anti-competitive/unfair trade practice",
+                "Interim injunction restraining discriminatory throttling or preferential access",
+                "Compensation/damages for financial loss and traffic harm before CCI / Commercial Court",
+                "Direction for restoration of non-discriminatory access under TRAI Net Neutrality regulations"
+            )
         return remedies[:10]
     
     def _log_audit_event(self, event_type: str, trace_id: str, details: Dict[str, Any]):
@@ -2173,26 +2208,34 @@ class EnhancedLegalAdvisor:
             converted_override_sections = []
             for st in override_statutes:
                 j_enum = Jurisdiction.IN if jurisdiction in ['IN', 'India'] else (Jurisdiction.UAE if jurisdiction in ['UAE', 'AE'] else Jurisdiction.UK)
+                act_str = f"{st.get('act', 'Act')} {st.get('year', '')}".strip()
                 sec_obj = Section(
                     section_id=f"override_{st.get('section', 'sec')}",
-                    act_id=f"{st.get('act', 'Act')} {st.get('year', '')}",
+                    act_id=act_str,
                     section_number=st.get('section', 'Section'),
                     text=f"{st.get('title', '')}",
                     jurisdiction=j_enum,
-                    metadata={'title': st.get('title', ''), 'punishment': '', 'bailable': None, 'cognizable': None, 'replaced_legacy_ipc': None}
+                    metadata={
+                        'act_name': st.get('act', act_str),
+                        'title': st.get('title', ''),
+                        'punishment': st.get('punishment', ''),
+                        'bailable': None,
+                        'cognizable': None,
+                        'replaced_legacy_ipc': None
+                    }
                 )
                 converted_override_sections.append(sec_obj)
             if converted_override_sections:
                 override_domain = 'criminal'
                 q_lower = legal_query.query_text.lower()
-                if any(w in q_lower for w in ['divorce', 'marriage', 'family', 'custody', 'maintenance', 'alimony', 'dowry']):
+                if any(w in q_lower for w in ['ancestral', 'partition', 'coparcenary', 'land', 'property', 'inheritance', 'succession', 'tenant', 'landlord', 'eviction', 'rent', 'lease', 'father']):
+                    override_domain = 'civil'
+                elif any(w in q_lower for w in ['provider', 'streaming', 'isp', 'throttling', 'net neutrality', 'competition', 'dominant', 'market', 'consumer', 'refund', 'defective', 'warranty', 'trade']):
+                    override_domain = 'consumer_commercial'
+                elif any(w in q_lower for w in ['divorce', 'marriage', 'family', 'custody', 'maintenance', 'alimony', 'dowry']):
                     override_domain = 'family'
                 elif any(w in q_lower for w in ['salary', 'wages', 'employee', 'employer', 'labour', 'gratuity', 'termination']):
                     override_domain = 'employment'
-                elif any(w in q_lower for w in ['tenant', 'landlord', 'eviction', 'rent', 'lease', 'property', 'house']):
-                    override_domain = 'civil'
-                elif any(w in q_lower for w in ['consumer', 'refund', 'defective', 'warranty']):
-                    override_domain = 'consumer'
                 elif any(w in q_lower for w in ['cyber', 'online fraud', 'data breach', 'hacking', 'phishing']):
                     override_domain = 'cyber'
                 return LegalAdvice(

@@ -37,6 +37,7 @@ class Section:
         result["jurisdiction"] = self.jurisdiction.value
         result["title"] = self.title
         result["punishment"] = self.punishment
+        result["act_name"] = self.metadata.get("act_name") or self.act_id
         return result
 
     @classmethod
