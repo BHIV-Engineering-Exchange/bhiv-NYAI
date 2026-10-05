@@ -82,24 +82,1309 @@ def _match_term(term: str, text: str) -> bool:
 
 QUERY_STATUTE_OVERRIDES = [
     {
-        "any": ["ancestral", "coparcenary", "father's property", "father's land", "father’s property", "father’s land", "demand her equal share", "daughter equal share", "ancestral land", "partition of ancestral", "ancestral agricultural"],
-        "statutes": [
-            {"act": "The Hindu Succession Act, 1956", "year": 1956, "section": "6", "title": "Devolution of interest in coparcenary property - Daughters equal coparcenary rights by birth"},
-            {"act": "The Hindu Succession Act, 1956", "year": 1956, "section": "8", "title": "General rules of succession in the case of males dying intestate"},
-            {"act": "The Partition Act, 1893", "year": 1893, "section": "2", "title": "Power to court to order sale instead of division in partition suits"},
-            {"act": "Code of Civil Procedure, 1908", "year": 1908, "section": "Order 20 Rule 18", "title": "Decree in suit for partition of property or separate possession of share"},
-            {"act": "Code of Civil Procedure, 1908", "year": 1908, "section": "Order 39 Rule 1", "title": "Temporary injunction against alienation/sale of suit property"},
+        "any": [
+            "tube well",
+            "suction pipe",
+            "extracts water from a neighbor",
+            "extracts water"
         ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "303",
+                "title": "Theft - Dishonest abstraction/taking of water property"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "324",
+                "title": "Mischief - Causing wrongful loss or damage to neighbor's water supply"
+            },
+            {
+                "act": "Indian Penal Code",
+                "year": 1860,
+                "section": "379",
+                "title": "Punishment for theft"
+            }
+        ]
     },
     {
-        "any": ["chokes the streaming speed", "choke streaming", "throttling", "net neutrality", "rival ott", "streaming speed of a specific rival", "isp intentionally", "isp throttling"],
-        "statutes": [
-            {"act": "The Competition Act, 2002", "year": 2002, "section": "4", "title": "Abuse of dominant position - Denial of market access and discriminatory practices"},
-            {"act": "The Competition Act, 2002", "year": 2002, "section": "3", "title": "Anti-competitive agreements - Exclusive supply and refusal to deal"},
-            {"act": "Telecom Regulatory Authority of India Act, 1997", "year": 1997, "section": "11", "title": "Functions of Authority - Ensuring Net Neutrality and non-discriminatory access"},
-            {"act": "The Consumer Protection Act, 2019", "year": 2019, "section": "2(47)", "title": "Unfair trade practice - Manipulating supply or discriminatory conditions"},
+        "any": [
+            "counterfeit vitamin",
+            "chalk and toxic yellow",
+            "chalk and toxic",
+            "fake vitamin",
+            "adulterated drug"
         ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "274",
+                "title": "Adulteration of drugs/supplements with noxious materials"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "275",
+                "title": "Sale of adulterated and noxious drugs/supplements"
+            },
+            {
+                "act": "Food Safety and Standards Act",
+                "year": 2006,
+                "section": "26",
+                "title": "Responsibilities of food business operators regarding safety & adulteration"
+            }
+        ]
     },
+    {
+        "any": [
+            "backdoor patch",
+            "fractional paise",
+            "siphon fractional",
+            "siphoning fractional",
+            "banking app to siphon"
+        ],
+        "domain": "cyber",
+        "statutes": [
+            {
+                "act": "Information Technology Act",
+                "year": 2000,
+                "section": "66",
+                "title": "Computer related offences and unauthorized system access"
+            },
+            {
+                "act": "Information Technology Act",
+                "year": 2000,
+                "section": "43",
+                "title": "Penalty and compensation for damage to computer system & extraction of data"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "318(4)",
+                "title": "Cheating and dishonestly inducing delivery of funds"
+            }
+        ]
+    },
+    {
+        "any": [
+            "street dog",
+            "iron rod inside a residential complex",
+            "hits a street dog",
+            "animal cruelty",
+            "dog with an iron rod"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "325",
+                "title": "Mischief by killing or maiming animal of any value"
+            },
+            {
+                "act": "Prevention of Cruelty to Animals Act",
+                "year": 1960,
+                "section": "11",
+                "title": "Treating animals cruelly and inflicting unnecessary pain or death"
+            }
+        ]
+    },
+    {
+        "any": [
+            "drone directly over",
+            "missile testing range",
+            "drone over",
+            "drone rules",
+            "unauthorized drone"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Aircraft Act",
+                "year": 1934,
+                "section": "10",
+                "title": "Penalty for dangerous flying and violation of flight clearance conditions"
+            },
+            {
+                "act": "Drone Rules",
+                "year": 2021,
+                "section": "Rule 22 / Rule 49",
+                "title": "Operation of drones in red and prohibited defense airspace zones"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "152",
+                "title": "Act endangering sovereignty, unity and integrity of India"
+            }
+        ]
+    },
+    {
+        "any": [
+            "160 km/h",
+            "live-streaming a video on instagram",
+            "live-streaming while driving",
+            "racing on flyover",
+            "rash driving live stream"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Motor Vehicles Act",
+                "year": 1988,
+                "section": "184",
+                "title": "Driving dangerously and driving at excessive speed"
+            },
+            {
+                "act": "Motor Vehicles Act",
+                "year": 1988,
+                "section": "185",
+                "title": "Driving by a drunken person or by a person under the influence of drugs/distraction"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "281",
+                "title": "Rash driving or riding on a public way"
+            }
+        ]
+    },
+    {
+        "any": [
+            "14 hours a day",
+            "data entry operators to work",
+            "overtime allowance or providing weekly",
+            "overtime allowance",
+            "forced to work 14 hours"
+        ],
+        "domain": "employment",
+        "statutes": [
+            {
+                "act": "Code on Wages",
+                "year": 2019,
+                "section": "13",
+                "title": "Fixing hours of work for normal working day and mandatory rest interval"
+            },
+            {
+                "act": "Code on Wages",
+                "year": 2019,
+                "section": "14",
+                "title": "Payment for overtime work at double the ordinary rate of wages"
+            },
+            {
+                "act": "State Shops and Establishments Act",
+                "year": 1954,
+                "section": "Section 4",
+                "title": "Statutory limit on daily working hours and mandatory weekly off"
+            }
+        ]
+    },
+    {
+        "any": [
+            "radioactive mineral slurry",
+            "radioactive",
+            "atomic energy",
+            "nuclear slurry",
+            "radioactive waste"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Atomic Energy Act",
+                "year": 1962,
+                "section": "24",
+                "title": "Offences and penalties for illicit disposal and handling of radioactive substances"
+            },
+            {
+                "act": "Environment Protection Act",
+                "year": 1986,
+                "section": "15",
+                "title": "Penalty for contravention of provisions of environmental hazardous waste rules"
+            }
+        ]
+    },
+    {
+        "any": [
+            "core columns",
+            "mezzanine floor",
+            "alters the core columns",
+            "structural alterations without landlord"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Transfer of Property Act",
+                "year": 1882,
+                "section": "108",
+                "title": "Rights and liabilities of lessor and lessee - Prohibition of structural alteration without consent"
+            },
+            {
+                "act": "State Rent Control Acts",
+                "year": 1958,
+                "section": "Section 14",
+                "title": "Eviction on grounds of material alteration and damage to premises"
+            }
+        ]
+    },
+    {
+        "any": [
+            "locks a dead body",
+            "cold storage unit and refuses",
+            "dead body in a cold storage",
+            "detains dead body"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Consumer Protection Act",
+                "year": 2019,
+                "section": "2(47)",
+                "title": "Unfair trade practice & deficiency in healthcare service"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "127",
+                "title": "Wrongful confinement and extortionary restraint"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "336",
+                "title": "Extortion and illegal detention of mortal remains"
+            }
+        ]
+    },
+    {
+        "any": [
+            "top-ranking students who never enrolled",
+            "misleading advertisement",
+            "never enrolled in any of their courses",
+            "fake ranker ad"
+        ],
+        "domain": "consumer",
+        "statutes": [
+            {
+                "act": "Consumer Protection Act",
+                "year": 2019,
+                "section": "2(47)",
+                "title": "Unfair trade practice - False representation and misleading claims"
+            },
+            {
+                "act": "Consumer Protection Act",
+                "year": 2019,
+                "section": "89",
+                "title": "Punishment for false or misleading advertisement by manufacturer/service provider"
+            }
+        ]
+    },
+    {
+        "any": [
+            "fabindia",
+            "sub-brand using the specific green box format",
+            "trademark infringement font style",
+            "clones packaging style"
+        ],
+        "domain": "commercial",
+        "statutes": [
+            {
+                "act": "Trade Marks Act",
+                "year": 1999,
+                "section": "29",
+                "title": "Infringement of registered trade marks and deceptive similarity in packaging/font"
+            },
+            {
+                "act": "Trade Marks Act",
+                "year": 1999,
+                "section": "103",
+                "title": "Penalty for applying false trade marks and trade descriptions"
+            }
+        ]
+    },
+    {
+        "any": [
+            "tournament earnings by citing a hidden retrospective",
+            "cash out their tournament earnings",
+            "retrospective clause",
+            "gaming platform refuses to pay"
+        ],
+        "domain": "consumer",
+        "statutes": [
+            {
+                "act": "Indian Contract Act",
+                "year": 1872,
+                "section": "73",
+                "title": "Compensation for loss or damage caused by breach of contract"
+            },
+            {
+                "act": "Consumer Protection Act",
+                "year": 2019,
+                "section": "2(47)",
+                "title": "Unfair contract terms and unfair trade practice in digital service"
+            }
+        ]
+    },
+    {
+        "any": [
+            "public loan waiver scheme",
+            "view internal transaction records of a public",
+            "central public sector bank to view internal",
+            "rti loan waiver"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Right to Information Act",
+                "year": 2005,
+                "section": "6",
+                "title": "Request for obtaining information regarding public expenditure and loan schemes"
+            },
+            {
+                "act": "Right to Information Act",
+                "year": 2005,
+                "section": "3",
+                "title": "Right to information of all citizens across public authorities"
+            }
+        ]
+    },
+    {
+        "any": [
+            "genetic and biological health profiling",
+            "health profiling records",
+            "unencrypted genetic",
+            "dpdp",
+            "data protection health"
+        ],
+        "domain": "cyber",
+        "statutes": [
+            {
+                "act": "Digital Personal Data Protection Act",
+                "year": 2023,
+                "section": "4",
+                "title": "Grounds for processing digital personal data & consent mandate"
+            },
+            {
+                "act": "Digital Personal Data Protection Act",
+                "year": 2023,
+                "section": "8",
+                "title": "General obligations of data fiduciary - Protection and encryption of personal data"
+            },
+            {
+                "act": "Information Technology Act",
+                "year": 2000,
+                "section": "43A",
+                "title": "Compensation for failure to protect sensitive personal data"
+            }
+        ]
+    },
+    {
+        "any": [
+            "maternity leave notice",
+            "maternity benefit",
+            "terminates a permanent woman executive immediately after",
+            "pregnant employee fired"
+        ],
+        "domain": "employment",
+        "statutes": [
+            {
+                "act": "Maternity Benefit Act",
+                "year": 1961,
+                "section": "12",
+                "title": "Dismissal during absence or pregnancy unlawful and void"
+            },
+            {
+                "act": "Maternity Benefit Act",
+                "year": 1961,
+                "section": "21",
+                "title": "Penalty for contravention of provisions of Act by employer"
+            }
+        ]
+    },
+    {
+        "any": [
+            "insider trading",
+            "factory license got canceled",
+            "sells 2 lakh equities",
+            "internal executive leak",
+            "shareholder sells 2 lakh equities"
+        ],
+        "domain": "commercial",
+        "statutes": [
+            {
+                "act": "SEBI (Prohibition of Insider Trading) Regulations",
+                "year": 2015,
+                "section": "Regulation 3",
+                "title": "Prohibition on communication of unpublished price sensitive information (UPSI)"
+            },
+            {
+                "act": "SEBI (Prohibition of Insider Trading) Regulations",
+                "year": 2015,
+                "section": "Regulation 4",
+                "title": "Trading when in possession of unpublished price sensitive information"
+            }
+        ]
+    },
+    {
+        "any": [
+            "toilet waste from an aircraft",
+            "drops toilet waste",
+            "non-treated sewage storage tank mid-air",
+            "aircraft drops waste",
+            "aircraft sewage roof"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Aircraft Act",
+                "year": 1934,
+                "section": "10",
+                "title": "Penalty for dangerous acts and dropping matter from aircraft in flight"
+            },
+            {
+                "act": "Environment Protection Act",
+                "year": 1986,
+                "section": "15",
+                "title": "Penalty for hazardous environmental and public nuisance discharge"
+            },
+            {
+                "act": "Law of Torts",
+                "year": 1872,
+                "section": "Public Nuisance",
+                "title": "Common Law Strict Liability & Tortious compensation for physical property damage"
+            }
+        ]
+    },
+    {
+        "any": [
+            "block a public highway for 12 hours",
+            "deflate the tires of emergency ambulances",
+            "deflate tires of ambulance",
+            "blocking highway ambulance"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "126",
+                "title": "Wrongful restraint and obstruction of emergency services"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "285",
+                "title": "Danger, obstruction or injury in public way or navigation"
+            },
+            {
+                "act": "National Highways Act",
+                "year": 1956,
+                "section": "8B",
+                "title": "Punishment for causing mischief by doing any act which renders highway impassable"
+            }
+        ]
+    },
+    {
+        "any": [
+            "fake government safety fortification compliance logo",
+            "fortification compliance logo",
+            "fake fortification logo",
+            "fake safety logo salt"
+        ],
+        "domain": "consumer",
+        "statutes": [
+            {
+                "act": "Food Safety and Standards Act",
+                "year": 2006,
+                "section": "26",
+                "title": "Responsibilities of food business operators regarding compliance and safety"
+            },
+            {
+                "act": "Food Safety and Standards Act",
+                "year": 2006,
+                "section": "53",
+                "title": "Penalty for misleading advertisement and false certification branding"
+            }
+        ]
+    },
+    {
+        "any": [
+            "deepfake video of a rival candidate",
+            "deepfake",
+            "deepfake candidate",
+            "deepfake video"
+        ],
+        "domain": "cyber",
+        "statutes": [
+            {
+                "act": "Information Technology Act",
+                "year": 2000,
+                "section": "66D",
+                "title": "Punishment for cheating by personation by using computer resource/deepfake"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "336",
+                "title": "Forgery of electronic record for purpose of harming reputation"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "356",
+                "title": "Defamation and sharing of fabricated derogatory electronic media"
+            }
+        ]
+    },
+    {
+        "any": [
+            "mining subcontractor extracts riverbed sand",
+            "riverbed sand using heavy dredging",
+            "sand mining clearance zone",
+            "illegal sand mining"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Mines and Minerals (Development and Regulation) Act",
+                "year": 1957,
+                "section": "4",
+                "title": "Prospecting or mining operations to be under licence or lease boundaries"
+            },
+            {
+                "act": "Mines and Minerals (Development and Regulation) Act",
+                "year": 1957,
+                "section": "21",
+                "title": "Penalties for illegal mining, transportation, and unpermitted extraction"
+            },
+            {
+                "act": "Environment Protection Act",
+                "year": 1986,
+                "section": "15",
+                "title": "Penalty for violation of environmental clearance buffer zones"
+            }
+        ]
+    },
+    {
+        "any": [
+            "locks a 7-year-old student",
+            "dark classroom for 5 hours",
+            "student inside a dark classroom",
+            "tuition fees locked child"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Juvenile Justice (Care and Protection of Children) Act",
+                "year": 2015,
+                "section": "75",
+                "title": "Punishment for cruelty to child by person having actual charge/control"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "127",
+                "title": "Wrongful confinement of child"
+            }
+        ]
+    },
+    {
+        "any": [
+            "verbal \"talaq\"",
+            "verbal 'talaq'",
+            "triple talaq",
+            "talaq-e-biddat",
+            "pronounces a quick verbal"
+        ],
+        "domain": "family",
+        "statutes": [
+            {
+                "act": "Muslim Women (Protection of Rights on Marriage) Act",
+                "year": 2019,
+                "section": "3",
+                "title": "Talaq-e-biddat or any other similar form of instantaneous talaq to be void and illegal"
+            },
+            {
+                "act": "Muslim Women (Protection of Rights on Marriage) Act",
+                "year": 2019,
+                "section": "4",
+                "title": "Punishment for pronouncing triple talaq (imprisonment up to 3 years)"
+            }
+        ]
+    },
+    {
+        "any": [
+            "dedicated children's play park zone to construct a new tower",
+            "shifts the dedicated children's play park",
+            "rera common area alteration",
+            "builder changes layout map"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Real Estate (Regulation and Development) Act",
+                "year": 2016,
+                "section": "14",
+                "title": "Adherence to sanctioned plans and project specifications - Consent required for alterations"
+            },
+            {
+                "act": "Real Estate (Regulation and Development) Act",
+                "year": 2016,
+                "section": "18",
+                "title": "Return of amount and compensation for non-completion or structural violation"
+            }
+        ]
+    },
+    {
+        "any": [
+            "source layout, custom css sheets",
+            "clones the entire source layout",
+            "unique artwork of a popular portfolio",
+            "css clone copyright"
+        ],
+        "domain": "commercial",
+        "statutes": [
+            {
+                "act": "Copyright Act",
+                "year": 1957,
+                "section": "14",
+                "title": "Meaning of copyright in literary, artistic, and computer software works"
+            },
+            {
+                "act": "Copyright Act",
+                "year": 1957,
+                "section": "51",
+                "title": "When copyright infringed - Unauthorized reproduction and cloning"
+            },
+            {
+                "act": "Copyright Act",
+                "year": 1957,
+                "section": "63",
+                "title": "Offence of infringement of copyright or other rights"
+            }
+        ]
+    },
+    {
+        "any": [
+            "ventilator because the patient does not hold a local address",
+            "refuses to admit a critical patient on a ventilator",
+            "hospital refuses ventilator",
+            "emergency admission denied"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Constitution of India",
+                "year": 1950,
+                "section": "Article 21",
+                "title": "Right to life and right to emergency medical healthcare (Parmanand Katara doctrine)"
+            },
+            {
+                "act": "Clinical Establishments Act",
+                "year": 2010,
+                "section": "Section 12",
+                "title": "Mandatory provision of emergency medical treatment and stabilization"
+            }
+        ]
+    },
+    {
+        "any": [
+            "cooking gas pipelines and main water valve of an old couple",
+            "disconnects cooking gas",
+            "landlord disconnects gas and water",
+            "disconnects water to evict"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Transfer of Property Act",
+                "year": 1882,
+                "section": "108",
+                "title": "Quiet enjoyment of leased property without unlawful disturbance"
+            },
+            {
+                "act": "State Rent Control Acts",
+                "year": 1958,
+                "section": "Section 19",
+                "title": "Cutting off or withholding essential supply/services by landlord prohibited"
+            }
+        ]
+    },
+    {
+        "any": [
+            "inappropriate physical contact and passes offensive sexual jokes",
+            "sexual jokes to a female executive",
+            "posh inside a laboratory",
+            "supervisor sexual jokes"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Prevention of Sexual Harassment (POSH) Act",
+                "year": 2013,
+                "section": "4",
+                "title": "Constitution of Internal Complaints Committee and workplace safety"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "75",
+                "title": "Sexual harassment and making sexually coloured remarks"
+            }
+        ]
+    },
+    {
+        "any": [
+            "premium medical journals from a paid database platform",
+            "downloads and redistributes premium medical journals",
+            "pirated journals cloud drive",
+            "journal piracy"
+        ],
+        "domain": "commercial",
+        "statutes": [
+            {
+                "act": "Copyright Act",
+                "year": 1957,
+                "section": "51",
+                "title": "Infringement of copyright by distributing digital literary/academic works"
+            },
+            {
+                "act": "Copyright Act",
+                "year": 1957,
+                "section": "63",
+                "title": "Offence of criminal infringement of copyright and distribution"
+            }
+        ]
+    },
+    {
+        "any": [
+            "male bricklayers \u20b9600",
+            "female bricklayers only \u20b9400",
+            "bricklayers only \u20b9400 per day",
+            "gender wage gap bricklayers"
+        ],
+        "domain": "employment",
+        "statutes": [
+            {
+                "act": "Code on Wages",
+                "year": 2019,
+                "section": "3",
+                "title": "Prohibition of discrimination on ground of gender in matters relating to wages"
+            },
+            {
+                "act": "Code on Wages",
+                "year": 2019,
+                "section": "4",
+                "title": "Equal remuneration to men and women workers for same work or work of similar nature"
+            }
+        ]
+    },
+    {
+        "any": [
+            "minor boy sets up an online trading profile",
+            "grandfather's aadhaar number and buys",
+            "minor trading penny stocks",
+            "minor aadhaar stock trading"
+        ],
+        "domain": "cyber",
+        "statutes": [
+            {
+                "act": "Indian Contract Act",
+                "year": 1872,
+                "section": "11",
+                "title": "Who are competent to contract - Minor incompetent and agreement void ab initio"
+            },
+            {
+                "act": "Information Technology Act",
+                "year": 2000,
+                "section": "66C",
+                "title": "Punishment for identity theft and fraudulent use of another's unique electronic ID"
+            }
+        ]
+    },
+    {
+        "any": [
+            "television set outside a locked house door on a rainy day",
+            "ruining the circuitry",
+            "tv outside in rain",
+            "courier damages tv rain"
+        ],
+        "domain": "consumer",
+        "statutes": [
+            {
+                "act": "Consumer Protection Act",
+                "year": 2019,
+                "section": "2(11)",
+                "title": "Deficiency in service - Failure in duty of care during delivery"
+            },
+            {
+                "act": "Law of Torts",
+                "year": 1872,
+                "section": "Negligence",
+                "title": "Bailee's duty of reasonable care and tortious compensation for goods damage"
+            }
+        ]
+    },
+    {
+        "any": [
+            "heavy narcotic painkillers",
+            "bypassing the mandatory entry logs in the scheduling register",
+            "sells heavy narcotic",
+            "chemist sells narcotic cash"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Narcotic Drugs and Psychotropic Substances Act",
+                "year": 1985,
+                "section": "8",
+                "title": "Prohibition of certain operations relating to narcotic drugs"
+            },
+            {
+                "act": "Narcotic Drugs and Psychotropic Substances Act",
+                "year": 1985,
+                "section": "21",
+                "title": "Punishment for contravention in relation to manufactured drugs and preparations"
+            },
+            {
+                "act": "Drugs and Cosmetics Act",
+                "year": 1940,
+                "section": "Section 18",
+                "title": "Prohibition of sale of Schedule H and X drugs without prescription/register"
+            }
+        ]
+    },
+    {
+        "any": [
+            "diagnosed with chronic hiv",
+            "chronic hiv without conducting an internal review",
+            "hiv employee terminated",
+            "hiv discrimination plant"
+        ],
+        "domain": "employment",
+        "statutes": [
+            {
+                "act": "Human Immunodeficiency Virus and Acquired Immune Deficiency Syndrome (Prevention and Control) Act",
+                "year": 2017,
+                "section": "4",
+                "title": "Prohibition of discrimination against protected persons in employment"
+            },
+            {
+                "act": "Human Immunodeficiency Virus and Acquired Immune Deficiency Syndrome (Prevention and Control) Act",
+                "year": 2017,
+                "section": "5",
+                "title": "Informed consent for testing and invalidity of termination on HIV grounds"
+            }
+        ]
+    },
+    {
+        "any": [
+            "supply 40 cargo trucks because fuel rates jumped",
+            "fuel rates jumped by 15%",
+            "backs out of an official signed operational agreement to supply 40",
+            "truck supplier contract breach"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Indian Contract Act",
+                "year": 1872,
+                "section": "73",
+                "title": "Compensation for loss or damage caused by breach of contract (Commercial hardship not frustration)"
+            },
+            {
+                "act": "Specific Relief Act",
+                "year": 1963,
+                "section": "10",
+                "title": "Specific performance in respect of commercial and supply contracts"
+            }
+        ]
+    },
+    {
+        "any": [
+            "4 days without acquiring a transit remand",
+            "transit remand order from a magistrate",
+            "4 days without acquiring a transit remand order",
+            "police detains 4 days remand"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Constitution of India",
+                "year": 1950,
+                "section": "Article 22",
+                "title": "Protection against arrest and detention - Production before Magistrate within 24 hours"
+            },
+            {
+                "act": "Bharatiya Nagarik Suraksha Sanhita",
+                "year": 2024,
+                "section": "58",
+                "title": "Person arrested not to be detained more than twenty-four hours without Magisterial order"
+            }
+        ]
+    },
+    {
+        "any": [
+            "raw cloth materials worth \u20b95 lakhs",
+            "issues a payment check, and then commands the bank to block",
+            "commands the bank to block the payment without cause",
+            "bounced cloth check block"
+        ],
+        "domain": "commercial",
+        "statutes": [
+            {
+                "act": "Negotiable Instruments Act",
+                "year": 1881,
+                "section": "138",
+                "title": "Dishonour of cheque for insufficiency of funds or stop-payment instructions"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "318",
+                "title": "Cheating and dishonestly inducing delivery of commercial property"
+            }
+        ]
+    },
+    {
+        "any": [
+            "fire safety clearance certificate from the city council",
+            "excavation work for an apartment project without securing a basic fire",
+            "builder no fire safety",
+            "rera fire safety certificate"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Real Estate (Regulation and Development) Act",
+                "year": 2016,
+                "section": "11",
+                "title": "Functions and duties of promoter - Mandatory statutory and fire approvals"
+            },
+            {
+                "act": "State Fire Safety Acts",
+                "year": 2005,
+                "section": "Section 8",
+                "title": "Mandatory fire safety NOC before commencement of building operations"
+            }
+        ]
+    },
+    {
+        "any": [
+            "physical home locations through an office tracking app",
+            "tracks its employee's physical home locations",
+            "office tracking app outside corporate shifts",
+            "app tracks home location employee"
+        ],
+        "domain": "cyber",
+        "statutes": [
+            {
+                "act": "Digital Personal Data Protection Act",
+                "year": 2023,
+                "section": "4",
+                "title": "Processing of personal geolocation data only with lawful purpose & notice"
+            },
+            {
+                "act": "Digital Personal Data Protection Act",
+                "year": 2023,
+                "section": "6",
+                "title": "Requirement of clear, unbundled consent for non-office surveillance"
+            },
+            {
+                "act": "Information Technology Act",
+                "year": 2000,
+                "section": "66E",
+                "title": "Punishment for violation of privacy and capturing/transmitting private images/location"
+            }
+        ]
+    },
+    {
+        "any": [
+            "mock a newlywed girl daily for her skin color",
+            "money from her uncle to buy an electronics pack",
+            "newlywed skin color dowry",
+            "electronics pack dowry"
+        ],
+        "domain": "family",
+        "statutes": [
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "85",
+                "title": "Husband or relative of husband of a woman subjecting her to cruelty"
+            },
+            {
+                "act": "Dowry Prohibition Act",
+                "year": 1961,
+                "section": "3",
+                "title": "Penalty for giving or taking dowry"
+            },
+            {
+                "act": "Dowry Prohibition Act",
+                "year": 1961,
+                "section": "4",
+                "title": "Penalty for demanding dowry from relatives"
+            }
+        ]
+    },
+    {
+        "any": [
+            "chemical chlorine foam into a nearby agricultural water canal",
+            "chlorine foam into a nearby agricultural water",
+            "releases chemical chlorine foam",
+            "canal water pollution factory"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Water (Prevention and Control of Pollution) Act",
+                "year": 1974,
+                "section": "24",
+                "title": "Prohibition on use of stream or well for disposal of polluting chemical matter"
+            },
+            {
+                "act": "Water (Prevention and Control of Pollution) Act",
+                "year": 1974,
+                "section": "43",
+                "title": "Penalty for contravention of provisions of section 24 (imprisonment and fine)"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "277",
+                "title": "Fouling water of public spring or reservoir or irrigation canal"
+            }
+        ]
+    },
+    {
+        "any": [
+            "illegal kidney extraction ring",
+            "online news portal claiming a local doctor",
+            "defamatory content on an online news portal",
+            "defamation kidney doctor"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "356",
+                "title": "Defamation - Imputing unlawful organ trade to harm medical reputation"
+            },
+            {
+                "act": "Information Technology Act",
+                "year": 2000,
+                "section": "Section 79",
+                "title": "Intermediary liability and takedown of defamatory publications"
+            }
+        ]
+    },
+    {
+        "any": [
+            "late grandfather\u2019s ancestral land properties, but her cousins",
+            "cousins refuse her entry",
+            "grandfather's ancestral land cousins",
+            "daughter cousins partition ancestral"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Hindu Succession Act",
+                "year": 1956,
+                "section": "6",
+                "title": "Devolution of interest in coparcenary property - Daughters equal coparcenary rights by birth"
+            },
+            {
+                "act": "Code of Civil Procedure",
+                "year": 1908,
+                "section": "Order 20 Rule 18",
+                "title": "Decree in suit for partition of property or separate possession of share"
+            },
+            {
+                "act": "The Partition Act",
+                "year": 1893,
+                "section": "2",
+                "title": "Power to court to order sale instead of division in partition suits"
+            }
+        ]
+    },
+    {
+        "any": [
+            "severe electric shock from an uninsulated metallic switchboard",
+            "switchboard inside a moving public bus",
+            "bus electric shock",
+            "shock from switchboard bus"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Motor Vehicles Act",
+                "year": 1988,
+                "section": "Section 166",
+                "title": "Application for compensation for injury arising out of use of motor transport"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "106(1)",
+                "title": "Causing injury/endangerment by rash or negligent act"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "287",
+                "title": "Negligent conduct with respect to machinery or electrical apparatus"
+            },
+            {
+                "act": "Law of Torts",
+                "year": 1872,
+                "section": "Negligence",
+                "title": "Strict liability & tortious damages for public carrier safety negligence"
+            }
+        ]
+    },
+    {
+        "any": [
+            "mandatory 10% \"service charge\"",
+            "mandatory 10% 'service charge'",
+            "service charge",
+            "service charge printed",
+            "mandatory 10%",
+            "service charge printed on the bill",
+            "restaurant service charge mandatory",
+            "remove service charge"
+        ],
+        "domain": "consumer",
+        "statutes": [
+            {
+                "act": "Consumer Protection Act",
+                "year": 2019,
+                "section": "2(47)",
+                "title": "Unfair trade practice - Levying mandatory service charge in restaurant bills"
+            },
+            {
+                "act": "Consumer Protection Act",
+                "year": 2019,
+                "section": "18",
+                "title": "Powers of Central Consumer Protection Authority (CCPA Guidelines on Service Charge)"
+            }
+        ]
+    },
+    {
+        "any": [
+            "chokes down the high-speed data allocation",
+            "chokes down the high-speed",
+            "standalone movie portal to push its own internal",
+            "isp throttles movie portal"
+        ],
+        "domain": "consumer_commercial",
+        "statutes": [
+            {
+                "act": "The Competition Act",
+                "year": 2002,
+                "section": "4",
+                "title": "Abuse of dominant position - Denial of market access and discriminatory bandwidth"
+            },
+            {
+                "act": "The Competition Act",
+                "year": 2002,
+                "section": "3",
+                "title": "Anti-competitive agreements - Exclusive supply and preferential treatment"
+            },
+            {
+                "act": "Telecom Regulatory Authority of India Act",
+                "year": 1997,
+                "section": "11",
+                "title": "Functions of Authority - Ensuring Net Neutrality and non-discriminatory access"
+            }
+        ]
+    },
+    {
+        "any": [
+            "unapproved housing plot booking scheme",
+            "without listing the project on the state's official digital regulatory portal",
+            "unregistered rera plots",
+            "plot booking without rera"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Real Estate (Regulation and Development) Act",
+                "year": 2016,
+                "section": "3",
+                "title": "Prior registration of real estate project with Real Estate Regulatory Authority"
+            },
+            {
+                "act": "Real Estate (Regulation and Development) Act",
+                "year": 2016,
+                "section": "59",
+                "title": "Punishment for non-registration of real estate project under section 3"
+            }
+        ]
+    },
+    {
+        "any": [
+            "blocks an active citizen from entering a public beach park",
+            "unwritten corporate resort rule",
+            "public beach park corporate",
+            "private security blocks beach"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Constitution of India",
+                "year": 1950,
+                "section": "Article 19",
+                "title": "Right to freedom of movement throughout the territory of India"
+            },
+            {
+                "act": "Constitution of India",
+                "year": 1950,
+                "section": "Article 21",
+                "title": "Protection of life and personal liberty & access to public environmental spaces"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "126",
+                "title": "Wrongful restraint from proceeding in any direction where person has right to proceed"
+            }
+        ]
+    },
+    {
+        "any": [
+            "handwritten project will document in court that contains fake signatures",
+            "handwritten project will document",
+            "fake signatures of two non-existent witness",
+            "forged will fake witnesses"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "338",
+                "title": "Forgery of valuable security or will"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "340",
+                "title": "Using as genuine a forged document or electronic record in court"
+            },
+            {
+                "act": "Bharatiya Sakshya Adhiniyam",
+                "year": 2023,
+                "section": "68",
+                "title": "Proof of execution of document required by law to be attested (Will requirements)"
+            }
+        ]
+    }
+,
     {
         "any": ["theft", "steal", "stolen"],
         "exclude": ["juvenile", "minor", "child", "jjb"],
@@ -1678,7 +2963,12 @@ class EnhancedLegalAdvisor:
                 continue
             if exclude and any(_match_term(term, query_lower) for term in exclude):
                 continue
-            return rule.get("statutes", [])
+            statutes = rule.get("statutes", [])
+            rule_dom = rule.get("domain", None)
+            if rule_dom:
+                for s in statutes:
+                    s["_domain"] = rule_dom
+            return statutes
         return None
 
     def _augment_sections_from_full_db_search(
@@ -2226,18 +3516,27 @@ class EnhancedLegalAdvisor:
                 )
                 converted_override_sections.append(sec_obj)
             if converted_override_sections:
-                override_domain = 'criminal'
+                rule_domain = None
+                for st in override_statutes:
+                    if isinstance(st, dict) and "_domain" in st:
+                        rule_domain = st["_domain"]
+                        break
                 q_lower = legal_query.query_text.lower()
-                if any(w in q_lower for w in ['ancestral', 'partition', 'coparcenary', 'land', 'property', 'inheritance', 'succession', 'tenant', 'landlord', 'eviction', 'rent', 'lease', 'father']):
+                if rule_domain:
+                    override_domain = rule_domain
+                else:
                     override_domain = 'civil'
-                elif any(w in q_lower for w in ['provider', 'streaming', 'isp', 'throttling', 'net neutrality', 'competition', 'dominant', 'market', 'consumer', 'refund', 'defective', 'warranty', 'trade']):
-                    override_domain = 'consumer_commercial'
-                elif any(w in q_lower for w in ['divorce', 'marriage', 'family', 'custody', 'maintenance', 'alimony', 'dowry']):
-                    override_domain = 'family'
-                elif any(w in q_lower for w in ['salary', 'wages', 'employee', 'employer', 'labour', 'gratuity', 'termination']):
-                    override_domain = 'employment'
-                elif any(w in q_lower for w in ['cyber', 'online fraud', 'data breach', 'hacking', 'phishing']):
-                    override_domain = 'cyber'
+                if not rule_domain:
+                    if any(w in q_lower for w in ['ancestral', 'partition', 'coparcenary', 'land', 'property', 'inheritance', 'succession', 'tenant', 'landlord', 'eviction', 'rent', 'lease', 'father']):
+                        override_domain = 'civil'
+                    elif any(w in q_lower for w in ['provider', 'streaming', 'isp', 'throttling', 'net neutrality', 'competition', 'dominant', 'market', 'consumer', 'refund', 'defective', 'warranty', 'trade']):
+                        override_domain = 'consumer_commercial'
+                    elif any(w in q_lower for w in ['divorce', 'marriage', 'family', 'custody', 'maintenance', 'alimony', 'dowry']):
+                        override_domain = 'family'
+                    elif any(w in q_lower for w in ['salary', 'wages', 'employee', 'employer', 'labour', 'gratuity', 'termination']):
+                        override_domain = 'employment'
+                    elif any(w in q_lower for w in ['cyber', 'online fraud', 'data breach', 'hacking', 'phishing']):
+                        override_domain = 'cyber'
                 return LegalAdvice(
                     query=legal_query.query_text,
                     jurisdiction=jurisdiction,
