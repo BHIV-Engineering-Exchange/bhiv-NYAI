@@ -1416,56 +1416,30 @@ class EnhancedLegalAdvisor:
         retrieval_metadata["bm25_queries_run"] = len(search_context["search_queries"])
         matched_sections.extend(bm25_scores.values())
 
-        for word in query_words:
-            if word in self.section_index:
-                for section in self.section_index[word]:
-                    if section.jurisdiction.value != jurisdiction:
-                        continue
-                    score = 0
-                    section_text_lower = section.text.lower()
-                    for query_word in query_words:
-                        if query_word in section_text_lower:
-                            score += 5
-                    for query_word in query_words:
-                        if any(query_word in token for token in section_text_lower.split()):
-                            score += 2
-
-                    domain_keywords = {
-                        'criminal': ['offence', 'punishment', 'imprisonment', 'fine', 'criminal'],
-                        'civil': ['damages', 'compensation', 'liability', 'breach', 'contract', 'tax', 'assessment', 'return', 'invoice', 'credit', 'salary', 'wages', 'builder', 'possession', 'rera'],
-                        'family': ['marriage', 'divorce', 'custody', 'family', 'matrimonial'],
-                        'commercial': ['company', 'business', 'commercial', 'trade', 'corporate']
-                    }
-
-                    if domain in domain_keywords:
-                        for domain_word in domain_keywords[domain]:
-                            if domain_word in section_text_lower:
-                                score += 3
-
-                    if preferred_sections and section.section_number.lower() in preferred_sections:
-                        score += 18
-                    if preferred_act_fragments and any(fragment in section.act_id.lower() for fragment in preferred_act_fragments):
-                        score += 12
-                    if preferred_act_names and any(act_name in (section.act_id or "").lower() for act_name in preferred_act_names):
-                        score += 8
-
-                    if act_hints and any(act_hint in section.act_id.lower() for act_hint in act_hints):
-                        score += 10
-
-                    if score > 0:
-                        matched_sections.append((section, score))
-
-        for section in self.jurisdiction_sections.get(jurisdiction, []):
-            if hasattr(section, 'metadata') and section.metadata:
-                metadata_text = str(section.metadata).lower()
-                score = 0
-                for word in query_words:
-                    if word in metadata_text:
-                        score += 4
-                if act_hints and any(act_hint in section.act_id.lower() for act_hint in act_hints):
-                    score += 6
-                if score > 0:
-                    matched_sections.append((section, score))
+        # Fast candidate re-scoring on BM25 retrieved sections (sub-millisecond execution)
+        candidate_sections = [s for s, _ in matched_sections]
+        domain_keywords = {
+            'criminal': ['offence', 'punishment', 'imprisonment', 'fine', 'criminal'],
+            'civil': ['damages', 'compensation', 'liability', 'breach', 'contract', 'tax', 'assessment', 'return', 'invoice', 'credit', 'salary', 'wages', 'builder', 'possession', 'rera', 'provident fund', 'epf'],
+            'family': ['marriage', 'divorce', 'custody', 'family', 'matrimonial'],
+            'commercial': ['company', 'business', 'commercial', 'trade', 'corporate', 'director', 'shareholder']
+        }
+        for section in candidate_sections:
+            sec_score = 10
+            sec_text_lower = section.text.lower()
+            if domain in domain_keywords:
+                for domain_word in domain_keywords[domain]:
+                    if domain_word in sec_text_lower:
+                        sec_score += 4
+            if preferred_sections and section.section_number.lower() in preferred_sections:
+                sec_score += 20
+            if preferred_act_fragments and any(fragment in section.act_id.lower() for fragment in preferred_act_fragments):
+                sec_score += 15
+            if preferred_act_names and any(act_name in (section.act_id or "").lower() for act_name in preferred_act_names):
+                sec_score += 10
+            if act_hints and any(act_hint in section.act_id.lower() for act_hint in act_hints):
+                sec_score += 12
+            matched_sections.append((section, sec_score))
 
         unique_sections = {}
         for section, score in matched_sections:
