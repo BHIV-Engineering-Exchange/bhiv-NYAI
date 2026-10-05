@@ -201,6 +201,116 @@
       "bailable": null,
       "cognizable": false,
       "domain": "civil"
+    },
+    {
+      "id": "uae_cyber_sec_11_14",
+      "act_name": "Federal Decree-Law No. 34 of 2021 on Combatting Rumors & Cybercrimes",
+      "section": "Article 11 / Article 14",
+      "title": "Cyber Fraud, Phishing, Bank OTP Theft & Electronic Impersonation",
+      "description": "Unlawful acquisition of OTP, bank login credentials, credit card details, phishing links, or electronic funds misappropriation via WhatsApp, email or internet in UAE.",
+      "penalty": "Imprisonment for at least 1 year and fine between AED 200,000 to AED 1,000,000",
+      "bailable": false,
+      "cognizable": true,
+      "domain": "cyber"
+    },
+    {
+      "id": "uae_cyber_sec_43_44",
+      "act_name": "Federal Decree-Law No. 34 of 2021 on Combatting Rumors & Cybercrimes",
+      "section": "Article 43 / Article 44",
+      "title": "Violation of Privacy, Unpermitted Filming, Eavesdropping & Online Insults",
+      "description": "Taking photos, filming videos of individuals in private places without permission, tracking location, or transmitting defamatory insults and libel on social media platforms.",
+      "penalty": "Imprisonment for at least 6 months and fine between AED 150,000 to AED 500,000 with deportation of non-citizens",
+      "bailable": false,
+      "cognizable": true,
+      "domain": "criminal"
+    },
+    {
+      "id": "uae_labour_sec_51_53",
+      "act_name": "Federal Decree-Law No. 33 of 2021 on Regulation of Labour Relations",
+      "section": "Article 51 / Article 53",
+      "title": "End of Service Gratuity Calculation & Final Settlement of Wages",
+      "description": "Mandatory full-time employee entitlement to end-of-service gratuity (21 days wage per year for first 5 years, 30 days per year thereafter) and settlement of all dues within 14 days of termination.",
+      "penalty": "MOHRE enforcement, labor court judgment with statutory interest and corporate fines",
+      "bailable": null,
+      "cognizable": false,
+      "domain": "employment"
+    },
+    {
+      "id": "uae_labour_sec_43_arbitrary",
+      "act_name": "Federal Decree-Law No. 33 of 2021 on Regulation of Labour Relations",
+      "section": "Article 43 / Article 47",
+      "title": "Arbitrary Dismissal & Compensation for Unlawful Contract Termination",
+      "description": "Termination of an employee contract by employer without legitimate reason, failure to provide notice period (30 to 90 days), or firing due to filing a complaint.",
+      "penalty": "Compensation up to 3 months full salary in addition to notice pay and end-of-service benefits",
+      "bailable": null,
+      "cognizable": false,
+      "domain": "employment"
+    },
+    {
+      "id": "uae_tenancy_sec_25",
+      "act_name": "Dubai Law No. 26 of 2007 (Amended by Law No. 33 of 2008)",
+      "section": "Article 25",
+      "title": "Landlord Eviction Notice & Statutory 12-Month Notary Requirement",
+      "description": "Landlord must provide a formal 12-month notice served via Notary Public or registered mail for legitimate grounds (demolition, personal use, comprehensive renovation) before demanding tenant eviction upon lease expiry.",
+      "penalty": "Rental Dispute Center (RDC) dismissal of eviction and compensation to tenant for wrongful eviction",
+      "bailable": null,
+      "cognizable": false,
+      "domain": "civil"
+    },
+    {
+      "id": "uae_tenancy_sec_34",
+      "act_name": "Dubai Law No. 26 of 2007 (Landlord and Tenant Relationship)",
+      "section": "Article 34",
+      "title": "Prohibition of Landlord Changing Locks, Disconnecting Utilities or Evicting by Force",
+      "description": "Landlord is strictly prohibited from disconnecting electricity, water, cooling services, changing access codes/locks, or preventing tenant from occupying the leased property without an official RDC enforcement order.",
+      "penalty": "RDC police intervention, immediate restoration of access and utilities, and tenant compensation",
+      "bailable": null,
+      "cognizable": false,
+      "domain": "civil"
+    },
+    {
+      "id": "uae_cheque_sec_641",
+      "act_name": "Federal Decree-Law No. 50 of 2022 Commercial Transactions Law",
+      "section": "Article 641 / Article 643",
+      "title": "Bounced Cheques, Partial Payment Enforcement & Direct Execution",
+      "description": "Cheque returned unpaid due to non-sufficient funds. Bank is obliged to make partial payment if funds exist. Unpaid cheque serves as an executive instrument enforceable directly before the Execution Judge without trial.",
+      "penalty": "Direct commercial execution against bank accounts, travel ban, asset attachment, and fine",
+      "bailable": true,
+      "cognizable": false,
+      "domain": "commercial"
+    },
+    {
+      "id": "uae_penal_sec_442",
+      "act_name": "Federal Decree-Law No. 31 of 2021 (Crimes and Penalties Law)",
+      "section": "Article 442 / Article 443",
+      "title": "Theft, Housebreaking & Armed Robbery",
+      "description": "Stealing movable property belonging to another with criminal intent, entering dwellings by breaking doors, windows, walls, or carrying weapons.",
+      "penalty": "Imprisonment from 2 to 7 years (up to life imprisonment for armed robbery)",
+      "bailable": false,
+      "cognizable": true,
+      "domain": "criminal"
+    },
+    {
+      "id": "uae_consumer_sec_12",
+      "act_name": "Federal Law No. 15 of 2020 on Consumer Protection",
+      "section": "Article 12 / Article 17",
+      "title": "Defective Products, Obligation to Repair/Replace & Full Refund Rights",
+      "description": "Suppliers and retailers must repair or replace any defective product or refund its value within statutory period without unjustified delays.",
+      "penalty": "Administrative fines up to AED 1,000,000, store closure, and consumer refund enforcement",
+      "bailable": null,
+      "cognizable": false,
+      "domain": "consumer"
+    },
+    {
+      "id": "uae_medical_sec_4",
+      "act_name": "Federal Law No. 4 of 2016 on Medical Liability",
+      "section": "Article 4 / Article 5",
+      "title": "Medical Malpractice, Gross Negligence & Doctor Liability",
+      "description": "Gross medical errors resulting from ignorance of basic medical principles, performing unapproved procedures, or leaving surgical tools inside patient body.",
+      "penalty": "Criminal imprisonment up to 2 years, fine up to AED 500,000, disciplinary revocation of medical license, and civil compensation",
+      "bailable": true,
+      "cognizable": true,
+      "domain": "civil"
     }
   ]
 }

@@ -254,6 +254,149 @@
       "bailable": null,
       "cognizable": false,
       "domain": "employment"
+    },
+    {
+      "id": "uk_theft_sec_9",
+      "act_name": "Theft Act 1968",
+      "section": "Section 9",
+      "title": "Burglary & House-Breaking Offences",
+      "description": "Entering any building or part of a building as a trespasser with intent to steal property, cash, jewelry or inflict grievous bodily harm.",
+      "penalty": "Imprisonment up to 14 years for dwelling burglary on indictment",
+      "bailable": true,
+      "cognizable": true,
+      "domain": "criminal"
+    },
+    {
+      "id": "uk_theft_sec_1",
+      "act_name": "Theft Act 1968",
+      "section": "Section 1",
+      "title": "Basic Definition and Offence of Theft",
+      "description": "A person is guilty of theft if he dishonestly appropriates property belonging to another with the intention of permanently depriving the other of it.",
+      "penalty": "Imprisonment up to 7 years",
+      "bailable": true,
+      "cognizable": true,
+      "domain": "criminal"
+    },
+    {
+      "id": "uk_theft_sec_8",
+      "act_name": "Theft Act 1968",
+      "section": "Section 8",
+      "title": "Robbery with Threat or Use of Force",
+      "description": "Stealing with the use of force or putting any person in fear of being subjected to force immediately before or at the time of theft.",
+      "penalty": "Life imprisonment or discretionary term on indictment",
+      "bailable": false,
+      "cognizable": true,
+      "domain": "criminal"
+    },
+    {
+      "id": "uk_fraud_sec_2",
+      "act_name": "Fraud Act 2006",
+      "section": "Section 2",
+      "title": "Fraud by False Representation & Cyber Phishing",
+      "description": "Dishonestly making a false representation with intent to make a gain or cause loss to another (online scams, OTP phishing, WhatsApp fraud, fake investments).",
+      "penalty": "Imprisonment up to 10 years on indictment or fine",
+      "bailable": true,
+      "cognizable": true,
+      "domain": "criminal"
+    },
+    {
+      "id": "uk_emp_sec_94",
+      "act_name": "Employment Rights Act 1996",
+      "section": "Section 94 / Section 98",
+      "title": "Right Not to be Unfairly Dismissed & Fair Reasons for Dismissal",
+      "description": "An employee has the right not to be unfairly dismissed without fair statutory reason (conduct, capability, redundancy) or without following ACAS disciplinary procedures.",
+      "penalty": "Employment Tribunal order for reinstatement or compensatory award up to statutory cap",
+      "bailable": null,
+      "cognizable": false,
+      "domain": "employment"
+    },
+    {
+      "id": "uk_emp_sec_86",
+      "act_name": "Employment Rights Act 1996",
+      "section": "Section 86 / Section 13",
+      "title": "Statutory Minimum Notice Period & Protection from Unlawful Wage Deductions",
+      "description": "Mandatory minimum statutory notice required for termination based on years of service and prohibition of unauthorized deductions from salary or final pay.",
+      "penalty": "Payment of notice pay arrears and tribunal compensation",
+      "bailable": null,
+      "cognizable": false,
+      "domain": "employment"
+    },
+    {
+      "id": "uk_equality_sec_18",
+      "act_name": "Equality Act 2010",
+      "section": "Section 18 / Section 39",
+      "title": "Pregnancy, Maternity & Protected Characteristic Discrimination",
+      "description": "Unlawful discrimination or dismissal of an employee due to pregnancy, maternity leave, race, religion, sex, disability, or gender reassignment.",
+      "penalty": "Uncapped compensatory damages for financial loss and injury to feelings in Employment Tribunal",
+      "bailable": null,
+      "cognizable": false,
+      "domain": "civil"
+    },
+    {
+      "id": "uk_divorce_sec_1",
+      "act_name": "Divorce, Dissolution and Separation Act 2020 & Matrimonial Causes Act 1973",
+      "section": "Section 1 / Section 13",
+      "title": "No-Fault Mutual Divorce & Irretrievable Breakdown of Marriage",
+      "description": "Application for divorce or dissolution based solely on statement of irretrievable breakdown without necessity of proving adultery, unreasonable behaviour, or separation periods.",
+      "penalty": "Conditional Order (Decree Nisi) and Final Order (Decree Absolute) of Divorce",
+      "bailable": null,
+      "cognizable": false,
+      "domain": "family"
+    },
+    {
+      "id": "uk_consumer_sec_9_20",
+      "act_name": "Consumer Rights Act 2015",
+      "section": "Section 9 / Section 20",
+      "title": "Goods of Satisfactory Quality & 30-Day Early Right to Reject for Full Refund",
+      "description": "Every contract to supply goods includes a term that goods must be of satisfactory quality, fit for purpose, and as described. Consumer has a statutory 30-day right to reject defective goods for 100% refund.",
+      "penalty": "Full refund, repair, replacement, or price reduction damages",
+      "bailable": null,
+      "cognizable": false,
+      "domain": "consumer"
+    },
+    {
+      "id": "uk_eviction_sec_1",
+      "act_name": "Protection from Eviction Act 1977 & Housing Act 1988",
+      "section": "Section 1 / Section 21",
+      "title": "Unlawful Eviction, Changing Locks & Residential Tenant Harassment",
+      "description": "Landlord or agent unlawfully depriving a residential occupier of access by changing locks, cutting utilities, or intimidation without a valid County Court possession order.",
+      "penalty": "Criminal prosecution with fine/imprisonment and civil statutory damages under Sections 27/28 of Housing Act 1988",
+      "bailable": true,
+      "cognizable": true,
+      "domain": "civil"
+    },
+    {
+      "id": "uk_defamation_sec_1",
+      "act_name": "Defamation Act 2013",
+      "section": "Section 1",
+      "title": "Requirement of Serious Harm for Online & Print Defamation",
+      "description": "A statement is not defamatory unless its publication has caused or is likely to cause serious harm to the reputation of the claimant or serious financial loss to a commercial body.",
+      "penalty": "High Court injunction, damages for distress and reputational harm, and publication of summary judgment",
+      "bailable": null,
+      "cognizable": false,
+      "domain": "civil"
+    },
+    {
+      "id": "uk_oapa_sec_47_20",
+      "act_name": "Offences Against the Person Act 1861",
+      "section": "Section 47 / Section 20",
+      "title": "Assault Occasioning Actual Bodily Harm (ABH) & Unlawful Wounding",
+      "description": "Intentionally or recklessly inflicting bodily harm, bruises, cuts, fractures or psychiatric injury on another person without lawful justification.",
+      "penalty": "Imprisonment up to 5 years on indictment",
+      "bailable": true,
+      "cognizable": true,
+      "domain": "criminal"
+    },
+    {
+      "id": "uk_road_sec_2_3",
+      "act_name": "Road Traffic Act 1988",
+      "section": "Section 2 / Section 3",
+      "title": "Dangerous Driving & Careless or Inconsiderate Driving",
+      "description": "Driving a mechanically propelled vehicle on a public road in a manner that falls far below what would be expected of a competent and careful driver.",
+      "penalty": "Mandatory disqualification, fine, and imprisonment up to 2 years (or up to life for causing death by dangerous driving)",
+      "bailable": true,
+      "cognizable": true,
+      "domain": "criminal"
     }
   ]
 }
