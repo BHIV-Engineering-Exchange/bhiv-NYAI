@@ -18,6 +18,7 @@ from core.ontology.ontology_filter import OntologyFilter
 from core.addons.addon_subtype_resolver import AddonSubtypeResolver
 from core.addons.dowry_precision_layer import DowryPrecisionLayer
 from core.llm import groq_retrieval_augmentor
+from legal_verifier_pipeline import legal_verifier, ConfidenceLevel
 from procedures.loader import procedure_loader
 from core.llm.profile_utils import normalize_issue_values, build_issue_priority_map
 
@@ -1499,7 +1500,8 @@ QUERY_STATUTE_OVERRIDES = [
         ],
     },
     {
-        "any": ["maintenance after divorce", "maintenance"],
+        "any": ["maintenance after divorce", "alimony and maintenance", "wife maintenance", "interim maintenance", "spousal maintenance", "maintenance for wife", "claim maintenance from husband", "permanent alimony"],
+        "domain": "family",
         "statutes": [
             {"act": "Hindu Marriage Act", "year": 1955, "section": "25", "title": "Permanent alimony and maintenance"},
             {"act": "Code of Criminal Procedure", "year": 1973, "section": "125", "title": "Order for maintenance of wives, children and parents"},
@@ -1937,6 +1939,8 @@ class LegalAdvice:
 
     ontology_filtered: bool = False
     query_understanding: Dict[str, Any] = field(default_factory=dict)
+    match_status: str = "MATCHED"
+    debug_trace: Dict[str, Any] = field(default_factory=dict)
     retrieval_metadata: Dict[str, Any] = field(default_factory=dict)
 
 class EnhancedLegalAdvisor:
@@ -2359,8 +2363,13 @@ class EnhancedLegalAdvisor:
         if any(keyword in query_lower for keyword in property_keywords):
             return ['civil']
         
+        # PRIORITY 9.5: Banking / Financial / Consumer charges
+        banking_keywords = ['bank', 'account maintenance', 'minimum balance', 'cheque bounce', 'emi', 'loan', 'credit card', 'banking', 'rbi', 'passbook', 'deposit']
+        if any(keyword in query_lower for keyword in banking_keywords):
+            return ['commercial', 'civil']
+
         # PRIORITY 10: Family law
-        family_keywords = ['divorce', 'marriage', 'custody', 'alimony', 'maintenance', 'matrimonial',
+        family_keywords = ['divorce', 'marriage', 'custody', 'alimony', 'wife maintenance', 'spousal maintenance', 'matrimonial',
                           'spouse', 'wife', 'husband', 'separation', 'guardianship', 'adoption',
                           'adultery', 'affair', 'unfaithful']
         if any(keyword in query_lower for keyword in family_keywords):
@@ -2813,7 +2822,7 @@ class EnhancedLegalAdvisor:
             },
             # Family -> Marriage Acts
             {
-                'keywords': ['divorce', 'marriage', 'custody', 'alimony', 'maintenance', 'spouse', 'wife', 'husband', 'child', 'separation', 'matrimonial', 'family'],
+                'keywords': ['divorce', 'marriage', 'custody', 'alimony', 'wife maintenance', 'spousal maintenance', 'spouse', 'wife', 'husband', 'child', 'separation', 'matrimonial', 'family'],
                 'acts': ['hindu_marriage', 'special_marriage', 'domestic_violence'],
                 'min_sections': 3
             }
@@ -3531,7 +3540,7 @@ class EnhancedLegalAdvisor:
                         override_domain = 'civil'
                     elif any(w in q_lower for w in ['provider', 'streaming', 'isp', 'throttling', 'net neutrality', 'competition', 'dominant', 'market', 'consumer', 'refund', 'defective', 'warranty', 'trade']):
                         override_domain = 'consumer_commercial'
-                    elif any(w in q_lower for w in ['divorce', 'marriage', 'family', 'custody', 'maintenance', 'alimony', 'dowry']):
+                    elif any(w in q_lower for w in ['divorce', 'marriage', 'family', 'custody', 'alimony', 'dowry', 'wife maintenance']):
                         override_domain = 'family'
                     elif any(w in q_lower for w in ['salary', 'wages', 'employee', 'employer', 'labour', 'gratuity', 'termination']):
                         override_domain = 'employment'
@@ -3716,8 +3725,56 @@ class EnhancedLegalAdvisor:
         procedural_steps = self._generate_procedural_steps(relevant_sections, domain, jurisdiction, legal_query.query_text, domains)
         remedies = self._generate_remedies(relevant_sections, domain, jurisdiction, legal_query.query_text)
         
+        # ============================================================
+        # LEGAL VERIFICATION & MULTI-FACTOR RERANKING PIPELINE
+        # ============================================================
+        verification_res = legal_verifier.evaluate_candidates(
+            candidates=relevant_sections,
+            query=legal_query.query_text,
+            jurisdiction=jurisdiction
+        )
+
+        if verification_res.is_confident and verification_res.matched_sections:
+            # Reconstruct high-confidence verified sections
+            verified_section_objs = []
+            for ms in verification_res.matched_sections:
+                sec_obj = Section(
+                    section_id=f"ver_{ms['section_number']}",
+                    act_id=ms['act_name'],
+                    section_number=ms['section_number'],
+                    text=f"{ms['title']}: {ms.get('text', '')}",
+                    jurisdiction=Jurisdiction.IN if jurisdiction in ['IN', 'India'] else (Jurisdiction.UAE if jurisdiction in ['UAE', 'AE'] else Jurisdiction.UK),
+                    metadata={
+                        'act_name': ms['act_name'],
+                        'title': ms['title'],
+                        'punishment': '',
+                        'relevance_score': ms.get('relevance_score', 1.0)
+                    }
+                )
+                verified_section_objs.append(sec_obj)
+            relevant_sections = verified_section_objs
+            domain = verification_res.primary_domain.lower()
+            if 'labour' in domain or 'employment' in domain:
+                domain = 'civil'
+            elif 'consumer' in domain or 'commercial' in domain:
+                domain = 'consumer_commercial'
+            elif 'family' in domain or 'matrimonial' in domain:
+                domain = 'family'
+            elif 'criminal' in domain or 'cyber' in domain:
+                domain = 'criminal'
+            else:
+                domain = 'civil'
+            calculated_confidence = 0.95 if verification_res.confidence_level == ConfidenceLevel.HIGH else 0.75
+            match_status_val = "MATCHED"
+        else:
+            # Explicit honest NO_CONFIDENT_MATCH handling (Zero Hallucination)
+            relevant_sections = []
+            domain = verification_res.primary_domain.lower() if verification_res.primary_domain else 'civil'
+            calculated_confidence = 0.10
+            match_status_val = "NO_CONFIDENT_MATCH"
+
         # Calculate enhanced confidence score
-        confidence_score = 0.1
+        confidence_score = calculated_confidence
         if relevant_sections:
             confidence_score += min(0.6, len(relevant_sections) * 0.1)
             
