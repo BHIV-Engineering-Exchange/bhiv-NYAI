@@ -1727,12 +1727,36 @@ QUERY_STATUTE_OVERRIDES = [
         ],
     },
     {
-        "any": ["property inheritance", "ancestral property", "succession", "will dispute", "inheritance rights", "daughter property rights", "coparcenary", "father died property", "mother died property", "hindu succession"],
+        "any": ["will dispute", "disputed will", "testamentary succession", "property by will", "probate of will", "fake will"],
         "statutes": [
-            {"act": "Hindu Succession Act", "year": 1956, "section": "6", "title": "Daughter has equal coparcenary rights as son by birth"},
-            {"act": "Hindu Succession Act", "year": 1956, "section": "8", "title": "Succession of Hindu male - Class I heirs: son, daughter, widow, mother"},
-            {"act": "Hindu Succession Act", "year": 1956, "section": "14", "title": "Property of female Hindu to be her absolute property"},
             {"act": "Hindu Succession Act", "year": 1956, "section": "30", "title": "Testamentary succession - Hindu may dispose property by will"},
+            {"act": "Indian Succession Act", "year": 1925, "section": "63", "title": "Execution of unprivileged wills"},
+        ],
+    },
+    {
+        "any": ["daughter property rights", "daughter share in ancestral", "equal coparcenary rights"],
+        "statutes": [
+            {"act": "Hindu Succession Act", "year": 1956, "section": "6", "title": "Daughter has equal coparcenary rights as son by birth in coparcenary property"},
+        ],
+    },
+    {
+        "any": ["female property absolute", "stridhan rights", "widow property rights", "mother absolute property"],
+        "statutes": [
+            {"act": "Hindu Succession Act", "year": 1956, "section": "14", "title": "Property of female Hindu to be her absolute property"},
+        ],
+    },
+    {
+        "any": ["ancestral property", "coparcenary", "brother refusing share", "family property share", "partition of ancestral", "property partition"],
+        "statutes": [
+            {"act": "Hindu Succession Act", "year": 1956, "section": "6", "title": "Devolution of interest in coparcenary property and coparcener rights"},
+            {"act": "Partition Act", "year": 1893, "section": "2", "title": "Power to court to order sale instead of division in partition suit"},
+            {"act": "Code of Civil Procedure", "year": 1908, "section": "54", "title": "Partition of estate or separation of share by civil court decree"},
+        ],
+    },
+    {
+        "any": ["father died without will", "intestate succession", "class 1 heirs", "succession of male hindu"],
+        "statutes": [
+            {"act": "Hindu Succession Act", "year": 1956, "section": "8", "title": "General rules of succession in the case of males - Class I heirs"},
         ],
     },
     {
@@ -1942,6 +1966,11 @@ class LegalAdvice:
     match_status: str = "MATCHED"
     debug_trace: Dict[str, Any] = field(default_factory=dict)
     retrieval_metadata: Dict[str, Any] = field(default_factory=dict)
+    domain_confidence: float = 0.0
+    statute_confidence: float = 0.0
+    section_confidence: float = 0.0
+    potentially_relevant_sections: List[Dict[str, Any]] = field(default_factory=list)
+    missing_factual_inquiries: List[str] = field(default_factory=list)
 
 class EnhancedLegalAdvisor:
     def __init__(self):
@@ -3502,9 +3531,8 @@ class EnhancedLegalAdvisor:
         # ============================================================
         query_lower_for_override = legal_query.query_text.lower()
         override_statutes = self._match_query_statute_override(query_lower_for_override, jurisdiction=jurisdiction)
+        override_candidate_sections = []
         if override_statutes:
-            # Convert override statutes to Section objects and return immediately
-            converted_override_sections = []
             for st in override_statutes:
                 j_enum = Jurisdiction.IN if jurisdiction in ['IN', 'India'] else (Jurisdiction.UAE if jurisdiction in ['UAE', 'AE'] else Jurisdiction.UK)
                 act_str = f"{st.get('act', 'Act')} {st.get('year', '')}".strip()
@@ -3523,51 +3551,13 @@ class EnhancedLegalAdvisor:
                         'replaced_legacy_ipc': None
                     }
                 )
-                converted_override_sections.append(sec_obj)
-            if converted_override_sections:
-                rule_domain = None
-                for st in override_statutes:
-                    if isinstance(st, dict) and "_domain" in st:
-                        rule_domain = st["_domain"]
-                        break
-                q_lower = legal_query.query_text.lower()
-                if rule_domain:
-                    override_domain = rule_domain
-                else:
-                    override_domain = 'civil'
-                if not rule_domain:
-                    if any(w in q_lower for w in ['ancestral', 'partition', 'coparcenary', 'land', 'property', 'inheritance', 'succession', 'tenant', 'landlord', 'eviction', 'rent', 'lease', 'father']):
-                        override_domain = 'civil'
-                    elif any(w in q_lower for w in ['provider', 'streaming', 'isp', 'throttling', 'net neutrality', 'competition', 'dominant', 'market', 'consumer', 'refund', 'defective', 'warranty', 'trade']):
-                        override_domain = 'consumer_commercial'
-                    elif any(w in q_lower for w in ['divorce', 'marriage', 'family', 'custody', 'alimony', 'dowry', 'wife maintenance']):
-                        override_domain = 'family'
-                    elif any(w in q_lower for w in ['salary', 'wages', 'employee', 'employer', 'labour', 'gratuity', 'termination']):
-                        override_domain = 'employment'
-                    elif any(w in q_lower for w in ['cyber', 'online fraud', 'data breach', 'hacking', 'phishing']):
-                        override_domain = 'cyber'
-                return LegalAdvice(
-                    query=legal_query.query_text,
-                    jurisdiction=jurisdiction,
-                    domain=override_domain,
-                    relevant_sections=converted_override_sections,
-                    legal_analysis=self._generate_legal_analysis(legal_query.query_text, converted_override_sections, jurisdiction),
-                    procedural_steps=self._generate_procedural_steps(converted_override_sections, override_domain, jurisdiction, legal_query.query_text),
-                    remedies=self._generate_remedies(converted_override_sections, override_domain, jurisdiction, legal_query.query_text),
-                    confidence_score=0.92,
-                    trace_id=trace_id,
-                    timestamp=datetime.now().isoformat(),
-                    statutes=[s.to_dict() for s in converted_override_sections]
-                )
+                override_candidate_sections.append(sec_obj)
 
-        # Multi-Jurisdiction Integration Bridge (India, UAE, UK)
         try:
             from legal_database.multi_jurisdiction_db import multi_jurisdiction_db
             mj_res = multi_jurisdiction_db.search_statutes(query=legal_query.query_text, jurisdiction=jurisdiction)
             mj_statutes = mj_res.get('statutes', [])
-            # For India, only accept high-confidence multi_db matches (score >= 6), otherwise search full 9723 BM25 dataset
             if mj_statutes and (jurisdiction != 'IN' or any(st.get('relevance_score', 0) >= 6 for st in mj_statutes)):
-                converted_sections = []
                 for st in mj_statutes:
                     sec_obj = Section(
                         section_id=st.get('id', 'st_gen'),
@@ -3575,33 +3565,11 @@ class EnhancedLegalAdvisor:
                         section_number=st.get('section', 'Section'),
                         text=f"{st.get('title', '')}: {st.get('description', '')}",
                         jurisdiction=Jurisdiction.IN if jurisdiction in ['IN', 'India'] else (Jurisdiction.UAE if jurisdiction in ['UAE', 'AE'] else Jurisdiction.UK),
-                        metadata={'title': st.get('title', ''), 'punishment': st.get('penalty', ''), 'bailable': st.get('bailable'), 'cognizable': st.get('cognizable'), 'replaced_legacy_ipc': st.get('replaced_legacy_ipc')}
+                        metadata={'act_name': st.get('act_name', 'Statute'), 'title': st.get('title', ''), 'punishment': st.get('penalty', ''), 'bailable': st.get('bailable'), 'cognizable': st.get('cognizable'), 'replaced_legacy_ipc': st.get('replaced_legacy_ipc')}
                     )
-                    converted_sections.append(sec_obj)
-                if converted_sections:
-                    domain_val = mj_statutes[0].get('domain', 'criminal').lower()
-                    if 'family' in domain_val or 'divorce' in legal_query.query_text.lower():
-                        domain_val = 'family'
-                    elif 'civil' in domain_val:
-                        domain_val = 'civil'
-                    else:
-                        domain_val = 'criminal'
-                    return LegalAdvice(
-                        query=legal_query.query_text,
-                        jurisdiction=jurisdiction,
-                        domain=domain_val,
-                        relevant_sections=converted_sections,
-                        legal_analysis=self._generate_legal_analysis(legal_query.query_text, converted_sections, jurisdiction),
-                        procedural_steps=self._generate_procedural_steps(converted_sections, domain_val, jurisdiction, legal_query.query_text),
-                        remedies=self._generate_remedies(converted_sections, domain_val, jurisdiction, legal_query.query_text),
-                        confidence_score=0.92,
-                        trace_id=trace_id,
-                        timestamp=datetime.now().isoformat(),
-                        statutes=[s.to_dict() for s in converted_sections]
-                    )
+                    override_candidate_sections.append(sec_obj)
         except Exception as e:
-            print('MJ_BRIDGE_EXCEPT:', e)
-            import traceback; traceback.print_exc()
+            pass
 
         # Query understanding (Groq/local) for better routing hints
         query_understanding = self.groq_retrieval_augmentor.understand_query(
@@ -3728,15 +3696,16 @@ class EnhancedLegalAdvisor:
         # ============================================================
         # LEGAL VERIFICATION & MULTI-FACTOR RERANKING PIPELINE
         # ============================================================
+        all_candidate_pool = list(override_candidate_sections) + list(relevant_sections)
         verification_res = legal_verifier.evaluate_candidates(
-            candidates=relevant_sections,
+            candidates=all_candidate_pool,
             query=legal_query.query_text,
             jurisdiction=jurisdiction
         )
 
         if verification_res.is_confident and verification_res.matched_sections:
-            # Reconstruct high-confidence verified sections
             verified_section_objs = []
+            verified_statutes = []
             for ms in verification_res.matched_sections:
                 sec_obj = Section(
                     section_id=f"ver_{ms['section_number']}",
@@ -3752,7 +3721,14 @@ class EnhancedLegalAdvisor:
                     }
                 )
                 verified_section_objs.append(sec_obj)
+                verified_statutes.append({
+                    'act': ms['act_name'],
+                    'year': 0,
+                    'section': ms['section_number'],
+                    'title': ms['title']
+                })
             relevant_sections = verified_section_objs
+            all_statutes = verified_statutes
             domain = verification_res.primary_domain.lower()
             if 'labour' in domain or 'employment' in domain:
                 domain = 'civil'
@@ -3760,6 +3736,8 @@ class EnhancedLegalAdvisor:
                 domain = 'consumer_commercial'
             elif 'family' in domain or 'matrimonial' in domain:
                 domain = 'family'
+            elif 'property' in domain or 'real estate' in domain:
+                domain = 'property'
             elif 'criminal' in domain or 'cyber' in domain:
                 domain = 'criminal'
             else:
@@ -3769,403 +3747,15 @@ class EnhancedLegalAdvisor:
         else:
             # Explicit honest NO_CONFIDENT_MATCH handling (Zero Hallucination)
             relevant_sections = []
+            all_statutes = []
             domain = verification_res.primary_domain.lower() if verification_res.primary_domain else 'civil'
+            if 'property' in domain:
+                domain = 'property'
             calculated_confidence = 0.10
             match_status_val = "NO_CONFIDENT_MATCH"
 
-        # Calculate enhanced confidence score
         confidence_score = calculated_confidence
-        if relevant_sections:
-            confidence_score += min(0.6, len(relevant_sections) * 0.1)
-            
-            query_lower = legal_query.query_text.lower()
-            for section in relevant_sections:
-                if any(word in section.text.lower() for word in query_lower.split() if len(word) > 3):
-                    confidence_score += 0.05
-            
-            jurisdiction_sections_count = len([s for s in relevant_sections if s.jurisdiction.value == jurisdiction])
-            confidence_score += min(0.2, jurisdiction_sections_count * 0.02)
-            
-            confidence_score = min(0.95, confidence_score)
         
-        # Log completion
-        self._log_audit_event("advice_generated", trace_id, {
-            "sections_found": len(relevant_sections),
-            "confidence_score": confidence_score,
-            "jurisdiction_final": jurisdiction,
-            "domain_final": domain,
-            "domains_final": domains,
-            "procedural_steps_count": len(procedural_steps),
-            "remedies_count": len(remedies),
-            "retrieval_metadata": retrieval_metadata,
-        })
-        
-        # Check addon subtypes for specialized offenses (prioritize over base retrieval)
-        addon_subtype = self.addon_resolver.detect_addon_subtype(legal_query.query_text, jurisdiction)
-        addon_statutes = []
-        constitutional_articles = []
-        dowry_filtered = False
-        
-        if addon_subtype:
-            addon_data = self.addon_resolver.addon_subtypes[addon_subtype]
-            raw_statutes = addon_data.get('statutes', [])
-            constitutional_articles = addon_data.get('constitutional_articles', [])
-            
-            # Apply statute overlay to complete years
-            for s in raw_statutes:
-                completed = self.addon_resolver._complete_statute_metadata(s)
-                
-                # Enhanced title for rape sections (India only - BNS/IPC sections)
-                enhanced_title = completed.get('title', completed['act'])
-                section_num = completed['section']
-                
-                # Only apply enhanced titles for Indian rape sections
-                if jurisdiction == 'IN' and section_num in ['63', '64', '65', '66', '375', '376', '376A', '376AB', '376B', '376C', '376D']:
-                    if section_num == '63':
-                        enhanced_title = "Rape - Penetration without consent (BNS 2023)"
-                    elif section_num == '64':
-                        enhanced_title = "Punishment for rape - Rigorous imprisonment 10 years to life (BNS 2023)"
-                    elif section_num == '65':
-                        enhanced_title = "Punishment for rape in certain cases - Enhanced penalties for aggravated circumstances (BNS 2023)"
-                    elif section_num == '66':
-                        enhanced_title = "Punishment for causing death or persistent vegetative state of victim - Life imprisonment or death (BNS 2023)"
-                    elif section_num == '375':
-                        enhanced_title = "Rape - Sexual intercourse without consent or with minor (IPC 1860)"
-                    elif section_num == '376':
-                        enhanced_title = "Punishment for rape - Rigorous imprisonment minimum 7 years, may extend to life (IPC 1860)"
-                    elif section_num == '376A':
-                        enhanced_title = "Punishment for causing death or resulting in persistent vegetative state - Minimum 20 years to life or death (IPC 1860)"
-                    elif section_num == '376AB':
-                        enhanced_title = "Punishment for rape on woman under 12 years - Rigorous imprisonment minimum 20 years to life or death (IPC 1860)"
-                    elif section_num == '376B':
-                        enhanced_title = "Sexual intercourse by husband upon his wife during separation - Imprisonment up to 2 years (IPC 1860)"
-                    elif section_num == '376C':
-                        enhanced_title = "Sexual intercourse by person in authority - Rigorous imprisonment 5-10 years (IPC 1860)"
-                    elif section_num == '376D':
-                        enhanced_title = "Gang rape - Rigorous imprisonment minimum 20 years to life (IPC 1860)"
-                
-                # Apply enhanced titles for Indian divorce sections from addon
-                if jurisdiction == 'IN' and section_num in ['13', '13B', '24', '25', '27']:
-                    if section_num == '13':
-                        enhanced_title = "Divorce - Grounds including adultery, cruelty, desertion, conversion, mental disorder (Hindu Marriage Act 1955)"
-                    elif section_num == '13B':
-                        enhanced_title = "Divorce by mutual consent - Both parties agree to dissolve marriage after 1 year separation"
-                    elif section_num == '24':
-                        enhanced_title = "Maintenance pendente lite - Interim maintenance during divorce proceedings"
-                    elif section_num == '25':
-                        enhanced_title = "Permanent alimony - Court may order maintenance after divorce"
-                    elif section_num == '27':
-                        enhanced_title = "Divorce - Grounds including adultery, cruelty, desertion, unsound mind (Special Marriage Act 1954)"
-                
-                addon_statutes.append({
-                    'act': completed['act'],
-                    'year': completed.get('year', 0),
-                    'section': completed['section'],
-                    'title': enhanced_title
-                })
-            
-            # Apply offense subtype prioritization for rape-related addons
-            if 'rape' in addon_subtype:
-                include_keywords = ['rape', 'sexual assault', 'penetration', 'consent']
-                exclude_keywords = ['importation', 'procuration', 'trafficking']
-                addon_statutes = [
-                    s for s in addon_statutes
-                    if any(kw in s['title'].lower() for kw in include_keywords)
-                    and not any(kw in s['title'].lower() for kw in exclude_keywords)
-                ]
-            
-            # If addon provides statutes, use them as primary source
-            if addon_statutes:
-                relevant_sections = []  # Clear base retrieval
-                ontology_filtered = False
-        
-        # Apply Dowry Precision Layer
-        all_statutes = []
-        for section in relevant_sections:
-            # Skip sections that don't match the detected jurisdiction
-            if section.jurisdiction.value != jurisdiction:
-                continue
-            
-            act_id_lower = section.act_id.lower() if section.act_id else ''
-            act_metadata = None
-            
-            # Find matching act metadata
-            for act_key, metadata in ACT_METADATA.items():
-                if act_key.lower() in act_id_lower or act_id_lower in act_key.lower():
-                    act_metadata = metadata
-                    break
-            
-            # Enhanced title for rape sections (India only - BNS/IPC sections)
-            enhanced_title = section.text[:100] if len(section.text) > 100 else section.text
-            
-            # Add detailed description for Indian rape sections only
-            if jurisdiction == 'IN' and section.section_number in ['63', '64', '65', '66', '375', '376', '376A', '376AB', '376B', '376C', '376D']:
-                if section.section_number == '63':
-                    enhanced_title = "Rape - Penetration without consent (BNS 2023)"
-                elif section.section_number == '64':
-                    enhanced_title = "Punishment for rape - Rigorous imprisonment 10 years to life (BNS 2023)"
-                elif section.section_number == '65':
-                    enhanced_title = "Punishment for rape in certain cases - Enhanced penalties for aggravated circumstances (BNS 2023)"
-                elif section.section_number == '66':
-                    enhanced_title = "Punishment for causing death or persistent vegetative state of victim - Life imprisonment or death (BNS 2023)"
-                elif section.section_number == '375':
-                    enhanced_title = "Rape - Sexual intercourse without consent or with minor (IPC 1860)"
-                elif section.section_number == '376':
-                    enhanced_title = "Punishment for rape - Rigorous imprisonment minimum 7 years, may extend to life (IPC 1860)"
-                elif section.section_number == '376A':
-                    enhanced_title = "Punishment for causing death or resulting in persistent vegetative state - Minimum 20 years to life or death (IPC 1860)"
-                elif section.section_number == '376AB':
-                    enhanced_title = "Punishment for rape on woman under 12 years - Rigorous imprisonment minimum 20 years to life or death (IPC 1860)"
-                elif section.section_number == '376B':
-                    enhanced_title = "Sexual intercourse by husband upon his wife during separation - Imprisonment up to 2 years (IPC 1860)"
-                elif section.section_number == '376C':
-                    enhanced_title = "Sexual intercourse by person in authority - Rigorous imprisonment 5-10 years (IPC 1860)"
-                elif section.section_number == '376D':
-                    enhanced_title = "Gang rape - Rigorous imprisonment minimum 20 years to life (IPC 1860)"
-            
-            # Add detailed description for Indian divorce sections
-            if jurisdiction == 'IN' and section.section_number in ['13', '13B', '24', '25', '27']:
-                if section.section_number == '13' and 'hindu_marriage' in section.act_id.lower():
-                    enhanced_title = "Divorce - Grounds including adultery, cruelty, desertion, conversion, mental disorder (Hindu Marriage Act 1955)"
-                elif section.section_number == '13B' and 'hindu_marriage' in section.act_id.lower():
-                    enhanced_title = "Divorce by mutual consent - Both parties agree to dissolve marriage after 1 year separation"
-                elif section.section_number == '24' and 'hindu_marriage' in section.act_id.lower():
-                    enhanced_title = "Maintenance pendente lite - Interim maintenance during divorce proceedings"
-                elif section.section_number == '25' and 'hindu_marriage' in section.act_id.lower():
-                    enhanced_title = "Permanent alimony - Court may order maintenance after divorce"
-                elif section.section_number == '27' and 'special_marriage' in section.act_id.lower():
-                    enhanced_title = "Divorce - Grounds including adultery, cruelty, desertion, unsound mind (Special Marriage Act 1954)"
-            
-            if act_metadata:
-                all_statutes.append({
-                    'act': act_metadata['name'],
-                    'year': act_metadata['year'],
-                    'section': section.section_number,
-                    'title': enhanced_title
-                })
-            else:
-                all_statutes.append({
-                    'act': section.act_id.replace('_', ' ').title() if section.act_id else 'Unknown Act',
-                    'year': 0,
-                    'section': section.section_number,
-                    'title': enhanced_title
-                })
-        
-        all_statutes.extend(addon_statutes)
-
-        # Overlay issue-profile statutes (deterministic, high-priority)
-        issue_profile = query_understanding.get("issue_profile", {}) if isinstance(query_understanding, dict) else {}
-        issue_statutes = issue_profile.get("statutes", []) if isinstance(issue_profile, dict) else []
-        issue_overlay = []
-        for statute in issue_statutes:
-            if not isinstance(statute, dict):
-                continue
-            completed = self.addon_resolver._complete_statute_metadata(statute)
-            issue_overlay.append(
-                {
-                    "act": completed.get("act"),
-                    "year": completed.get("year", 0),
-                    "section": completed.get("section"),
-                    "title": completed.get("title"),
-                }
-            )
-        all_statutes.extend(issue_overlay)
-        deduped_statutes = []
-        seen_statutes = set()
-        for statute in all_statutes:
-            key = (
-                statute.get('act'),
-                statute.get('year'),
-                statute.get('section'),
-                statute.get('title')
-            )
-            if key in seen_statutes:
-                continue
-            seen_statutes.add(key)
-            deduped_statutes.append(statute)
-        all_statutes = deduped_statutes
-
-        section_hints = {
-            str(value).strip().lower()
-            for value in query_understanding.get("section_hints", [])
-            if str(value).strip()
-        }
-        act_hints = {
-            str(value).strip().lower()
-            for value in query_understanding.get("act_hints", [])
-            if str(value).strip()
-        }
-
-        def statute_priority(statute: Dict[str, Any]) -> int:
-            score = 0
-            section_number = str(statute.get('section', '')).lower()
-            act_name = str(statute.get('act', '')).lower().replace(' ', '_')
-            title = str(statute.get('title', '')).lower()
-            query_text_lower = legal_query.query_text.lower()
-            issue_profile = query_understanding.get("issue_profile", {}) if isinstance(query_understanding, dict) else {}
-            preferred_sections = build_issue_priority_map(issue_profile.get("preferred_sections", []))
-            preferred_act_names = build_issue_priority_map(issue_profile.get("preferred_act_names", []))
-            preferred_act_fragments = build_issue_priority_map(issue_profile.get("preferred_act_fragments", []))
-            preferred_title_terms = set(normalize_issue_values(issue_profile.get("preferred_title_terms", [])))
-            excluded_title_terms = set(normalize_issue_values(issue_profile.get("excluded_title_terms", [])))
-            preferred_section_acts = {
-                str(key).strip().lower(): [str(value).strip().lower() for value in values]
-                for key, values in (issue_profile.get("preferred_section_acts", {}) or {}).items()
-            }
-
-            if any(hint == section_number or hint in section_number for hint in section_hints):
-                score += 100
-            if any(act_hint in act_name for act_hint in act_hints):
-                score += 35
-            if preferred_sections and section_number in preferred_sections:
-                score += 80 + (preferred_sections[section_number] * 12)
-            if preferred_act_names and act_name in preferred_act_names:
-                score += 40 + (preferred_act_names[act_name] * 8)
-            if preferred_act_fragments:
-                fragment_matches = [
-                    priority
-                    for fragment, priority in preferred_act_fragments.items()
-                    if fragment in act_name
-                ]
-                if fragment_matches:
-                    score += 24 + (max(fragment_matches) * 6)
-            if preferred_title_terms and any(term in title for term in preferred_title_terms):
-                score += 20
-            if excluded_title_terms and any(term in title for term in excluded_title_terms):
-                score -= 30
-            if preferred_section_acts and section_number in preferred_section_acts:
-                allowed_acts = preferred_section_acts[section_number]
-                if any(allowed_act in act_name.replace("_", " ") for allowed_act in allowed_acts):
-                    score += 25
-                else:
-                    score -= 120
-            if preferred_title_terms and section_number in preferred_sections:
-                if not any(term in title for term in preferred_title_terms):
-                    score -= 60
-            if 'punishment' in query_text_lower and 'punishment' in title:
-                score += 20
-            if any(token in title for token in query_text_lower.split() if len(token) > 3):
-                score += 5
-            return score
-
-        all_statutes.sort(key=statute_priority, reverse=True)
-
-        # Drop statutes where the section is mapped to a specific act and the act does not match
-        if issue_profile:
-            preferred_section_acts = {
-                str(key).strip().lower(): [str(value).strip().lower() for value in values]
-                for key, values in (issue_profile.get("preferred_section_acts", {}) or {}).items()
-            }
-            if preferred_section_acts:
-                filtered_statutes = []
-                for statute in all_statutes:
-                    section_number = str(statute.get("section", "")).strip().lower()
-                    act_name = str(statute.get("act", "")).lower()
-                    allowed_acts = preferred_section_acts.get(section_number)
-                    if not allowed_acts:
-                        filtered_statutes.append(statute)
-                        continue
-                    if any(allowed_act in act_name for allowed_act in allowed_acts):
-                        filtered_statutes.append(statute)
-                all_statutes = filtered_statutes
-
-            preferred_sections = {
-                str(value).strip().lower()
-                for value in issue_profile.get("preferred_sections", [])
-                if str(value).strip()
-            }
-            preferred_title_terms = {
-                str(value).strip().lower()
-                for value in issue_profile.get("preferred_title_terms", [])
-                if str(value).strip()
-            }
-            if preferred_sections:
-                filtered_statutes = []
-                for statute in all_statutes:
-                    section_number = str(statute.get("section", "")).strip().lower()
-                    title = str(statute.get("title", "")).lower()
-                    if section_number in preferred_sections:
-                        filtered_statutes.append(statute)
-                        continue
-                    if preferred_title_terms and any(term in title for term in preferred_title_terms):
-                        filtered_statutes.append(statute)
-                all_statutes = filtered_statutes
-
-        # Filter procedural-only statutes when the query is not procedural
-        procedural_keywords = [
-            "fir",
-            "bail",
-            "arrest",
-            "custody",
-            "charge sheet",
-            "chargesheet",
-            "investigation",
-            "trial",
-            "appeal",
-            "summons",
-            "warrant",
-            "procedure",
-            "magistrate",
-            "court",
-        ]
-        is_procedural_query = any(keyword in query_lower for keyword in procedural_keywords)
-        if domain == "criminal" and not is_procedural_query:
-            procedural_acts = {
-                "Code of Criminal Procedure",
-                "Bharatiya Nagarik Suraksha Sanhita",
-                "Code of Civil Procedure",
-                "Indian Evidence Act",
-            }
-            all_statutes = [
-                statute for statute in all_statutes
-                if statute.get("act") not in procedural_acts
-            ]
-
-        # Issue-specific cleanup for child sexual offence queries
-        if issue_profile.get("legal_issue") == "child_sexual_offense":
-            all_statutes = [
-                statute for statute in all_statutes
-                if not (
-                    statute.get("act") == "Indian Penal Code"
-                    and str(statute.get("section", "")).strip() == "377"
-                )
-            ]
-
-        # Filter statutes by jurisdiction - remove Indian acts for non-Indian jurisdictions
-        indian_acts = ['Hindu Marriage Act', 'Special Marriage Act', 'Bharatiya Nyaya Sanhita', 'Indian Penal Code', 
-                       'Code of Criminal Procedure', 'Code of Civil Procedure', 'Indian Evidence Act',
-                       'Information Technology Act', 'Protection of Women from Domestic Violence Act',
-                       'Dowry Prohibition Act', 'Protection of Children from Sexual Offences Act', 'Consumer Protection Act', 'Income-tax Act',
-                       'Central Goods and Services Tax Act', 'Motor Vehicles Act',
-                       'Unlawful Activities (Prevention) Act', 'Labour and Employment Laws',
-                       'Real Estate (Regulation and Development) Act', 'Farmers Protection Act']
-        
-        if jurisdiction != 'IN':
-            all_statutes = [s for s in all_statutes if s.get('act') not in indian_acts]
-        elif jurisdiction == 'IN':
-            # For India, remove UK/UAE specific acts
-            uk_uae_acts = ['Sexual Offences Act', 'Theft Act', 'Fraud Act', 'Road Traffic Act',
-                          'UAE Penal Code', 'UAE Personal Status Law', 'UAE Traffic Law', 'UAE Cybercrime Law']
-            all_statutes = [s for s in all_statutes if s.get('act') not in uk_uae_acts]
-        
-        all_statutes, dowry_filtered = self.dowry_precision.filter_and_prioritize(all_statutes, legal_query.query_text)
-        
-        # Boost confidence for dowry cases
-        if dowry_filtered:
-            confidence_score = self.dowry_precision.boost_confidence(all_statutes)
-            ontology_filtered = True
-        
-        # Check for land dispute queries and use predefined statutes (India only)
-        query_lower = legal_query.query_text.lower()
-        if jurisdiction == 'IN' and any(keyword in query_lower for keyword in ['land dispute', 'property dispute', 'land', 'boundary', 'title deed', 'encroachment']):
-            all_statutes = LAND_DISPUTE_STATUTES.copy()
-
-        override_statutes = self._match_query_statute_override(query_lower)
-        # Disable hardcoded IPC overrides to let the system fetch BNS dynamically
-        # if jurisdiction == 'IN' and override_statutes:
-        #     all_statutes = override_statutes
-        
-        # Store domains in advice object
         advice = LegalAdvice(
             query=legal_query.query_text,
             jurisdiction=jurisdiction,
@@ -4179,16 +3769,21 @@ class EnhancedLegalAdvisor:
             timestamp=datetime.now().isoformat(),
             statutes=all_statutes,
             case_laws=[],
-            constitutional_articles=constitutional_articles,
+            constitutional_articles=[],
             timeline=[],
             glossary=[],
             evidence_requirements=[],
-
-            ontology_filtered=ontology_filtered or dowry_filtered,
-            query_understanding=query_understanding,
+            ontology_filtered=ontology_filtered,
+            query_understanding=query_understanding if isinstance(query_understanding, dict) else {},
+            match_status=match_status_val,
+            debug_trace=verification_res.debug_trace if verification_res else {},
             retrieval_metadata=retrieval_metadata,
+            domain_confidence=getattr(verification_res, 'domain_confidence', 0.0),
+            statute_confidence=getattr(verification_res, 'statute_confidence', 0.0),
+            section_confidence=getattr(verification_res, 'section_confidence', 0.0),
+            potentially_relevant_sections=getattr(verification_res, 'potentially_relevant_sections', []),
+            missing_factual_inquiries=getattr(verification_res, 'missing_factual_inquiries', [])
         )
-        
         # Add domains as attribute
         advice.domains = domains
         
