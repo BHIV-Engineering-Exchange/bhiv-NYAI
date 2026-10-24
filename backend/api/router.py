@@ -215,12 +215,17 @@ async def query_legal(request: QueryRequest, http_request: Request):
         advice = advisor.provide_legal_advice(legal_query)
         observer.record("clean_legal_advisor", {"sections": len(advice.statutes or []), "domain": advice.domain, "jurisdiction": advice.jurisdiction})
         
-        # Prefer deterministic pipeline statutes; fallback to advisor if empty
-        statute_records = final_sections or []
-        statute_source = "reasoning_pipeline"
-        if not statute_records:
-            statute_records = advice.statutes or []
-            statute_source = "advisor_fallback"
+        # Multi-Jurisdiction Isolated Routing (India, UAE, UK):
+        # Always use EnhancedLegalAdvisor's advice statutes if jurisdiction is UK/UAE or if advice returned statutes
+        if advice and (advice.jurisdiction in ['UK', 'UAE'] or (advice.statutes and advice.jurisdiction != 'IN')):
+            statute_records = advice.statutes or [s.to_dict() for s in (advice.relevant_sections or [])]
+            statute_source = "clean_legal_advisor"
+        elif advice and advice.statutes:
+            statute_records = advice.statutes
+            statute_source = "clean_legal_advisor"
+        else:
+            statute_records = final_sections or []
+            statute_source = "reasoning_pipeline"
 
         # ─── ACT-HINTS BRIDGE ───
         # If statutes are STILL empty but the LLM identified act_hints,
@@ -268,9 +273,9 @@ async def query_legal(request: QueryRequest, http_request: Request):
         statutes = []
         seen_statutes = set()
         for statute in statute_records:
-            act = str(statute.get("act", "")).strip()
-            section = str(statute.get("section", "")).strip()
-            title = str(statute.get("title", "")).strip()
+            act = str(statute.get("act") or statute.get("act_id") or "").strip()
+            section = str(statute.get("section") or statute.get("section_number") or "").strip()
+            title = str(statute.get("title") or (statute.get("metadata", {}) if isinstance(statute.get("metadata"), dict) else {}).get("title") or "").strip()
             if not act or not section:
                 continue
             year_raw = statute.get("year")
@@ -294,9 +299,9 @@ async def query_legal(request: QueryRequest, http_request: Request):
         top_statutes = []
         seen_top = set()
         for item in statute_records:
-            act = str(item.get("act", "")).strip()
-            section = str(item.get("section", "")).strip()
-            title = str(item.get("title", "")).strip()
+            act = str(item.get("act") or item.get("act_id") or "").strip()
+            section = str(item.get("section") or item.get("section_number") or "").strip()
+            title = str(item.get("title") or (item.get("metadata", {}) if isinstance(item.get("metadata"), dict) else {}).get("title") or "").strip()
             if not act or not section:
                 continue
             year_raw = item.get("year")
@@ -338,12 +343,15 @@ async def query_legal(request: QueryRequest, http_request: Request):
             ]
         observer.record("case_law_retriever", {"cases_found": len(case_laws)})
         
-        # Build qualified legal analysis
-        legal_analysis = _build_qualified_analysis(
-            cleaned_query,
-            statutes,
-            advice.jurisdiction
-        )
+        # Build qualified legal analysis using EnhancedLegalAdvisor output if valid
+        if advice and advice.legal_analysis and not advice.legal_analysis.startswith("No specific legal provisions"):
+            legal_analysis = advice.legal_analysis
+        else:
+            legal_analysis = _build_qualified_analysis(
+                cleaned_query,
+                statutes,
+                advice.jurisdiction
+            )
         
         # Calculate structured confidence
         # TANTRA: Use jurisdiction_result.confidence (deterministic keyword detector)
@@ -1126,3 +1134,77 @@ async def submit_rl_signal(request: RLSignalRequest):
             "reason": f"processing_error: {str(e)}",
             "trace_id": request.trace_id
         }
+
+
+from fastapi.responses import HTMLResponse
+
+@router.post("/export-pdf")
+async def export_legal_advice_pdf(payload: Dict[str, Any]):
+    """Export legal intelligence evaluation report as printable HTML/PDF."""
+    query = payload.get("query", "Legal Query")
+    jurisdiction = payload.get("jurisdiction", "IN")
+    domain = payload.get("domain", "General")
+    legal_analysis = payload.get("legal_analysis", "")
+    statutes = payload.get("statutes", [])
+    remedies = payload.get("remedies", [])
+    procedural_steps = payload.get("procedural_steps", [])
+
+    statute_html = "".join([f"<li><b>{s.get('act_name', s.get('act_id', ''))} Section/Article {s.get('section', s.get('section_number', ''))}</b>: {s.get('title', '')}</li>" for s in statutes])
+    remedy_html = "".join([f"<li>{r}</li>" for r in remedies])
+    step_html = "".join([f"<li>{step}</li>" for step in procedural_steps])
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>NYAI Legal Intelligence Evaluation - {query}</title>
+        <style>
+            body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; color: #1e293b; background: #fff; }}
+            .header {{ border-bottom: 3px solid #1e3a8a; padding-bottom: 15px; margin-bottom: 25px; }}
+            .title {{ font-size: 24px; font-weight: bold; color: #1e3a8a; }}
+            .subtitle {{ color: #64748b; font-size: 14px; margin-top: 5px; }}
+            .badge {{ display: inline-block; background: #e0e7ff; color: #3730a3; padding: 4px 12px; border-radius: 12px; font-weight: bold; font-size: 12px; margin-right: 10px; }}
+            .section {{ margin-bottom: 25px; background: #f8fafc; padding: 20px; border-radius: 8px; border-left: 4px solid #3b82f6; }}
+            .section-title {{ font-size: 16px; font-weight: bold; color: #0f172a; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }}
+            ul, ol {{ padding-left: 20px; line-height: 1.6; }}
+            li {{ margin-bottom: 8px; }}
+            .footer {{ margin-top: 40px; font-size: 11px; color: #94a3b8; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 15px; }}
+            @media print {{ body {{ margin: 0; }} }}
+        </style>
+    </head>
+    <body onload="window.print()">
+        <div class="header">
+            <div class="title">NYAI Legal Intelligence Evaluation Report</div>
+            <div class="subtitle">Generated by Nyaya AI Legal Engine | Date: {datetime.now().strftime('%d %B %Y')}</div>
+        </div>
+        <div>
+            <span class="badge">Jurisdiction: {jurisdiction}</span>
+            <span class="badge">Domain: {domain}</span>
+        </div>
+        <div class="section" style="margin-top: 20px;">
+            <div class="section-title">Submitted Legal Query</div>
+            <div style="font-size: 18px; font-weight: 600;">"{query}"</div>
+        </div>
+        <div class="section">
+            <div class="section-title">Applicable Legal Provisions & Statutes</div>
+            <ul>{statute_html if statute_html else '<li>No specific statutes retrieved.</li>'}</ul>
+        </div>
+        <div class="section">
+            <div class="section-title">Legal Analysis & Assessment</div>
+            <div style="white-space: pre-wrap; line-height: 1.6;">{legal_analysis}</div>
+        </div>
+        <div class="section">
+            <div class="section-title">Procedural Steps & Action Roadmap</div>
+            <ol>{step_html if step_html else '<li>No specific steps required.</li>'}</ol>
+        </div>
+        <div class="section">
+            <div class="section-title">Available Remedies</div>
+            <ul>{remedy_html if remedy_html else '<li>Consult legal counsel.</li>'}</ul>
+        </div>
+        <div class="footer">
+            CONFIDENTIAL LEGAL INTELLIGENCE REPORT | NYAYA AI (NYAI) PLATFORM
+        </div>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content)

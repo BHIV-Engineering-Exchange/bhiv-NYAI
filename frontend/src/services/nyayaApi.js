@@ -50,6 +50,10 @@ apiClient.interceptors.request.use((config) => {
   const traceId = window.__gravitas_active_trace_id
   if (traceId) {
     config.headers['X-Trace-ID'] = traceId
+  const token = localStorage.getItem('authToken')
+  if (token) {
+    config.headers['Authorization'] = Bearer 
+  }
   }
   const path = config.url || ''
   if (NYAI_API_KEY && path.startsWith('/nyaya/')) {

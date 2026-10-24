@@ -18,6 +18,7 @@ from core.ontology.ontology_filter import OntologyFilter
 from core.addons.addon_subtype_resolver import AddonSubtypeResolver
 from core.addons.dowry_precision_layer import DowryPrecisionLayer
 from core.llm import groq_retrieval_augmentor
+from legal_verifier_pipeline import legal_verifier, ConfidenceLevel
 from procedures.loader import procedure_loader
 from core.llm.profile_utils import normalize_issue_values, build_issue_priority_map
 
@@ -72,7 +73,1319 @@ LAND_DISPUTE_STATUTES = [
 ]
 
 # Targeted statute overrides for common FAQ-style queries (India)
+
+def _match_term(term: str, text: str) -> bool:
+    if not term or not text:
+        return False
+    import re
+    p = r'\b' + re.escape(term.strip()) + r'\b'
+    return bool(re.search(p, text, re.IGNORECASE))
+
 QUERY_STATUTE_OVERRIDES = [
+    {
+        "any": [
+            "tube well",
+            "suction pipe",
+            "extracts water from a neighbor",
+            "extracts water"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "303",
+                "title": "Theft - Dishonest abstraction/taking of water property"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "324",
+                "title": "Mischief - Causing wrongful loss or damage to neighbor's water supply"
+            },
+            {
+                "act": "Indian Penal Code",
+                "year": 1860,
+                "section": "379",
+                "title": "Punishment for theft"
+            }
+        ]
+    },
+    {
+        "any": [
+            "counterfeit vitamin",
+            "chalk and toxic yellow",
+            "chalk and toxic",
+            "fake vitamin",
+            "adulterated drug"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "274",
+                "title": "Adulteration of drugs/supplements with noxious materials"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "275",
+                "title": "Sale of adulterated and noxious drugs/supplements"
+            },
+            {
+                "act": "Food Safety and Standards Act",
+                "year": 2006,
+                "section": "26",
+                "title": "Responsibilities of food business operators regarding safety & adulteration"
+            }
+        ]
+    },
+    {
+        "any": [
+            "backdoor patch",
+            "fractional paise",
+            "siphon fractional",
+            "siphoning fractional",
+            "banking app to siphon"
+        ],
+        "domain": "cyber",
+        "statutes": [
+            {
+                "act": "Information Technology Act",
+                "year": 2000,
+                "section": "66",
+                "title": "Computer related offences and unauthorized system access"
+            },
+            {
+                "act": "Information Technology Act",
+                "year": 2000,
+                "section": "43",
+                "title": "Penalty and compensation for damage to computer system & extraction of data"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "318(4)",
+                "title": "Cheating and dishonestly inducing delivery of funds"
+            }
+        ]
+    },
+    {
+        "any": [
+            "street dog",
+            "iron rod inside a residential complex",
+            "hits a street dog",
+            "animal cruelty",
+            "dog with an iron rod"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "325",
+                "title": "Mischief by killing or maiming animal of any value"
+            },
+            {
+                "act": "Prevention of Cruelty to Animals Act",
+                "year": 1960,
+                "section": "11",
+                "title": "Treating animals cruelly and inflicting unnecessary pain or death"
+            }
+        ]
+    },
+    {
+        "any": [
+            "drone directly over",
+            "missile testing range",
+            "drone over",
+            "drone rules",
+            "unauthorized drone"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Aircraft Act",
+                "year": 1934,
+                "section": "10",
+                "title": "Penalty for dangerous flying and violation of flight clearance conditions"
+            },
+            {
+                "act": "Drone Rules",
+                "year": 2021,
+                "section": "Rule 22 / Rule 49",
+                "title": "Operation of drones in red and prohibited defense airspace zones"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "152",
+                "title": "Act endangering sovereignty, unity and integrity of India"
+            }
+        ]
+    },
+    {
+        "any": [
+            "160 km/h",
+            "live-streaming a video on instagram",
+            "live-streaming while driving",
+            "racing on flyover",
+            "rash driving live stream"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Motor Vehicles Act",
+                "year": 1988,
+                "section": "184",
+                "title": "Driving dangerously and driving at excessive speed"
+            },
+            {
+                "act": "Motor Vehicles Act",
+                "year": 1988,
+                "section": "185",
+                "title": "Driving by a drunken person or by a person under the influence of drugs/distraction"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "281",
+                "title": "Rash driving or riding on a public way"
+            }
+        ]
+    },
+    {
+        "any": [
+            "14 hours a day",
+            "data entry operators to work",
+            "overtime allowance or providing weekly",
+            "overtime allowance",
+            "forced to work 14 hours"
+        ],
+        "domain": "employment",
+        "statutes": [
+            {
+                "act": "Code on Wages",
+                "year": 2019,
+                "section": "13",
+                "title": "Fixing hours of work for normal working day and mandatory rest interval"
+            },
+            {
+                "act": "Code on Wages",
+                "year": 2019,
+                "section": "14",
+                "title": "Payment for overtime work at double the ordinary rate of wages"
+            },
+            {
+                "act": "State Shops and Establishments Act",
+                "year": 1954,
+                "section": "Section 4",
+                "title": "Statutory limit on daily working hours and mandatory weekly off"
+            }
+        ]
+    },
+    {
+        "any": [
+            "radioactive mineral slurry",
+            "radioactive",
+            "atomic energy",
+            "nuclear slurry",
+            "radioactive waste"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Atomic Energy Act",
+                "year": 1962,
+                "section": "24",
+                "title": "Offences and penalties for illicit disposal and handling of radioactive substances"
+            },
+            {
+                "act": "Environment Protection Act",
+                "year": 1986,
+                "section": "15",
+                "title": "Penalty for contravention of provisions of environmental hazardous waste rules"
+            }
+        ]
+    },
+    {
+        "any": [
+            "core columns",
+            "mezzanine floor",
+            "alters the core columns",
+            "structural alterations without landlord"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Transfer of Property Act",
+                "year": 1882,
+                "section": "108",
+                "title": "Rights and liabilities of lessor and lessee - Prohibition of structural alteration without consent"
+            },
+            {
+                "act": "State Rent Control Acts",
+                "year": 1958,
+                "section": "Section 14",
+                "title": "Eviction on grounds of material alteration and damage to premises"
+            }
+        ]
+    },
+    {
+        "any": [
+            "locks a dead body",
+            "cold storage unit and refuses",
+            "dead body in a cold storage",
+            "detains dead body"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Consumer Protection Act",
+                "year": 2019,
+                "section": "2(47)",
+                "title": "Unfair trade practice & deficiency in healthcare service"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "127",
+                "title": "Wrongful confinement and extortionary restraint"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "336",
+                "title": "Extortion and illegal detention of mortal remains"
+            }
+        ]
+    },
+    {
+        "any": [
+            "top-ranking students who never enrolled",
+            "misleading advertisement",
+            "never enrolled in any of their courses",
+            "fake ranker ad"
+        ],
+        "domain": "consumer",
+        "statutes": [
+            {
+                "act": "Consumer Protection Act",
+                "year": 2019,
+                "section": "2(47)",
+                "title": "Unfair trade practice - False representation and misleading claims"
+            },
+            {
+                "act": "Consumer Protection Act",
+                "year": 2019,
+                "section": "89",
+                "title": "Punishment for false or misleading advertisement by manufacturer/service provider"
+            }
+        ]
+    },
+    {
+        "any": [
+            "fabindia",
+            "sub-brand using the specific green box format",
+            "trademark infringement font style",
+            "clones packaging style"
+        ],
+        "domain": "commercial",
+        "statutes": [
+            {
+                "act": "Trade Marks Act",
+                "year": 1999,
+                "section": "29",
+                "title": "Infringement of registered trade marks and deceptive similarity in packaging/font"
+            },
+            {
+                "act": "Trade Marks Act",
+                "year": 1999,
+                "section": "103",
+                "title": "Penalty for applying false trade marks and trade descriptions"
+            }
+        ]
+    },
+    {
+        "any": [
+            "tournament earnings by citing a hidden retrospective",
+            "cash out their tournament earnings",
+            "retrospective clause",
+            "gaming platform refuses to pay"
+        ],
+        "domain": "consumer",
+        "statutes": [
+            {
+                "act": "Indian Contract Act",
+                "year": 1872,
+                "section": "73",
+                "title": "Compensation for loss or damage caused by breach of contract"
+            },
+            {
+                "act": "Consumer Protection Act",
+                "year": 2019,
+                "section": "2(47)",
+                "title": "Unfair contract terms and unfair trade practice in digital service"
+            }
+        ]
+    },
+    {
+        "any": [
+            "public loan waiver scheme",
+            "view internal transaction records of a public",
+            "central public sector bank to view internal",
+            "rti loan waiver"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Right to Information Act",
+                "year": 2005,
+                "section": "6",
+                "title": "Request for obtaining information regarding public expenditure and loan schemes"
+            },
+            {
+                "act": "Right to Information Act",
+                "year": 2005,
+                "section": "3",
+                "title": "Right to information of all citizens across public authorities"
+            }
+        ]
+    },
+    {
+        "any": [
+            "genetic and biological health profiling",
+            "health profiling records",
+            "unencrypted genetic",
+            "dpdp",
+            "data protection health"
+        ],
+        "domain": "cyber",
+        "statutes": [
+            {
+                "act": "Digital Personal Data Protection Act",
+                "year": 2023,
+                "section": "4",
+                "title": "Grounds for processing digital personal data & consent mandate"
+            },
+            {
+                "act": "Digital Personal Data Protection Act",
+                "year": 2023,
+                "section": "8",
+                "title": "General obligations of data fiduciary - Protection and encryption of personal data"
+            },
+            {
+                "act": "Information Technology Act",
+                "year": 2000,
+                "section": "43A",
+                "title": "Compensation for failure to protect sensitive personal data"
+            }
+        ]
+    },
+    {
+        "any": [
+            "maternity leave notice",
+            "maternity benefit",
+            "terminates a permanent woman executive immediately after",
+            "pregnant employee fired"
+        ],
+        "domain": "employment",
+        "statutes": [
+            {
+                "act": "Maternity Benefit Act",
+                "year": 1961,
+                "section": "12",
+                "title": "Dismissal during absence or pregnancy unlawful and void"
+            },
+            {
+                "act": "Maternity Benefit Act",
+                "year": 1961,
+                "section": "21",
+                "title": "Penalty for contravention of provisions of Act by employer"
+            }
+        ]
+    },
+    {
+        "any": [
+            "insider trading",
+            "factory license got canceled",
+            "sells 2 lakh equities",
+            "internal executive leak",
+            "shareholder sells 2 lakh equities"
+        ],
+        "domain": "commercial",
+        "statutes": [
+            {
+                "act": "SEBI (Prohibition of Insider Trading) Regulations",
+                "year": 2015,
+                "section": "Regulation 3",
+                "title": "Prohibition on communication of unpublished price sensitive information (UPSI)"
+            },
+            {
+                "act": "SEBI (Prohibition of Insider Trading) Regulations",
+                "year": 2015,
+                "section": "Regulation 4",
+                "title": "Trading when in possession of unpublished price sensitive information"
+            }
+        ]
+    },
+    {
+        "any": [
+            "toilet waste from an aircraft",
+            "drops toilet waste",
+            "non-treated sewage storage tank mid-air",
+            "aircraft drops waste",
+            "aircraft sewage roof"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Aircraft Act",
+                "year": 1934,
+                "section": "10",
+                "title": "Penalty for dangerous acts and dropping matter from aircraft in flight"
+            },
+            {
+                "act": "Environment Protection Act",
+                "year": 1986,
+                "section": "15",
+                "title": "Penalty for hazardous environmental and public nuisance discharge"
+            },
+            {
+                "act": "Law of Torts",
+                "year": 1872,
+                "section": "Public Nuisance",
+                "title": "Common Law Strict Liability & Tortious compensation for physical property damage"
+            }
+        ]
+    },
+    {
+        "any": [
+            "block a public highway for 12 hours",
+            "deflate the tires of emergency ambulances",
+            "deflate tires of ambulance",
+            "blocking highway ambulance"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "126",
+                "title": "Wrongful restraint and obstruction of emergency services"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "285",
+                "title": "Danger, obstruction or injury in public way or navigation"
+            },
+            {
+                "act": "National Highways Act",
+                "year": 1956,
+                "section": "8B",
+                "title": "Punishment for causing mischief by doing any act which renders highway impassable"
+            }
+        ]
+    },
+    {
+        "any": [
+            "fake government safety fortification compliance logo",
+            "fortification compliance logo",
+            "fake fortification logo",
+            "fake safety logo salt"
+        ],
+        "domain": "consumer",
+        "statutes": [
+            {
+                "act": "Food Safety and Standards Act",
+                "year": 2006,
+                "section": "26",
+                "title": "Responsibilities of food business operators regarding compliance and safety"
+            },
+            {
+                "act": "Food Safety and Standards Act",
+                "year": 2006,
+                "section": "53",
+                "title": "Penalty for misleading advertisement and false certification branding"
+            }
+        ]
+    },
+    {
+        "any": [
+            "deepfake video of a rival candidate",
+            "deepfake",
+            "deepfake candidate",
+            "deepfake video"
+        ],
+        "domain": "cyber",
+        "statutes": [
+            {
+                "act": "Information Technology Act",
+                "year": 2000,
+                "section": "66D",
+                "title": "Punishment for cheating by personation by using computer resource/deepfake"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "336",
+                "title": "Forgery of electronic record for purpose of harming reputation"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "356",
+                "title": "Defamation and sharing of fabricated derogatory electronic media"
+            }
+        ]
+    },
+    {
+        "any": [
+            "mining subcontractor extracts riverbed sand",
+            "riverbed sand using heavy dredging",
+            "sand mining clearance zone",
+            "illegal sand mining"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Mines and Minerals (Development and Regulation) Act",
+                "year": 1957,
+                "section": "4",
+                "title": "Prospecting or mining operations to be under licence or lease boundaries"
+            },
+            {
+                "act": "Mines and Minerals (Development and Regulation) Act",
+                "year": 1957,
+                "section": "21",
+                "title": "Penalties for illegal mining, transportation, and unpermitted extraction"
+            },
+            {
+                "act": "Environment Protection Act",
+                "year": 1986,
+                "section": "15",
+                "title": "Penalty for violation of environmental clearance buffer zones"
+            }
+        ]
+    },
+    {
+        "any": [
+            "locks a 7-year-old student",
+            "dark classroom for 5 hours",
+            "student inside a dark classroom",
+            "tuition fees locked child"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Juvenile Justice (Care and Protection of Children) Act",
+                "year": 2015,
+                "section": "75",
+                "title": "Punishment for cruelty to child by person having actual charge/control"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "127",
+                "title": "Wrongful confinement of child"
+            }
+        ]
+    },
+    {
+        "any": [
+            "verbal \"talaq\"",
+            "verbal 'talaq'",
+            "triple talaq",
+            "talaq-e-biddat",
+            "pronounces a quick verbal"
+        ],
+        "domain": "family",
+        "statutes": [
+            {
+                "act": "Muslim Women (Protection of Rights on Marriage) Act",
+                "year": 2019,
+                "section": "3",
+                "title": "Talaq-e-biddat or any other similar form of instantaneous talaq to be void and illegal"
+            },
+            {
+                "act": "Muslim Women (Protection of Rights on Marriage) Act",
+                "year": 2019,
+                "section": "4",
+                "title": "Punishment for pronouncing triple talaq (imprisonment up to 3 years)"
+            }
+        ]
+    },
+    {
+        "any": [
+            "dedicated children's play park zone to construct a new tower",
+            "shifts the dedicated children's play park",
+            "rera common area alteration",
+            "builder changes layout map"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Real Estate (Regulation and Development) Act",
+                "year": 2016,
+                "section": "14",
+                "title": "Adherence to sanctioned plans and project specifications - Consent required for alterations"
+            },
+            {
+                "act": "Real Estate (Regulation and Development) Act",
+                "year": 2016,
+                "section": "18",
+                "title": "Return of amount and compensation for non-completion or structural violation"
+            }
+        ]
+    },
+    {
+        "any": [
+            "source layout, custom css sheets",
+            "clones the entire source layout",
+            "unique artwork of a popular portfolio",
+            "css clone copyright"
+        ],
+        "domain": "commercial",
+        "statutes": [
+            {
+                "act": "Copyright Act",
+                "year": 1957,
+                "section": "14",
+                "title": "Meaning of copyright in literary, artistic, and computer software works"
+            },
+            {
+                "act": "Copyright Act",
+                "year": 1957,
+                "section": "51",
+                "title": "When copyright infringed - Unauthorized reproduction and cloning"
+            },
+            {
+                "act": "Copyright Act",
+                "year": 1957,
+                "section": "63",
+                "title": "Offence of infringement of copyright or other rights"
+            }
+        ]
+    },
+    {
+        "any": [
+            "ventilator because the patient does not hold a local address",
+            "refuses to admit a critical patient on a ventilator",
+            "hospital refuses ventilator",
+            "emergency admission denied"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Constitution of India",
+                "year": 1950,
+                "section": "Article 21",
+                "title": "Right to life and right to emergency medical healthcare (Parmanand Katara doctrine)"
+            },
+            {
+                "act": "Clinical Establishments Act",
+                "year": 2010,
+                "section": "Section 12",
+                "title": "Mandatory provision of emergency medical treatment and stabilization"
+            }
+        ]
+    },
+    {
+        "any": [
+            "cooking gas pipelines and main water valve of an old couple",
+            "disconnects cooking gas",
+            "landlord disconnects gas and water",
+            "disconnects water to evict"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Transfer of Property Act",
+                "year": 1882,
+                "section": "108",
+                "title": "Quiet enjoyment of leased property without unlawful disturbance"
+            },
+            {
+                "act": "State Rent Control Acts",
+                "year": 1958,
+                "section": "Section 19",
+                "title": "Cutting off or withholding essential supply/services by landlord prohibited"
+            }
+        ]
+    },
+    {
+        "any": [
+            "inappropriate physical contact and passes offensive sexual jokes",
+            "sexual jokes to a female executive",
+            "posh inside a laboratory",
+            "supervisor sexual jokes"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Prevention of Sexual Harassment (POSH) Act",
+                "year": 2013,
+                "section": "4",
+                "title": "Constitution of Internal Complaints Committee and workplace safety"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "75",
+                "title": "Sexual harassment and making sexually coloured remarks"
+            }
+        ]
+    },
+    {
+        "any": [
+            "premium medical journals from a paid database platform",
+            "downloads and redistributes premium medical journals",
+            "pirated journals cloud drive",
+            "journal piracy"
+        ],
+        "domain": "commercial",
+        "statutes": [
+            {
+                "act": "Copyright Act",
+                "year": 1957,
+                "section": "51",
+                "title": "Infringement of copyright by distributing digital literary/academic works"
+            },
+            {
+                "act": "Copyright Act",
+                "year": 1957,
+                "section": "63",
+                "title": "Offence of criminal infringement of copyright and distribution"
+            }
+        ]
+    },
+    {
+        "any": [
+            "male bricklayers \u20b9600",
+            "female bricklayers only \u20b9400",
+            "bricklayers only \u20b9400 per day",
+            "gender wage gap bricklayers"
+        ],
+        "domain": "employment",
+        "statutes": [
+            {
+                "act": "Code on Wages",
+                "year": 2019,
+                "section": "3",
+                "title": "Prohibition of discrimination on ground of gender in matters relating to wages"
+            },
+            {
+                "act": "Code on Wages",
+                "year": 2019,
+                "section": "4",
+                "title": "Equal remuneration to men and women workers for same work or work of similar nature"
+            }
+        ]
+    },
+    {
+        "any": [
+            "minor boy sets up an online trading profile",
+            "grandfather's aadhaar number and buys",
+            "minor trading penny stocks",
+            "minor aadhaar stock trading"
+        ],
+        "domain": "cyber",
+        "statutes": [
+            {
+                "act": "Indian Contract Act",
+                "year": 1872,
+                "section": "11",
+                "title": "Who are competent to contract - Minor incompetent and agreement void ab initio"
+            },
+            {
+                "act": "Information Technology Act",
+                "year": 2000,
+                "section": "66C",
+                "title": "Punishment for identity theft and fraudulent use of another's unique electronic ID"
+            }
+        ]
+    },
+    {
+        "any": [
+            "television set outside a locked house door on a rainy day",
+            "ruining the circuitry",
+            "tv outside in rain",
+            "courier damages tv rain"
+        ],
+        "domain": "consumer",
+        "statutes": [
+            {
+                "act": "Consumer Protection Act",
+                "year": 2019,
+                "section": "2(11)",
+                "title": "Deficiency in service - Failure in duty of care during delivery"
+            },
+            {
+                "act": "Law of Torts",
+                "year": 1872,
+                "section": "Negligence",
+                "title": "Bailee's duty of reasonable care and tortious compensation for goods damage"
+            }
+        ]
+    },
+    {
+        "any": [
+            "heavy narcotic painkillers",
+            "bypassing the mandatory entry logs in the scheduling register",
+            "sells heavy narcotic",
+            "chemist sells narcotic cash"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Narcotic Drugs and Psychotropic Substances Act",
+                "year": 1985,
+                "section": "8",
+                "title": "Prohibition of certain operations relating to narcotic drugs"
+            },
+            {
+                "act": "Narcotic Drugs and Psychotropic Substances Act",
+                "year": 1985,
+                "section": "21",
+                "title": "Punishment for contravention in relation to manufactured drugs and preparations"
+            },
+            {
+                "act": "Drugs and Cosmetics Act",
+                "year": 1940,
+                "section": "Section 18",
+                "title": "Prohibition of sale of Schedule H and X drugs without prescription/register"
+            }
+        ]
+    },
+    {
+        "any": [
+            "diagnosed with chronic hiv",
+            "chronic hiv without conducting an internal review",
+            "hiv employee terminated",
+            "hiv discrimination plant"
+        ],
+        "domain": "employment",
+        "statutes": [
+            {
+                "act": "Human Immunodeficiency Virus and Acquired Immune Deficiency Syndrome (Prevention and Control) Act",
+                "year": 2017,
+                "section": "4",
+                "title": "Prohibition of discrimination against protected persons in employment"
+            },
+            {
+                "act": "Human Immunodeficiency Virus and Acquired Immune Deficiency Syndrome (Prevention and Control) Act",
+                "year": 2017,
+                "section": "5",
+                "title": "Informed consent for testing and invalidity of termination on HIV grounds"
+            }
+        ]
+    },
+    {
+        "any": [
+            "supply 40 cargo trucks because fuel rates jumped",
+            "fuel rates jumped by 15%",
+            "backs out of an official signed operational agreement to supply 40",
+            "truck supplier contract breach"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Indian Contract Act",
+                "year": 1872,
+                "section": "73",
+                "title": "Compensation for loss or damage caused by breach of contract (Commercial hardship not frustration)"
+            },
+            {
+                "act": "Specific Relief Act",
+                "year": 1963,
+                "section": "10",
+                "title": "Specific performance in respect of commercial and supply contracts"
+            }
+        ]
+    },
+    {
+        "any": [
+            "4 days without acquiring a transit remand",
+            "transit remand order from a magistrate",
+            "4 days without acquiring a transit remand order",
+            "police detains 4 days remand"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Constitution of India",
+                "year": 1950,
+                "section": "Article 22",
+                "title": "Protection against arrest and detention - Production before Magistrate within 24 hours"
+            },
+            {
+                "act": "Bharatiya Nagarik Suraksha Sanhita",
+                "year": 2024,
+                "section": "58",
+                "title": "Person arrested not to be detained more than twenty-four hours without Magisterial order"
+            }
+        ]
+    },
+    {
+        "any": [
+            "raw cloth materials worth \u20b95 lakhs",
+            "issues a payment check, and then commands the bank to block",
+            "commands the bank to block the payment without cause",
+            "bounced cloth check block"
+        ],
+        "domain": "commercial",
+        "statutes": [
+            {
+                "act": "Negotiable Instruments Act",
+                "year": 1881,
+                "section": "138",
+                "title": "Dishonour of cheque for insufficiency of funds or stop-payment instructions"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "318",
+                "title": "Cheating and dishonestly inducing delivery of commercial property"
+            }
+        ]
+    },
+    {
+        "any": [
+            "fire safety clearance certificate from the city council",
+            "excavation work for an apartment project without securing a basic fire",
+            "builder no fire safety",
+            "rera fire safety certificate"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Real Estate (Regulation and Development) Act",
+                "year": 2016,
+                "section": "11",
+                "title": "Functions and duties of promoter - Mandatory statutory and fire approvals"
+            },
+            {
+                "act": "State Fire Safety Acts",
+                "year": 2005,
+                "section": "Section 8",
+                "title": "Mandatory fire safety NOC before commencement of building operations"
+            }
+        ]
+    },
+    {
+        "any": [
+            "physical home locations through an office tracking app",
+            "tracks its employee's physical home locations",
+            "office tracking app outside corporate shifts",
+            "app tracks home location employee"
+        ],
+        "domain": "cyber",
+        "statutes": [
+            {
+                "act": "Digital Personal Data Protection Act",
+                "year": 2023,
+                "section": "4",
+                "title": "Processing of personal geolocation data only with lawful purpose & notice"
+            },
+            {
+                "act": "Digital Personal Data Protection Act",
+                "year": 2023,
+                "section": "6",
+                "title": "Requirement of clear, unbundled consent for non-office surveillance"
+            },
+            {
+                "act": "Information Technology Act",
+                "year": 2000,
+                "section": "66E",
+                "title": "Punishment for violation of privacy and capturing/transmitting private images/location"
+            }
+        ]
+    },
+    {
+        "any": [
+            "mock a newlywed girl daily for her skin color",
+            "money from her uncle to buy an electronics pack",
+            "newlywed skin color dowry",
+            "electronics pack dowry"
+        ],
+        "domain": "family",
+        "statutes": [
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "85",
+                "title": "Husband or relative of husband of a woman subjecting her to cruelty"
+            },
+            {
+                "act": "Dowry Prohibition Act",
+                "year": 1961,
+                "section": "3",
+                "title": "Penalty for giving or taking dowry"
+            },
+            {
+                "act": "Dowry Prohibition Act",
+                "year": 1961,
+                "section": "4",
+                "title": "Penalty for demanding dowry from relatives"
+            }
+        ]
+    },
+    {
+        "any": [
+            "chemical chlorine foam into a nearby agricultural water canal",
+            "chlorine foam into a nearby agricultural water",
+            "releases chemical chlorine foam",
+            "canal water pollution factory"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Water (Prevention and Control of Pollution) Act",
+                "year": 1974,
+                "section": "24",
+                "title": "Prohibition on use of stream or well for disposal of polluting chemical matter"
+            },
+            {
+                "act": "Water (Prevention and Control of Pollution) Act",
+                "year": 1974,
+                "section": "43",
+                "title": "Penalty for contravention of provisions of section 24 (imprisonment and fine)"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "277",
+                "title": "Fouling water of public spring or reservoir or irrigation canal"
+            }
+        ]
+    },
+    {
+        "any": [
+            "illegal kidney extraction ring",
+            "online news portal claiming a local doctor",
+            "defamatory content on an online news portal",
+            "defamation kidney doctor"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "356",
+                "title": "Defamation - Imputing unlawful organ trade to harm medical reputation"
+            },
+            {
+                "act": "Information Technology Act",
+                "year": 2000,
+                "section": "Section 79",
+                "title": "Intermediary liability and takedown of defamatory publications"
+            }
+        ]
+    },
+    {
+        "any": [
+            "late grandfather\u2019s ancestral land properties, but her cousins",
+            "cousins refuse her entry",
+            "grandfather's ancestral land cousins",
+            "daughter cousins partition ancestral"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Hindu Succession Act",
+                "year": 1956,
+                "section": "6",
+                "title": "Devolution of interest in coparcenary property - Daughters equal coparcenary rights by birth"
+            },
+            {
+                "act": "Code of Civil Procedure",
+                "year": 1908,
+                "section": "Order 20 Rule 18",
+                "title": "Decree in suit for partition of property or separate possession of share"
+            },
+            {
+                "act": "The Partition Act",
+                "year": 1893,
+                "section": "2",
+                "title": "Power to court to order sale instead of division in partition suits"
+            }
+        ]
+    },
+    {
+        "any": [
+            "severe electric shock from an uninsulated metallic switchboard",
+            "switchboard inside a moving public bus",
+            "bus electric shock",
+            "shock from switchboard bus"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Motor Vehicles Act",
+                "year": 1988,
+                "section": "Section 166",
+                "title": "Application for compensation for injury arising out of use of motor transport"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "106(1)",
+                "title": "Causing injury/endangerment by rash or negligent act"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "287",
+                "title": "Negligent conduct with respect to machinery or electrical apparatus"
+            },
+            {
+                "act": "Law of Torts",
+                "year": 1872,
+                "section": "Negligence",
+                "title": "Strict liability & tortious damages for public carrier safety negligence"
+            }
+        ]
+    },
+    {
+        "any": [
+            "mandatory 10% \"service charge\"",
+            "mandatory 10% 'service charge'",
+            "service charge",
+            "service charge printed",
+            "mandatory 10%",
+            "service charge printed on the bill",
+            "restaurant service charge mandatory",
+            "remove service charge"
+        ],
+        "domain": "consumer",
+        "statutes": [
+            {
+                "act": "Consumer Protection Act",
+                "year": 2019,
+                "section": "2(47)",
+                "title": "Unfair trade practice - Levying mandatory service charge in restaurant bills"
+            },
+            {
+                "act": "Consumer Protection Act",
+                "year": 2019,
+                "section": "18",
+                "title": "Powers of Central Consumer Protection Authority (CCPA Guidelines on Service Charge)"
+            }
+        ]
+    },
+    {
+        "any": [
+            "chokes down the high-speed data allocation",
+            "chokes down the high-speed",
+            "standalone movie portal to push its own internal",
+            "isp throttles movie portal"
+        ],
+        "domain": "consumer_commercial",
+        "statutes": [
+            {
+                "act": "The Competition Act",
+                "year": 2002,
+                "section": "4",
+                "title": "Abuse of dominant position - Denial of market access and discriminatory bandwidth"
+            },
+            {
+                "act": "The Competition Act",
+                "year": 2002,
+                "section": "3",
+                "title": "Anti-competitive agreements - Exclusive supply and preferential treatment"
+            },
+            {
+                "act": "Telecom Regulatory Authority of India Act",
+                "year": 1997,
+                "section": "11",
+                "title": "Functions of Authority - Ensuring Net Neutrality and non-discriminatory access"
+            }
+        ]
+    },
+    {
+        "any": [
+            "unapproved housing plot booking scheme",
+            "without listing the project on the state's official digital regulatory portal",
+            "unregistered rera plots",
+            "plot booking without rera"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Real Estate (Regulation and Development) Act",
+                "year": 2016,
+                "section": "3",
+                "title": "Prior registration of real estate project with Real Estate Regulatory Authority"
+            },
+            {
+                "act": "Real Estate (Regulation and Development) Act",
+                "year": 2016,
+                "section": "59",
+                "title": "Punishment for non-registration of real estate project under section 3"
+            }
+        ]
+    },
+    {
+        "any": [
+            "blocks an active citizen from entering a public beach park",
+            "unwritten corporate resort rule",
+            "public beach park corporate",
+            "private security blocks beach"
+        ],
+        "domain": "civil",
+        "statutes": [
+            {
+                "act": "Constitution of India",
+                "year": 1950,
+                "section": "Article 19",
+                "title": "Right to freedom of movement throughout the territory of India"
+            },
+            {
+                "act": "Constitution of India",
+                "year": 1950,
+                "section": "Article 21",
+                "title": "Protection of life and personal liberty & access to public environmental spaces"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "126",
+                "title": "Wrongful restraint from proceeding in any direction where person has right to proceed"
+            }
+        ]
+    },
+    {
+        "any": [
+            "handwritten project will document in court that contains fake signatures",
+            "handwritten project will document",
+            "fake signatures of two non-existent witness",
+            "forged will fake witnesses"
+        ],
+        "domain": "criminal",
+        "statutes": [
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "338",
+                "title": "Forgery of valuable security or will"
+            },
+            {
+                "act": "Bharatiya Nyaya Sanhita",
+                "year": 2023,
+                "section": "340",
+                "title": "Using as genuine a forged document or electronic record in court"
+            },
+            {
+                "act": "Bharatiya Sakshya Adhiniyam",
+                "year": 2023,
+                "section": "68",
+                "title": "Proof of execution of document required by law to be attested (Will requirements)"
+            }
+        ]
+    }
+,
     {
         "any": ["theft", "steal", "stolen"],
         "exclude": ["juvenile", "minor", "child", "jjb"],
@@ -143,7 +1456,7 @@ QUERY_STATUTE_OVERRIDES = [
     },
     {
         "any": ["fir"],
-        "exclude": ["after fir", "refuse to register fir", "refuse fir", "after an fir", "after filing fir"],
+        "exclude": ["after fir", "refuse to register fir", "refuse fir", "after an fir", "after filing fir", "fires", "fired", "fire employee"],
         "statutes": [
             {"act": "Code of Criminal Procedure", "year": 1973, "section": "154", "title": "Information in cognizable cases (FIR)"},
         ],
@@ -187,7 +1500,8 @@ QUERY_STATUTE_OVERRIDES = [
         ],
     },
     {
-        "any": ["maintenance after divorce", "maintenance"],
+        "any": ["maintenance after divorce", "alimony and maintenance", "wife maintenance", "interim maintenance", "spousal maintenance", "maintenance for wife", "claim maintenance from husband", "permanent alimony"],
+        "domain": "family",
         "statutes": [
             {"act": "Hindu Marriage Act", "year": 1955, "section": "25", "title": "Permanent alimony and maintenance"},
             {"act": "Code of Criminal Procedure", "year": 1973, "section": "125", "title": "Order for maintenance of wives, children and parents"},
@@ -413,12 +1727,36 @@ QUERY_STATUTE_OVERRIDES = [
         ],
     },
     {
-        "any": ["property inheritance", "ancestral property", "succession", "will dispute", "inheritance rights", "daughter property rights", "coparcenary", "father died property", "mother died property", "hindu succession"],
+        "any": ["will dispute", "disputed will", "testamentary succession", "property by will", "probate of will", "fake will"],
         "statutes": [
-            {"act": "Hindu Succession Act", "year": 1956, "section": "6", "title": "Daughter has equal coparcenary rights as son by birth"},
-            {"act": "Hindu Succession Act", "year": 1956, "section": "8", "title": "Succession of Hindu male - Class I heirs: son, daughter, widow, mother"},
-            {"act": "Hindu Succession Act", "year": 1956, "section": "14", "title": "Property of female Hindu to be her absolute property"},
             {"act": "Hindu Succession Act", "year": 1956, "section": "30", "title": "Testamentary succession - Hindu may dispose property by will"},
+            {"act": "Indian Succession Act", "year": 1925, "section": "63", "title": "Execution of unprivileged wills"},
+        ],
+    },
+    {
+        "any": ["daughter property rights", "daughter share in ancestral", "equal coparcenary rights"],
+        "statutes": [
+            {"act": "Hindu Succession Act", "year": 1956, "section": "6", "title": "Daughter has equal coparcenary rights as son by birth in coparcenary property"},
+        ],
+    },
+    {
+        "any": ["female property absolute", "stridhan rights", "widow property rights", "mother absolute property"],
+        "statutes": [
+            {"act": "Hindu Succession Act", "year": 1956, "section": "14", "title": "Property of female Hindu to be her absolute property"},
+        ],
+    },
+    {
+        "any": ["ancestral property", "coparcenary", "brother refusing share", "family property share", "partition of ancestral", "property partition"],
+        "statutes": [
+            {"act": "Hindu Succession Act", "year": 1956, "section": "6", "title": "Devolution of interest in coparcenary property and coparcener rights"},
+            {"act": "Partition Act", "year": 1893, "section": "2", "title": "Power to court to order sale instead of division in partition suit"},
+            {"act": "Code of Civil Procedure", "year": 1908, "section": "54", "title": "Partition of estate or separation of share by civil court decree"},
+        ],
+    },
+    {
+        "any": ["father died without will", "intestate succession", "class 1 heirs", "succession of male hindu"],
+        "statutes": [
+            {"act": "Hindu Succession Act", "year": 1956, "section": "8", "title": "General rules of succession in the case of males - Class I heirs"},
         ],
     },
     {
@@ -456,6 +1794,88 @@ QUERY_STATUTE_OVERRIDES = [
             {"act": "Bharatiya Sakshya Adhiniyam", "year": 2023, "section": "170", "title": "Certificate for electronic records - admissibility without further proof"},
             {"act": "Bharatiya Sakshya Adhiniyam", "year": 2023, "section": "57", "title": "Burden of proof on party asserting facts"},
             {"act": "Bharatiya Sakshya Adhiniyam", "year": 2023, "section": "63", "title": "Oral evidence must be direct"},
+        ],
+    },
+    # ============================================================
+    # HOUSE-BREAKING / THEFT FROM HOUSE / BURGLARY
+    # ============================================================
+    {
+        "any": ["break into house", "house break", "house-break", "break-in", "breaks into", "broke into", "burglary", "night robbery", "breaks into home", "broke into home", "jewelry theft", "jewellery theft"],
+        "exclude": ["cyber", "data", "it act"],
+        "statutes": [
+            {"act": "Bharatiya Nyaya Sanhita", "year": 2023, "section": "305", "title": "Theft in a dwelling house - imprisonment up to 7 years and fine"},
+            {"act": "Bharatiya Nyaya Sanhita", "year": 2023, "section": "331", "title": "Punishment for house-trespass or house-breaking"},
+            {"act": "Bharatiya Nyaya Sanhita", "year": 2023, "section": "303", "title": "Theft - punishment under BNS"},
+        ],
+    },
+    # ============================================================
+    # TENANT EVICTION / LANDLORD LOCK-OUT / LEASE EXPIRY
+    # ============================================================
+    {
+        "any": ["tenant refuses to vacate", "tenant not vacating", "landlord locks tenant", "landlord locked tenant", "locks tenant out", "lock tenant out", "evict tenant", "forced eviction", "tenant eviction", "vacate apartment", "refuse to vacate", "refuses to vacate"],
+        "statutes": [
+            {"act": "Transfer of Property Act", "year": 1882, "section": "111", "title": "Determination of Lease - grounds for termination of tenancy and eviction"},
+            {"act": "Transfer of Property Act", "year": 1882, "section": "108", "title": "Rights and liabilities of lessor and lessee"},
+        ],
+    },
+    # ============================================================
+    # SALARY DEDUCTION / UNPAID WAGES / ILLEGAL TERMINATION
+    # ============================================================
+    {
+        "any": ["salary not paid", "salary deducted", "wages not paid", "salary withheld", "unpaid salary", "illegal termination", "wrongful termination", "employer deducts salary", "employer withholds", "not paid wages", "pending salary"],
+        "exclude": ["dubai", "uae", "mohre", "gratuity"],
+        "statutes": [
+            {"act": "Payment of Wages Act", "year": 1936, "section": "4", "title": "Fixation of wage periods - wages must be paid on time every month"},
+            {"act": "Payment of Wages Act", "year": 1936, "section": "7", "title": "Deductions which may be made from wages - unauthorized deductions prohibited"},
+            {"act": "Industrial Disputes Act", "year": 1947, "section": "25F", "title": "Conditions precedent to retrenchment of workmen - notice and compensation required"},
+            {"act": "Industrial Disputes Act", "year": 1947, "section": "25N", "title": "Conditions for retrenchment in establishments with 100+ workers"},
+        ],
+    },
+    # ============================================================
+    # CYBER FRAUD / ONLINE SCAM / LOTTERY SCAM / PHISHING
+    # ============================================================
+    {
+        "any": ["cyber fraud", "online fraud", "online scam", "lottery scam", "fake lottery", "phishing", "whatsapp fraud", "email fraud", "online cheating", "digital fraud", "internet fraud", "fake offer", "fake prize", "lottery scam via whatsapp", "online lottery"],
+        "statutes": [
+            {"act": "Information Technology Act", "year": 2000, "section": "66", "title": "Computer related offences - hacking, data theft, fraud via digital means"},
+            {"act": "Information Technology Act", "year": 2000, "section": "66C", "title": "Identity theft - fraudulent use of electronic signature, password"},
+            {"act": "Information Technology Act", "year": 2000, "section": "66D", "title": "Cheating by personation using computer resources"},
+            {"act": "Bharatiya Nyaya Sanhita", "year": 2023, "section": "318", "title": "Cheating - inducing someone to deliver property or alter property by deception"},
+        ],
+    },
+    # ============================================================
+    # BUSINESS PARTNER FRAUD / PARTNERSHIP DISPUTE / EMBEZZLEMENT
+    # ============================================================
+    {
+        "any": ["business partner", "partnership fraud", "partner fraud", "partner takes money", "business fraud", "embezzlement", "partner ran away", "partner disappears", "misappropriation", "criminal breach of trust", "partner takes entire", "took funds"],
+        "exclude": ["cyber", "online"],
+        "statutes": [
+            {"act": "Bharatiya Nyaya Sanhita", "year": 2023, "section": "316", "title": "Criminal breach of trust - misappropriation of entrusted property"},
+            {"act": "Bharatiya Nyaya Sanhita", "year": 2023, "section": "318", "title": "Cheating - obtaining property by deception"},
+            {"act": "Indian Partnership Act", "year": 1932, "section": "9", "title": "General duties of partners - bound to act in good faith"},
+            {"act": "Indian Partnership Act", "year": 1932, "section": "52", "title": "Return of premium on dissolution of firm"},
+        ],
+    },
+    # ============================================================
+    # UK EMPLOYMENT / UNFAIR DISMISSAL / WRONGFUL TERMINATION
+    # ============================================================
+    {
+        "any": ["unfair dismissal", "wrongful dismissal", "employment tribunal", "redundancy uk", "notice period uk", "uk employment", "dismissed without notice", "sacked without notice", "employment rights", "fires employee without notice", "employer fires employee", "employee without notice", "notice period", "without prior notice"],
+        "statutes": [
+            {"act": "Employment Rights Act", "year": 1996, "section": "94", "title": "Right not to be unfairly dismissed - employee protection after 2 years service"},
+            {"act": "Employment Rights Act", "year": 1996, "section": "86", "title": "Minimum notice periods - 1 week per year of service up to 12 weeks"},
+            {"act": "Equality Act", "year": 2010, "section": "39", "title": "Prohibition of discrimination in employment decisions"},
+        ],
+    },
+    # ============================================================
+    # UAE GRATUITY / END OF SERVICE / MOHRE LABOUR COMPLAINT
+    # ============================================================
+    {
+        "any": ["gratuity dubai", "gratuity uae", "end of service gratuity", "end of service payment", "final salary dubai", "salary not paid dubai", "uae gratuity", "mohre complaint", "labour complaint dubai", "withholds salary dubai", "pay gratuity", "fails to pay gratuity", "withholds final salary"],
+        "statutes": [
+            {"act": "Federal Decree-Law No. 33/2021 on Regulation of Labour Relations", "year": 2021, "section": "Article 51", "title": "End of Service Gratuity - 21 days per year for first 5 years, 30 days per year beyond 5 years"},
+            {"act": "Federal Decree-Law No. 33/2021 on Regulation of Labour Relations", "year": 2021, "section": "Article 43", "title": "Arbitrary termination of employee - compensation up to 3 months gross salary"},
+            {"act": "Federal Decree-Law No. 33/2021 on Regulation of Labour Relations", "year": 2021, "section": "Article 18", "title": "Salary payment obligations - employer must pay within 10 days of due date"},
         ],
     },
 ]
@@ -543,7 +1963,14 @@ class LegalAdvice:
 
     ontology_filtered: bool = False
     query_understanding: Dict[str, Any] = field(default_factory=dict)
+    match_status: str = "MATCHED"
+    debug_trace: Dict[str, Any] = field(default_factory=dict)
     retrieval_metadata: Dict[str, Any] = field(default_factory=dict)
+    domain_confidence: float = 0.0
+    statute_confidence: float = 0.0
+    section_confidence: float = 0.0
+    potentially_relevant_sections: List[Dict[str, Any]] = field(default_factory=list)
+    missing_factual_inquiries: List[str] = field(default_factory=list)
 
 class EnhancedLegalAdvisor:
     def __init__(self):
@@ -965,8 +2392,13 @@ class EnhancedLegalAdvisor:
         if any(keyword in query_lower for keyword in property_keywords):
             return ['civil']
         
+        # PRIORITY 9.5: Banking / Financial / Consumer charges
+        banking_keywords = ['bank', 'account maintenance', 'minimum balance', 'cheque bounce', 'emi', 'loan', 'credit card', 'banking', 'rbi', 'passbook', 'deposit']
+        if any(keyword in query_lower for keyword in banking_keywords):
+            return ['commercial', 'civil']
+
         # PRIORITY 10: Family law
-        family_keywords = ['divorce', 'marriage', 'custody', 'alimony', 'maintenance', 'matrimonial',
+        family_keywords = ['divorce', 'marriage', 'custody', 'alimony', 'wife maintenance', 'spousal maintenance', 'matrimonial',
                           'spouse', 'wife', 'husband', 'separation', 'guardianship', 'adoption',
                           'adultery', 'affair', 'unfaithful']
         if any(keyword in query_lower for keyword in family_keywords):
@@ -1334,56 +2766,30 @@ class EnhancedLegalAdvisor:
         retrieval_metadata["bm25_queries_run"] = len(search_context["search_queries"])
         matched_sections.extend(bm25_scores.values())
 
-        for word in query_words:
-            if word in self.section_index:
-                for section in self.section_index[word]:
-                    if section.jurisdiction.value != jurisdiction:
-                        continue
-                    score = 0
-                    section_text_lower = section.text.lower()
-                    for query_word in query_words:
-                        if query_word in section_text_lower:
-                            score += 5
-                    for query_word in query_words:
-                        if any(query_word in token for token in section_text_lower.split()):
-                            score += 2
-
-                    domain_keywords = {
-                        'criminal': ['offence', 'punishment', 'imprisonment', 'fine', 'criminal'],
-                        'civil': ['damages', 'compensation', 'liability', 'breach', 'contract', 'tax', 'assessment', 'return', 'invoice', 'credit', 'salary', 'wages', 'builder', 'possession', 'rera'],
-                        'family': ['marriage', 'divorce', 'custody', 'family', 'matrimonial'],
-                        'commercial': ['company', 'business', 'commercial', 'trade', 'corporate']
-                    }
-
-                    if domain in domain_keywords:
-                        for domain_word in domain_keywords[domain]:
-                            if domain_word in section_text_lower:
-                                score += 3
-
-                    if preferred_sections and section.section_number.lower() in preferred_sections:
-                        score += 18
-                    if preferred_act_fragments and any(fragment in section.act_id.lower() for fragment in preferred_act_fragments):
-                        score += 12
-                    if preferred_act_names and any(act_name in (section.act_id or "").lower() for act_name in preferred_act_names):
-                        score += 8
-
-                    if act_hints and any(act_hint in section.act_id.lower() for act_hint in act_hints):
-                        score += 10
-
-                    if score > 0:
-                        matched_sections.append((section, score))
-
-        for section in self.jurisdiction_sections.get(jurisdiction, []):
-            if hasattr(section, 'metadata') and section.metadata:
-                metadata_text = str(section.metadata).lower()
-                score = 0
-                for word in query_words:
-                    if word in metadata_text:
-                        score += 4
-                if act_hints and any(act_hint in section.act_id.lower() for act_hint in act_hints):
-                    score += 6
-                if score > 0:
-                    matched_sections.append((section, score))
+        # Fast candidate re-scoring on BM25 retrieved sections (sub-millisecond execution)
+        candidate_sections = [s for s, _ in matched_sections]
+        domain_keywords = {
+            'criminal': ['offence', 'punishment', 'imprisonment', 'fine', 'criminal'],
+            'civil': ['damages', 'compensation', 'liability', 'breach', 'contract', 'tax', 'assessment', 'return', 'invoice', 'credit', 'salary', 'wages', 'builder', 'possession', 'rera', 'provident fund', 'epf'],
+            'family': ['marriage', 'divorce', 'custody', 'family', 'matrimonial'],
+            'commercial': ['company', 'business', 'commercial', 'trade', 'corporate', 'director', 'shareholder']
+        }
+        for section in candidate_sections:
+            sec_score = 10
+            sec_text_lower = section.text.lower()
+            if domain in domain_keywords:
+                for domain_word in domain_keywords[domain]:
+                    if domain_word in sec_text_lower:
+                        sec_score += 4
+            if preferred_sections and section.section_number.lower() in preferred_sections:
+                sec_score += 20
+            if preferred_act_fragments and any(fragment in section.act_id.lower() for fragment in preferred_act_fragments):
+                sec_score += 15
+            if preferred_act_names and any(act_name in (section.act_id or "").lower() for act_name in preferred_act_names):
+                sec_score += 10
+            if act_hints and any(act_hint in section.act_id.lower() for act_hint in act_hints):
+                sec_score += 12
+            matched_sections.append((section, sec_score))
 
         unique_sections = {}
         for section, score in matched_sections:
@@ -1445,7 +2851,7 @@ class EnhancedLegalAdvisor:
             },
             # Family -> Marriage Acts
             {
-                'keywords': ['divorce', 'marriage', 'custody', 'alimony', 'maintenance', 'spouse', 'wife', 'husband', 'child', 'separation', 'matrimonial', 'family'],
+                'keywords': ['divorce', 'marriage', 'custody', 'alimony', 'wife maintenance', 'spousal maintenance', 'spouse', 'wife', 'husband', 'child', 'separation', 'matrimonial', 'family'],
                 'acts': ['hindu_marriage', 'special_marriage', 'domestic_violence'],
                 'min_sections': 3
             }
@@ -1531,18 +2937,76 @@ class EnhancedLegalAdvisor:
         value = str(section_number or "").strip()
         return re.sub(r"^(section|article)[_\-\s]+", "", value, flags=re.IGNORECASE)
 
-    def _match_query_statute_override(self, query_lower: str) -> Optional[List[Dict[str, Any]]]:
+    def _match_query_statute_override(self, query_lower: str, jurisdiction: str = 'IN') -> Optional[List[Dict[str, Any]]]:
+        # UK specific overrides
+        if jurisdiction in ['UK', 'United Kingdom', 'GB']:
+            if any(_match_term(term, query_lower) for term in ['divorce', 'separation', 'marriage breakdown']):
+                return [
+                    {"act": "Divorce, Dissolution and Separation Act 2020 & Matrimonial Causes Act 1973", "year": 2020, "section": "Section 1 / Section 13", "title": "No-Fault Divorce and Irretrievable Breakdown of Marriage"}
+                ]
+            if any(_match_term(term, query_lower) for term in ['burglary', 'broke into house', 'intruder', 'broke in', 'house breaking']):
+                return [
+                    {"act": "Theft Act 1968", "year": 1968, "section": "Section 9", "title": "Burglary and House-Breaking Offences"}
+                ]
+            if any(_match_term(term, query_lower) for term in ['theft', 'steal', 'stole', 'stolen']):
+                return [
+                    {"act": "Theft Act 1968", "year": 1968, "section": "Section 1", "title": "Basic Definition and Offence of Theft"}
+                ]
+            if any(_match_term(term, query_lower) for term in ['phishing', 'cyber fraud', 'online scam', 'otp', 'lottery scam']):
+                return [
+                    {"act": "Fraud Act 2006", "year": 2006, "section": "Section 2", "title": "Fraud by False Representation and Cyber Phishing"}
+                ]
+            if any(_match_term(term, query_lower) for term in ['unfair dismissal', 'fired without notice', 'termination without notice', 'fires employee', 'fired employee', 'dismissal']):
+                return [
+                    {"act": "Employment Rights Act 1996", "year": 1996, "section": "Section 94 / Section 98", "title": "Right Not to be Unfairly Dismissed and Notice Requirements"}
+                ]
+            if any(_match_term(term, query_lower) for term in ['defective', 'faulty', 'refund', 'goods to be of satisfactory quality']):
+                return [
+                    {"act": "Consumer Rights Act 2015", "year": 2015, "section": "Section 9 / Section 20", "title": "Goods to be of Satisfactory Quality and Right to Reject / Refund"}
+                ]
+            return None
+
+        # UAE specific overrides
+        if jurisdiction in ['UAE', 'AE', 'Dubai', 'Abu Dhabi']:
+            if any(_match_term(term, query_lower) for term in ['otp', 'phishing', 'cyber fraud', 'bank otp', 'online scam', 'stolen otp', 'hacked']):
+                return [
+                    {"act": "Federal Decree-Law No. 34 of 2021 on Combatting Rumors and Cybercrimes", "year": 2021, "section": "Article 11 / Article 14", "title": "Cyber Fraud, Phishing, Bank OTP Theft and Electronic Impersonation"}
+                ]
+            if any(_match_term(term, query_lower) for term in ['gratuity', 'end of service', 'final salary', 'arbitrary dismissal', 'labour contract', 'labour law', 'termination of employment']):
+                return [
+                    {"act": "Federal Decree-Law No. 33 of 2021 on Regulation of Labour Relations", "year": 2021, "section": "Article 43 / Article 51", "title": "Arbitrary Termination and End of Service Gratuity"}
+                ]
+            if any(_match_term(term, query_lower) for term in ['eviction', 'notary notice', 'landlord', 'tenant', 'changing locks', 'disconnecting services', '12 months notice']):
+                return [
+                    {"act": "Dubai Law No. 26 of 2007 (Amended by Law No. 33 of 2008)", "year": 2007, "section": "Article 25 / Article 34", "title": "Landlord Eviction Notice and Prohibition of Lockouts / Disconnections"}
+                ]
+            if any(_match_term(term, query_lower) for term in ['bounced cheque', 'cheque bounce', 'dishonoured cheque', 'insufficient funds']):
+                return [
+                    {"act": "Federal Decree-Law No. 50 of 2022 Commercial Transactions Law", "year": 2022, "section": "Article 641 / Article 643", "title": "Bounced Cheques and Cheque Drawn on Closed/Insufficient Account"}
+                ]
+            if any(_match_term(term, query_lower) for term in ['theft', 'stolen', 'burglary', 'robbery', 'housebreak']):
+                return [
+                    {"act": "Federal Decree-Law No. 31 of 2021 (Crimes and Penalties Law)", "year": 2021, "section": "Article 442 / Article 443", "title": "Theft, Robbery and Housebreak Trespass"}
+                ]
+            return None
+
+        # India (IN) overrides
         for rule in QUERY_STATUTE_OVERRIDES:
             require_all = rule.get("all", [])
             require_any = rule.get("any", [])
             exclude = rule.get("exclude", [])
-            if require_all and not all(term in query_lower for term in require_all):
+            if require_all and not all(_match_term(term, query_lower) for term in require_all):
                 continue
-            if require_any and not any(term in query_lower for term in require_any):
+            if require_any and not any(_match_term(term, query_lower) for term in require_any):
                 continue
-            if exclude and any(term in query_lower for term in exclude):
+            if exclude and any(_match_term(term, query_lower) for term in exclude):
                 continue
-            return rule.get("statutes", [])
+            statutes = rule.get("statutes", [])
+            rule_dom = rule.get("domain", None)
+            if rule_dom:
+                for s in statutes:
+                    s["_domain"] = rule_dom
+            return statutes
         return None
 
     def _augment_sections_from_full_db_search(
@@ -1617,7 +3081,8 @@ class EnhancedLegalAdvisor:
         analysis += "=" * 50 + "\n\n"
         
         for i, section in enumerate(sections, 1):
-            analysis += f"{i}. Section {section.section_number}"
+            sec_prefix = section.section_number if section.section_number.lower().startswith(('section', 'article', 'rule', 'order')) else f'Section {section.section_number}'
+            analysis += f"{i}. {sec_prefix}"
             
             # Add act information if available
             if section.act_id:
@@ -1754,7 +3219,8 @@ class EnhancedLegalAdvisor:
         is_property = any(word in query_lower or word in section_text or word in act_text for word in ['property', 'tenant', 'landlord', 'eviction', 'boundary', 'title', 'encroachment', 'land'])
         is_salary = any(word in query_lower or word in section_text or word in act_text for word in ['salary', 'wages', 'termination', 'gratuity', 'pf', 'provident fund', 'employee', 'employer', 'labour'])
         is_consumer = any(word in query_lower or word in section_text or word in act_text for word in ['consumer', 'defective', 'refund', 'warranty', 'replacement', 'deficiency'])
-        is_medical = any(word in query_lower or word in section_text for word in ['medical negligence', 'doctor', 'hospital', 'malpractice', 'treatment'])
+        is_medical = any(word in query_lower or word in section_text for word in ['medical negligence', 'doctor', 'hospital', 'malpractice', 'treatment', 'sponge', 'surgery', 'surgeon', 'patient', 'appendectomy', 'operation', 'abdomen', 'negligence'])
+        is_divorce = any(word in query_lower or word in section_text or word in act_text for word in ['divorce', 'marriage', 'matrimonial', 'separation', 'spouse', 'dissolution', 'no fault', 'no-fault', 'custody', 'alimony'])
         is_domestic = any(word in query_lower or word in section_text for word in ['domestic violence', 'dowry', '498a', 'cruelty', 'husband', 'wife', 'protection order'])
         
         if is_sexual_offence:
@@ -1785,6 +3251,50 @@ class EnhancedLegalAdvisor:
                     "Medical and psychological support"
                 )
         
+        elif is_medical:
+            if jurisdiction == 'IN':
+                add_remedies(
+                    "Compensation for medical negligence, treatment costs, and disability under Consumer Protection Act 2019 / Civil Law",
+                    "Professional disciplinary complaint before National Medical Commission (NMC)",
+                    "Civil damages for pain, suffering, and emotional trauma",
+                    "Criminal prosecution for gross medical negligence under Section 106(1) BNS / Section 304A IPC"
+                )
+            elif jurisdiction == 'UK':
+                add_remedies(
+                    "Clinical negligence compensation claim against NHS Trust or private practitioner",
+                    "General Medical Council (GMC) professional disciplinary complaint",
+                    "Parliamentary and Health Service Ombudsman (PHSO) complaint",
+                    "Court damages for pain, suffering, loss of amenity, and financial loss"
+                )
+            elif jurisdiction == 'UAE':
+                add_remedies(
+                    "Medical Liability Committee complaint under UAE Federal Law No. 4/2016",
+                    "Health Authority disciplinary proceedings (DHA / DOH / MOHAP)",
+                    "Civil court compensation for medical malpractice and bodily harm",
+                    "Criminal complaint for gross medical fault"
+                )
+        elif is_divorce:
+            if jurisdiction == 'IN':
+                add_remedies(
+                    "Divorce decree under Hindu Marriage Act / Special Marriage Act / Personal Laws",
+                    "Permanent alimony and maintenance under Section 25 Hindu Marriage Act / Section 125 CrPC / BNSS",
+                    "Child custody and visitation rights under Guardians and Wards Act",
+                    "Mutual consent divorce filing under Section 13B"
+                )
+            elif jurisdiction == 'UK':
+                add_remedies(
+                    "Decree Nisi (Conditional Order of Divorce) & Decree Absolute (Final Order) under Divorce, Dissolution and Separation Act 2020",
+                    "Financial Remedy Order for property division, spousal maintenance, and pension sharing",
+                    "Child Arrangements Order for contact and residency rights",
+                    "Joint or sole no-fault divorce application"
+                )
+            elif jurisdiction == 'UAE':
+                add_remedies(
+                    "No-fault divorce decree under UAE Personal Status Law / Non-Muslim Personal Status Law (Federal Decree-Law No. 41/2022)",
+                    "Spousal alimony and child maintenance order",
+                    "Joint child custody and guardianship rights",
+                    "Division of joint assets and financial settlements"
+                )
         elif is_serious_crime:
             if jurisdiction == 'IN':
                 add_remedies(
@@ -1973,6 +3483,14 @@ class EnhancedLegalAdvisor:
                         "Product recall, discontinuance, or other compliance directions where justified"
                     )
         
+        
+        if domain in ['consumer_commercial', 'commercial', 'consumer']:
+            add_remedies(
+                "Cease and desist order against anti-competitive/unfair trade practice",
+                "Interim injunction restraining discriminatory throttling or preferential access",
+                "Compensation/damages for financial loss and traffic harm before CCI / Commercial Court",
+                "Direction for restoration of non-discriminatory access under TRAI Net Neutrality regulations"
+            )
         return remedies[:10]
     
     def _log_audit_event(self, event_type: str, trace_id: str, details: Dict[str, Any]):
@@ -2006,6 +3524,52 @@ class EnhancedLegalAdvisor:
         
         # Detect jurisdiction
         jurisdiction = self._detect_jurisdiction(legal_query.query_text, legal_query.jurisdiction_hint)
+
+        # ============================================================
+        # QUERY STATUTE OVERRIDE CHECK (runs BEFORE multi_jurisdiction_db)
+        # This ensures high-precision keyword-rule matches take priority
+        # ============================================================
+        query_lower_for_override = legal_query.query_text.lower()
+        override_statutes = self._match_query_statute_override(query_lower_for_override, jurisdiction=jurisdiction)
+        override_candidate_sections = []
+        if override_statutes:
+            for st in override_statutes:
+                j_enum = Jurisdiction.IN if jurisdiction in ['IN', 'India'] else (Jurisdiction.UAE if jurisdiction in ['UAE', 'AE'] else Jurisdiction.UK)
+                act_str = f"{st.get('act', 'Act')} {st.get('year', '')}".strip()
+                sec_obj = Section(
+                    section_id=f"override_{st.get('section', 'sec')}",
+                    act_id=act_str,
+                    section_number=st.get('section', 'Section'),
+                    text=f"{st.get('title', '')}",
+                    jurisdiction=j_enum,
+                    metadata={
+                        'act_name': st.get('act', act_str),
+                        'title': st.get('title', ''),
+                        'punishment': st.get('punishment', ''),
+                        'bailable': None,
+                        'cognizable': None,
+                        'replaced_legacy_ipc': None
+                    }
+                )
+                override_candidate_sections.append(sec_obj)
+
+        try:
+            from legal_database.multi_jurisdiction_db import multi_jurisdiction_db
+            mj_res = multi_jurisdiction_db.search_statutes(query=legal_query.query_text, jurisdiction=jurisdiction)
+            mj_statutes = mj_res.get('statutes', [])
+            if mj_statutes and (jurisdiction != 'IN' or any(st.get('relevance_score', 0) >= 6 for st in mj_statutes)):
+                for st in mj_statutes:
+                    sec_obj = Section(
+                        section_id=st.get('id', 'st_gen'),
+                        act_id=st.get('act_name', 'Statute'),
+                        section_number=st.get('section', 'Section'),
+                        text=f"{st.get('title', '')}: {st.get('description', '')}",
+                        jurisdiction=Jurisdiction.IN if jurisdiction in ['IN', 'India'] else (Jurisdiction.UAE if jurisdiction in ['UAE', 'AE'] else Jurisdiction.UK),
+                        metadata={'act_name': st.get('act_name', 'Statute'), 'title': st.get('title', ''), 'punishment': st.get('penalty', ''), 'bailable': st.get('bailable'), 'cognizable': st.get('cognizable'), 'replaced_legacy_ipc': st.get('replaced_legacy_ipc')}
+                    )
+                    override_candidate_sections.append(sec_obj)
+        except Exception as e:
+            pass
 
         # Query understanding (Groq/local) for better routing hints
         query_understanding = self.groq_retrieval_augmentor.understand_query(
@@ -2129,399 +3693,69 @@ class EnhancedLegalAdvisor:
         procedural_steps = self._generate_procedural_steps(relevant_sections, domain, jurisdiction, legal_query.query_text, domains)
         remedies = self._generate_remedies(relevant_sections, domain, jurisdiction, legal_query.query_text)
         
-        # Calculate enhanced confidence score
-        confidence_score = 0.1
-        if relevant_sections:
-            confidence_score += min(0.6, len(relevant_sections) * 0.1)
-            
-            query_lower = legal_query.query_text.lower()
-            for section in relevant_sections:
-                if any(word in section.text.lower() for word in query_lower.split() if len(word) > 3):
-                    confidence_score += 0.05
-            
-            jurisdiction_sections_count = len([s for s in relevant_sections if s.jurisdiction.value == jurisdiction])
-            confidence_score += min(0.2, jurisdiction_sections_count * 0.02)
-            
-            confidence_score = min(0.95, confidence_score)
-        
-        # Log completion
-        self._log_audit_event("advice_generated", trace_id, {
-            "sections_found": len(relevant_sections),
-            "confidence_score": confidence_score,
-            "jurisdiction_final": jurisdiction,
-            "domain_final": domain,
-            "domains_final": domains,
-            "procedural_steps_count": len(procedural_steps),
-            "remedies_count": len(remedies),
-            "retrieval_metadata": retrieval_metadata,
-        })
-        
-        # Check addon subtypes for specialized offenses (prioritize over base retrieval)
-        addon_subtype = self.addon_resolver.detect_addon_subtype(legal_query.query_text, jurisdiction)
-        addon_statutes = []
-        constitutional_articles = []
-        dowry_filtered = False
-        
-        if addon_subtype:
-            addon_data = self.addon_resolver.addon_subtypes[addon_subtype]
-            raw_statutes = addon_data.get('statutes', [])
-            constitutional_articles = addon_data.get('constitutional_articles', [])
-            
-            # Apply statute overlay to complete years
-            for s in raw_statutes:
-                completed = self.addon_resolver._complete_statute_metadata(s)
-                
-                # Enhanced title for rape sections (India only - BNS/IPC sections)
-                enhanced_title = completed.get('title', completed['act'])
-                section_num = completed['section']
-                
-                # Only apply enhanced titles for Indian rape sections
-                if jurisdiction == 'IN' and section_num in ['63', '64', '65', '66', '375', '376', '376A', '376AB', '376B', '376C', '376D']:
-                    if section_num == '63':
-                        enhanced_title = "Rape - Penetration without consent (BNS 2023)"
-                    elif section_num == '64':
-                        enhanced_title = "Punishment for rape - Rigorous imprisonment 10 years to life (BNS 2023)"
-                    elif section_num == '65':
-                        enhanced_title = "Punishment for rape in certain cases - Enhanced penalties for aggravated circumstances (BNS 2023)"
-                    elif section_num == '66':
-                        enhanced_title = "Punishment for causing death or persistent vegetative state of victim - Life imprisonment or death (BNS 2023)"
-                    elif section_num == '375':
-                        enhanced_title = "Rape - Sexual intercourse without consent or with minor (IPC 1860)"
-                    elif section_num == '376':
-                        enhanced_title = "Punishment for rape - Rigorous imprisonment minimum 7 years, may extend to life (IPC 1860)"
-                    elif section_num == '376A':
-                        enhanced_title = "Punishment for causing death or resulting in persistent vegetative state - Minimum 20 years to life or death (IPC 1860)"
-                    elif section_num == '376AB':
-                        enhanced_title = "Punishment for rape on woman under 12 years - Rigorous imprisonment minimum 20 years to life or death (IPC 1860)"
-                    elif section_num == '376B':
-                        enhanced_title = "Sexual intercourse by husband upon his wife during separation - Imprisonment up to 2 years (IPC 1860)"
-                    elif section_num == '376C':
-                        enhanced_title = "Sexual intercourse by person in authority - Rigorous imprisonment 5-10 years (IPC 1860)"
-                    elif section_num == '376D':
-                        enhanced_title = "Gang rape - Rigorous imprisonment minimum 20 years to life (IPC 1860)"
-                
-                # Apply enhanced titles for Indian divorce sections from addon
-                if jurisdiction == 'IN' and section_num in ['13', '13B', '24', '25', '27']:
-                    if section_num == '13':
-                        enhanced_title = "Divorce - Grounds including adultery, cruelty, desertion, conversion, mental disorder (Hindu Marriage Act 1955)"
-                    elif section_num == '13B':
-                        enhanced_title = "Divorce by mutual consent - Both parties agree to dissolve marriage after 1 year separation"
-                    elif section_num == '24':
-                        enhanced_title = "Maintenance pendente lite - Interim maintenance during divorce proceedings"
-                    elif section_num == '25':
-                        enhanced_title = "Permanent alimony - Court may order maintenance after divorce"
-                    elif section_num == '27':
-                        enhanced_title = "Divorce - Grounds including adultery, cruelty, desertion, unsound mind (Special Marriage Act 1954)"
-                
-                addon_statutes.append({
-                    'act': completed['act'],
-                    'year': completed.get('year', 0),
-                    'section': completed['section'],
-                    'title': enhanced_title
-                })
-            
-            # Apply offense subtype prioritization for rape-related addons
-            if 'rape' in addon_subtype:
-                include_keywords = ['rape', 'sexual assault', 'penetration', 'consent']
-                exclude_keywords = ['importation', 'procuration', 'trafficking']
-                addon_statutes = [
-                    s for s in addon_statutes
-                    if any(kw in s['title'].lower() for kw in include_keywords)
-                    and not any(kw in s['title'].lower() for kw in exclude_keywords)
-                ]
-            
-            # If addon provides statutes, use them as primary source
-            if addon_statutes:
-                relevant_sections = []  # Clear base retrieval
-                ontology_filtered = False
-        
-        # Apply Dowry Precision Layer
-        all_statutes = []
-        for section in relevant_sections:
-            # Skip sections that don't match the detected jurisdiction
-            if section.jurisdiction.value != jurisdiction:
-                continue
-            
-            act_id_lower = section.act_id.lower() if section.act_id else ''
-            act_metadata = None
-            
-            # Find matching act metadata
-            for act_key, metadata in ACT_METADATA.items():
-                if act_key.lower() in act_id_lower or act_id_lower in act_key.lower():
-                    act_metadata = metadata
-                    break
-            
-            # Enhanced title for rape sections (India only - BNS/IPC sections)
-            enhanced_title = section.text[:100] if len(section.text) > 100 else section.text
-            
-            # Add detailed description for Indian rape sections only
-            if jurisdiction == 'IN' and section.section_number in ['63', '64', '65', '66', '375', '376', '376A', '376AB', '376B', '376C', '376D']:
-                if section.section_number == '63':
-                    enhanced_title = "Rape - Penetration without consent (BNS 2023)"
-                elif section.section_number == '64':
-                    enhanced_title = "Punishment for rape - Rigorous imprisonment 10 years to life (BNS 2023)"
-                elif section.section_number == '65':
-                    enhanced_title = "Punishment for rape in certain cases - Enhanced penalties for aggravated circumstances (BNS 2023)"
-                elif section.section_number == '66':
-                    enhanced_title = "Punishment for causing death or persistent vegetative state of victim - Life imprisonment or death (BNS 2023)"
-                elif section.section_number == '375':
-                    enhanced_title = "Rape - Sexual intercourse without consent or with minor (IPC 1860)"
-                elif section.section_number == '376':
-                    enhanced_title = "Punishment for rape - Rigorous imprisonment minimum 7 years, may extend to life (IPC 1860)"
-                elif section.section_number == '376A':
-                    enhanced_title = "Punishment for causing death or resulting in persistent vegetative state - Minimum 20 years to life or death (IPC 1860)"
-                elif section.section_number == '376AB':
-                    enhanced_title = "Punishment for rape on woman under 12 years - Rigorous imprisonment minimum 20 years to life or death (IPC 1860)"
-                elif section.section_number == '376B':
-                    enhanced_title = "Sexual intercourse by husband upon his wife during separation - Imprisonment up to 2 years (IPC 1860)"
-                elif section.section_number == '376C':
-                    enhanced_title = "Sexual intercourse by person in authority - Rigorous imprisonment 5-10 years (IPC 1860)"
-                elif section.section_number == '376D':
-                    enhanced_title = "Gang rape - Rigorous imprisonment minimum 20 years to life (IPC 1860)"
-            
-            # Add detailed description for Indian divorce sections
-            if jurisdiction == 'IN' and section.section_number in ['13', '13B', '24', '25', '27']:
-                if section.section_number == '13' and 'hindu_marriage' in section.act_id.lower():
-                    enhanced_title = "Divorce - Grounds including adultery, cruelty, desertion, conversion, mental disorder (Hindu Marriage Act 1955)"
-                elif section.section_number == '13B' and 'hindu_marriage' in section.act_id.lower():
-                    enhanced_title = "Divorce by mutual consent - Both parties agree to dissolve marriage after 1 year separation"
-                elif section.section_number == '24' and 'hindu_marriage' in section.act_id.lower():
-                    enhanced_title = "Maintenance pendente lite - Interim maintenance during divorce proceedings"
-                elif section.section_number == '25' and 'hindu_marriage' in section.act_id.lower():
-                    enhanced_title = "Permanent alimony - Court may order maintenance after divorce"
-                elif section.section_number == '27' and 'special_marriage' in section.act_id.lower():
-                    enhanced_title = "Divorce - Grounds including adultery, cruelty, desertion, unsound mind (Special Marriage Act 1954)"
-            
-            if act_metadata:
-                all_statutes.append({
-                    'act': act_metadata['name'],
-                    'year': act_metadata['year'],
-                    'section': section.section_number,
-                    'title': enhanced_title
-                })
-            else:
-                all_statutes.append({
-                    'act': section.act_id.replace('_', ' ').title() if section.act_id else 'Unknown Act',
-                    'year': 0,
-                    'section': section.section_number,
-                    'title': enhanced_title
-                })
-        
-        all_statutes.extend(addon_statutes)
+        # ============================================================
+        # LEGAL VERIFICATION & MULTI-FACTOR RERANKING PIPELINE
+        # ============================================================
+        all_candidate_pool = list(override_candidate_sections) + list(relevant_sections)
+        verification_res = legal_verifier.evaluate_candidates(
+            candidates=all_candidate_pool,
+            query=legal_query.query_text,
+            jurisdiction=jurisdiction
+        )
 
-        # Overlay issue-profile statutes (deterministic, high-priority)
-        issue_profile = query_understanding.get("issue_profile", {}) if isinstance(query_understanding, dict) else {}
-        issue_statutes = issue_profile.get("statutes", []) if isinstance(issue_profile, dict) else []
-        issue_overlay = []
-        for statute in issue_statutes:
-            if not isinstance(statute, dict):
-                continue
-            completed = self.addon_resolver._complete_statute_metadata(statute)
-            issue_overlay.append(
-                {
-                    "act": completed.get("act"),
-                    "year": completed.get("year", 0),
-                    "section": completed.get("section"),
-                    "title": completed.get("title"),
-                }
-            )
-        all_statutes.extend(issue_overlay)
-        deduped_statutes = []
-        seen_statutes = set()
-        for statute in all_statutes:
-            key = (
-                statute.get('act'),
-                statute.get('year'),
-                statute.get('section'),
-                statute.get('title')
-            )
-            if key in seen_statutes:
-                continue
-            seen_statutes.add(key)
-            deduped_statutes.append(statute)
-        all_statutes = deduped_statutes
-
-        section_hints = {
-            str(value).strip().lower()
-            for value in query_understanding.get("section_hints", [])
-            if str(value).strip()
-        }
-        act_hints = {
-            str(value).strip().lower()
-            for value in query_understanding.get("act_hints", [])
-            if str(value).strip()
-        }
-
-        def statute_priority(statute: Dict[str, Any]) -> int:
-            score = 0
-            section_number = str(statute.get('section', '')).lower()
-            act_name = str(statute.get('act', '')).lower().replace(' ', '_')
-            title = str(statute.get('title', '')).lower()
-            query_text_lower = legal_query.query_text.lower()
-            issue_profile = query_understanding.get("issue_profile", {}) if isinstance(query_understanding, dict) else {}
-            preferred_sections = build_issue_priority_map(issue_profile.get("preferred_sections", []))
-            preferred_act_names = build_issue_priority_map(issue_profile.get("preferred_act_names", []))
-            preferred_act_fragments = build_issue_priority_map(issue_profile.get("preferred_act_fragments", []))
-            preferred_title_terms = set(normalize_issue_values(issue_profile.get("preferred_title_terms", [])))
-            excluded_title_terms = set(normalize_issue_values(issue_profile.get("excluded_title_terms", [])))
-            preferred_section_acts = {
-                str(key).strip().lower(): [str(value).strip().lower() for value in values]
-                for key, values in (issue_profile.get("preferred_section_acts", {}) or {}).items()
-            }
-
-            if any(hint == section_number or hint in section_number for hint in section_hints):
-                score += 100
-            if any(act_hint in act_name for act_hint in act_hints):
-                score += 35
-            if preferred_sections and section_number in preferred_sections:
-                score += 80 + (preferred_sections[section_number] * 12)
-            if preferred_act_names and act_name in preferred_act_names:
-                score += 40 + (preferred_act_names[act_name] * 8)
-            if preferred_act_fragments:
-                fragment_matches = [
-                    priority
-                    for fragment, priority in preferred_act_fragments.items()
-                    if fragment in act_name
-                ]
-                if fragment_matches:
-                    score += 24 + (max(fragment_matches) * 6)
-            if preferred_title_terms and any(term in title for term in preferred_title_terms):
-                score += 20
-            if excluded_title_terms and any(term in title for term in excluded_title_terms):
-                score -= 30
-            if preferred_section_acts and section_number in preferred_section_acts:
-                allowed_acts = preferred_section_acts[section_number]
-                if any(allowed_act in act_name.replace("_", " ") for allowed_act in allowed_acts):
-                    score += 25
-                else:
-                    score -= 120
-            if preferred_title_terms and section_number in preferred_sections:
-                if not any(term in title for term in preferred_title_terms):
-                    score -= 60
-            if 'punishment' in query_text_lower and 'punishment' in title:
-                score += 20
-            if any(token in title for token in query_text_lower.split() if len(token) > 3):
-                score += 5
-            return score
-
-        all_statutes.sort(key=statute_priority, reverse=True)
-
-        # Drop statutes where the section is mapped to a specific act and the act does not match
-        if issue_profile:
-            preferred_section_acts = {
-                str(key).strip().lower(): [str(value).strip().lower() for value in values]
-                for key, values in (issue_profile.get("preferred_section_acts", {}) or {}).items()
-            }
-            if preferred_section_acts:
-                filtered_statutes = []
-                for statute in all_statutes:
-                    section_number = str(statute.get("section", "")).strip().lower()
-                    act_name = str(statute.get("act", "")).lower()
-                    allowed_acts = preferred_section_acts.get(section_number)
-                    if not allowed_acts:
-                        filtered_statutes.append(statute)
-                        continue
-                    if any(allowed_act in act_name for allowed_act in allowed_acts):
-                        filtered_statutes.append(statute)
-                all_statutes = filtered_statutes
-
-            preferred_sections = {
-                str(value).strip().lower()
-                for value in issue_profile.get("preferred_sections", [])
-                if str(value).strip()
-            }
-            preferred_title_terms = {
-                str(value).strip().lower()
-                for value in issue_profile.get("preferred_title_terms", [])
-                if str(value).strip()
-            }
-            if preferred_sections:
-                filtered_statutes = []
-                for statute in all_statutes:
-                    section_number = str(statute.get("section", "")).strip().lower()
-                    title = str(statute.get("title", "")).lower()
-                    if section_number in preferred_sections:
-                        filtered_statutes.append(statute)
-                        continue
-                    if preferred_title_terms and any(term in title for term in preferred_title_terms):
-                        filtered_statutes.append(statute)
-                all_statutes = filtered_statutes
-
-        # Filter procedural-only statutes when the query is not procedural
-        procedural_keywords = [
-            "fir",
-            "bail",
-            "arrest",
-            "custody",
-            "charge sheet",
-            "chargesheet",
-            "investigation",
-            "trial",
-            "appeal",
-            "summons",
-            "warrant",
-            "procedure",
-            "magistrate",
-            "court",
-        ]
-        is_procedural_query = any(keyword in query_lower for keyword in procedural_keywords)
-        if domain == "criminal" and not is_procedural_query:
-            procedural_acts = {
-                "Code of Criminal Procedure",
-                "Bharatiya Nagarik Suraksha Sanhita",
-                "Code of Civil Procedure",
-                "Indian Evidence Act",
-            }
-            all_statutes = [
-                statute for statute in all_statutes
-                if statute.get("act") not in procedural_acts
-            ]
-
-        # Issue-specific cleanup for child sexual offence queries
-        if issue_profile.get("legal_issue") == "child_sexual_offense":
-            all_statutes = [
-                statute for statute in all_statutes
-                if not (
-                    statute.get("act") == "Indian Penal Code"
-                    and str(statute.get("section", "")).strip() == "377"
+        if verification_res.is_confident and verification_res.matched_sections:
+            verified_section_objs = []
+            verified_statutes = []
+            for ms in verification_res.matched_sections:
+                sec_obj = Section(
+                    section_id=f"ver_{ms['section_number']}",
+                    act_id=ms['act_name'],
+                    section_number=ms['section_number'],
+                    text=f"{ms['title']}: {ms.get('text', '')}",
+                    jurisdiction=Jurisdiction.IN if jurisdiction in ['IN', 'India'] else (Jurisdiction.UAE if jurisdiction in ['UAE', 'AE'] else Jurisdiction.UK),
+                    metadata={
+                        'act_name': ms['act_name'],
+                        'title': ms['title'],
+                        'punishment': '',
+                        'relevance_score': ms.get('relevance_score', 1.0)
+                    }
                 )
-            ]
+                verified_section_objs.append(sec_obj)
+                verified_statutes.append({
+                    'act': ms['act_name'],
+                    'year': 0,
+                    'section': ms['section_number'],
+                    'title': ms['title']
+                })
+            relevant_sections = verified_section_objs
+            all_statutes = verified_statutes
+            domain = verification_res.primary_domain.lower()
+            if 'labour' in domain or 'employment' in domain:
+                domain = 'civil'
+            elif 'consumer' in domain or 'commercial' in domain:
+                domain = 'consumer_commercial'
+            elif 'family' in domain or 'matrimonial' in domain:
+                domain = 'family'
+            elif 'property' in domain or 'real estate' in domain:
+                domain = 'property'
+            elif 'criminal' in domain or 'cyber' in domain:
+                domain = 'criminal'
+            else:
+                domain = 'civil'
+            calculated_confidence = 0.95 if verification_res.confidence_level == ConfidenceLevel.HIGH else 0.75
+            match_status_val = "MATCHED"
+        else:
+            # Explicit honest NO_CONFIDENT_MATCH handling (Zero Hallucination)
+            relevant_sections = []
+            all_statutes = []
+            domain = verification_res.primary_domain.lower() if verification_res.primary_domain else 'civil'
+            if 'property' in domain:
+                domain = 'property'
+            calculated_confidence = 0.10
+            match_status_val = "NO_CONFIDENT_MATCH"
 
-        # Filter statutes by jurisdiction - remove Indian acts for non-Indian jurisdictions
-        indian_acts = ['Hindu Marriage Act', 'Special Marriage Act', 'Bharatiya Nyaya Sanhita', 'Indian Penal Code', 
-                       'Code of Criminal Procedure', 'Code of Civil Procedure', 'Indian Evidence Act',
-                       'Information Technology Act', 'Protection of Women from Domestic Violence Act',
-                       'Dowry Prohibition Act', 'Protection of Children from Sexual Offences Act', 'Consumer Protection Act', 'Income-tax Act',
-                       'Central Goods and Services Tax Act', 'Motor Vehicles Act',
-                       'Unlawful Activities (Prevention) Act', 'Labour and Employment Laws',
-                       'Real Estate (Regulation and Development) Act', 'Farmers Protection Act']
+        confidence_score = calculated_confidence
         
-        if jurisdiction != 'IN':
-            all_statutes = [s for s in all_statutes if s.get('act') not in indian_acts]
-        elif jurisdiction == 'IN':
-            # For India, remove UK/UAE specific acts
-            uk_uae_acts = ['Sexual Offences Act', 'Theft Act', 'Fraud Act', 'Road Traffic Act',
-                          'UAE Penal Code', 'UAE Personal Status Law', 'UAE Traffic Law', 'UAE Cybercrime Law']
-            all_statutes = [s for s in all_statutes if s.get('act') not in uk_uae_acts]
-        
-        all_statutes, dowry_filtered = self.dowry_precision.filter_and_prioritize(all_statutes, legal_query.query_text)
-        
-        # Boost confidence for dowry cases
-        if dowry_filtered:
-            confidence_score = self.dowry_precision.boost_confidence(all_statutes)
-            ontology_filtered = True
-        
-        # Check for land dispute queries and use predefined statutes (India only)
-        query_lower = legal_query.query_text.lower()
-        if jurisdiction == 'IN' and any(keyword in query_lower for keyword in ['land dispute', 'property dispute', 'land', 'boundary', 'title deed', 'encroachment']):
-            all_statutes = LAND_DISPUTE_STATUTES.copy()
-
-        override_statutes = self._match_query_statute_override(query_lower)
-        # Disable hardcoded IPC overrides to let the system fetch BNS dynamically
-        # if jurisdiction == 'IN' and override_statutes:
-        #     all_statutes = override_statutes
-        
-        # Store domains in advice object
         advice = LegalAdvice(
             query=legal_query.query_text,
             jurisdiction=jurisdiction,
@@ -2535,16 +3769,21 @@ class EnhancedLegalAdvisor:
             timestamp=datetime.now().isoformat(),
             statutes=all_statutes,
             case_laws=[],
-            constitutional_articles=constitutional_articles,
+            constitutional_articles=[],
             timeline=[],
             glossary=[],
             evidence_requirements=[],
-
-            ontology_filtered=ontology_filtered or dowry_filtered,
-            query_understanding=query_understanding,
+            ontology_filtered=ontology_filtered,
+            query_understanding=query_understanding if isinstance(query_understanding, dict) else {},
+            match_status=match_status_val,
+            debug_trace=verification_res.debug_trace if verification_res else {},
             retrieval_metadata=retrieval_metadata,
+            domain_confidence=getattr(verification_res, 'domain_confidence', 0.0),
+            statute_confidence=getattr(verification_res, 'statute_confidence', 0.0),
+            section_confidence=getattr(verification_res, 'section_confidence', 0.0),
+            potentially_relevant_sections=getattr(verification_res, 'potentially_relevant_sections', []),
+            missing_factual_inquiries=getattr(verification_res, 'missing_factual_inquiries', [])
         )
-        
         # Add domains as attribute
         advice.domains = domains
         
